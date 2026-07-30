@@ -1,0 +1,241 @@
+{
+  "skill_name": "agentkit-builder",
+  "version": "3.0",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "outcome-driven-book-agent",
+      "prompt": "I'm writing a non-fiction book about behavioral economics for general audiences. I need a complete AI agent system to help me go from rough idea to publishable manuscript. I want the AI to help me research, draft chapters, maintain a consistent voice, and eventually prepare the book for publication. Build me the Agent Kit for this.",
+      "expected_output": "Agent Kit with Dual Output (Human Summary + System Prompt), correct Tier determination (Tier 2 multi-state), applied lenses A+C+F, Dynamic Enhancement Discovery identifying Voice Consistency as domain-specific lever, measurable DoD, no unnecessary mechanisms",
+      "files": [],
+      "assertions": [
+        {
+          "name": "dual-output-present",
+          "check": "Output contains both TÓM TẮT CHO NGƯỜI DÙNG (3-5 lines, no jargon) and SYSTEM PROMPT sections, clearly separated"
+        },
+        {
+          "name": "human-summary-no-jargon",
+          "check": "TÓM TẮT section does not contain technical terms like prompt, token, schema, API, LLM, topology, or lens"
+        },
+        {
+          "name": "human-summary-self-sufficient",
+          "check": "TÓM TẮT answers all 3 questions: what does the agent do / when to use / limitations"
+        },
+        {
+          "name": "measurable-dod",
+          "check": "Definition of Done contains binary, measurable criteria — no subjective adjectives like 'professional', 'high quality', 'optimized'"
+        },
+        {
+          "name": "dynamic-enhancement-applied",
+          "check": "Agent Kit contains a domain-specific mechanism (e.g., Voice Consistency) that goes beyond the standard 6 lenses"
+        },
+        {
+          "name": "no-unnecessary-mechanisms",
+          "check": "Agent Kit does not include Lens E (Interoperability) or complex context architecture — this is a standalone multi-state agent, not a multi-agent system"
+        },
+        {
+          "name": "hard-constraints-specific",
+          "check": "HARD CONSTRAINTS section contains specific, verifiable constraints (not vague directives like 'be accurate')"
+        },
+        {
+          "name": "provider-agnostic",
+          "check": "Output does not contain Gemini-specific, Claude-specific, or GPT-specific references — no GEMINI.md, no .agents/ structure"
+        },
+        {
+          "name": "output-format-present",
+          "check": "FORMAT ĐẦU RA section contains a reusable template for agent responses"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "low-tech-user-guided-intake",
+      "prompt": "Tôi muốn có một con bot giúp tôi trả lời email khách hàng nhanh hơn.",
+      "expected_output": "Skill detects low-tech user (Vietnamese, everyday language, no technical terms), activates Guided Intake, asks 2-3 simple questions in everyday Vietnamese before building anything",
+      "files": [],
+      "assertions": [
+        {
+          "name": "detects-low-tech",
+          "check": "Response uses everyday language matching the user's Vietnamese input — no technical terms like agent, prompt, North Star, Tier"
+        },
+        {
+          "name": "guided-intake-activated",
+          "check": "Response asks clarifying questions BEFORE producing any Agent Kit content"
+        },
+        {
+          "name": "max-3-questions",
+          "check": "Response asks no more than 3 questions total"
+        },
+        {
+          "name": "questions-are-everyday",
+          "check": "Questions are phrased in everyday language, e.g., 'Bạn muốn bot này giúp gì?' not 'North Star của agent là gì?'"
+        },
+        {
+          "name": "no-premature-output",
+          "check": "Response does not contain SYSTEM PROMPT, HARD CONSTRAINTS, or any Agent Kit structure before questions are answered"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "refactor-mode-delta-only",
+      "prompt": "I have this existing agent prompt but it seems to hallucinate data sometimes and doesn't handle edge cases well. Can you improve it?\n\n[Existing prompt: You are a helpful research assistant. Help the user find information and write summaries. Be accurate and thorough.]",
+      "expected_output": "Detects REFACTOR mode, audits the existing prompt against Outcome Lens Library, identifies missing mechanisms (C: no DoD, F: no escalation, no constraints), patches only what's missing while keeping the good parts",
+      "files": [],
+      "assertions": [
+        {
+          "name": "detects-refactor-mode",
+          "check": "Response identifies this as a REFACTOR operation on an existing Agent Kit"
+        },
+        {
+          "name": "audit-performed",
+          "check": "Response contains an audit identifying specific gaps — not just generic advice"
+        },
+        {
+          "name": "identifies-missing-lens-c",
+          "check": "Audit identifies the lack of measurable Definition of Done or QC mechanisms (Lens C gap)"
+        },
+        {
+          "name": "identifies-missing-lens-f",
+          "check": "Audit identifies the lack of hard constraints and escalation protocol (Lens F gap)"
+        },
+        {
+          "name": "delta-only-patch",
+          "check": "Output preserves the existing role definition and adds to it — does not rewrite from scratch"
+        },
+        {
+          "name": "dual-output-added",
+          "check": "Refactored output includes a TÓM TẮT CHO NGƯỜI DÙNG section that wasn't in the original"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "micro-agent-minimal-output",
+      "prompt": "I need a simple agent that converts temperatures between Celsius and Fahrenheit. Nothing fancy, just accurate conversion.",
+      "expected_output": "Tier 1 micro-agent with minimal output — only lenses A+C+minimal F, no context architecture, no I/O schema, no complex safety protocol. Short, focused System Prompt",
+      "files": [],
+      "assertions": [
+        {
+          "name": "tier-1-appropriate",
+          "check": "Output is concise — System Prompt is under 300 words total (excluding Human Summary)"
+        },
+        {
+          "name": "no-lens-stuffing",
+          "check": "Output does not include context architecture (Lens D), I/O schema (Lens E), or complex safety protocol beyond basic constraints"
+        },
+        {
+          "name": "still-has-dod",
+          "check": "Even the minimal output includes a measurable Definition of Done"
+        },
+        {
+          "name": "still-has-constraints",
+          "check": "Even the minimal output includes at least 1 specific hard constraint"
+        },
+        {
+          "name": "dual-output-present",
+          "check": "Even the minimal output has both Human Summary and System Prompt sections"
+        },
+        {
+          "name": "not-a-template",
+          "check": "Output is specific to temperature conversion — not a generic template that could apply to any converter"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "suite-build-multi-agent",
+      "prompt": "Build me a content creation pipeline: one agent that researches topics, another that writes articles based on research, and a third that reviews and edits. They need to work together.",
+      "expected_output": "SUITE_BUILD mode: 3 separate Agent Kits + 1 Manifest with agent roster, handoff protocol, lead agent designation, and Dual Output for the Manifest",
+      "files": [],
+      "assertions": [
+        {
+          "name": "suite-build-detected",
+          "check": "Response treats this as SUITE_BUILD mode (multi-agent), not a single multi-state agent"
+        },
+        {
+          "name": "separate-agent-kits",
+          "check": "Each of the 3 agents has its own Agent Kit with Human Summary + System Prompt"
+        },
+        {
+          "name": "manifest-present",
+          "check": "Output includes a Manifest file listing all agents, their roles, and flow sequence"
+        },
+        {
+          "name": "manifest-dual-output",
+          "check": "Manifest has its own Human Summary (everyday language) and Technical section"
+        },
+        {
+          "name": "handoff-defined",
+          "check": "Handoff between agents is explicitly defined: what triggers it, what data is passed, in what format"
+        },
+        {
+          "name": "lead-agent-designated",
+          "check": "One agent is explicitly designated as lead with final decision authority"
+        },
+        {
+          "name": "lens-e-present",
+          "check": "Each agent kit includes Lens E (Interoperability) mechanisms — I/O schema or handoff protocol"
+        },
+        {
+          "name": "no-overlapping-competency",
+          "check": "No two agents share the same core competency"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "ultimate-test-compliance",
+      "prompt": "Create an agent that helps with project management — tracking tasks, assigning priorities, and sending status updates.",
+      "expected_output": "Agent Kit that passes all 4 conditions of the Ultimate Test: not a generic template, no unused mechanisms, no missing needed mechanisms, user can understand summary",
+      "files": [],
+      "assertions": [
+        {
+          "name": "not-template-replaceable",
+          "check": "Output contains project-management-specific mechanisms — not a generic agent template that could be swapped for any domain"
+        },
+        {
+          "name": "no-unused-mechanisms",
+          "check": "Every mechanism in the System Prompt serves a specific project management outcome — no filler"
+        },
+        {
+          "name": "no-missing-mechanisms",
+          "check": "Output includes mechanisms for the core PM challenges: priority conflicts, status tracking accuracy, deadline management"
+        },
+        {
+          "name": "summary-understandable",
+          "check": "A non-technical person reading the TÓM TẮT would know: what the agent does for PM, when to use it, and what it cannot do"
+        },
+        {
+          "name": "dynamic-enhancement-present",
+          "check": "Dynamic Enhancement Discovery has been run — output includes at least one domain-specific lever (e.g., priority conflict resolution)"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "provider-agnostic-output",
+      "prompt": "Build an agent for customer support that can answer FAQs, escalate complex issues, and track resolution status.",
+      "expected_output": "Agent Kit output contains no provider-specific language — no mention of Gemini, Claude, GPT, Anthropic, OpenAI, or any specific LLM provider",
+      "files": [],
+      "assertions": [
+        {
+          "name": "no-gemini-references",
+          "check": "Output does not contain 'Gemini', 'GEMINI.md', '.agents/', or Antigravity-specific terms"
+        },
+        {
+          "name": "no-claude-references",
+          "check": "Output does not contain 'Claude', 'Anthropic', or Claude-specific terms"
+        },
+        {
+          "name": "no-gpt-references",
+          "check": "Output does not contain 'GPT', 'OpenAI', 'ChatGPT', or GPT-specific terms"
+        },
+        {
+          "name": "portable-system-prompt",
+          "check": "The System Prompt section could be copy-pasted into any LLM provider and work correctly"
+        }
+      ]
+    }
+  ]
+}

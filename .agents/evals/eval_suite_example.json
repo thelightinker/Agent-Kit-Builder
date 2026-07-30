@@ -1,0 +1,41 @@
+{
+  "$schema": "eval_suite_schema",
+  "version": "1.0.0",
+  "kit_type": "standard",
+  "test_cases": [
+    {
+      "id": "eval-001",
+      "name": "System Prompt 4-Section Structure Check",
+      "target_file": "agent/kit-generator.md",
+      "assertions": [
+        {
+          "type": "regex_match",
+          "pattern": "(?i)^#\\s+.*Kit Generator",
+          "description": "Must have a main heading"
+        },
+        {
+          "type": "contains_keywords",
+          "keywords": ["VAI TRÒ", "INPUT", "OUTPUT"],
+          "description": "Must contain required section keywords"
+        },
+        {
+          "type": "forbidden_keywords",
+          "keywords": ["TBD", "TODO", "best possible"],
+          "description": "Must not contain placeholders or subjective phrases"
+        }
+      ]
+    },
+    {
+      "id": "eval-002",
+      "name": "Rule Frontmatter Trigger Validation",
+      "target_file": "rules/core-protocol.md",
+      "assertions": [
+        {
+          "type": "regex_match",
+          "pattern": "trigger:\\s*(always_on|manual|model_decision)",
+          "description": "Trigger must be valid Enum value"
+        }
+      ]
+    }
+  ]
+}
