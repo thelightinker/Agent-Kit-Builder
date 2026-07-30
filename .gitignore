@@ -1,0 +1,7 @@
+# Ignore output directory and scratch files
+output/
+dist/
+__pycache__/
+*.pyc
+.superpowers/
+docs/
