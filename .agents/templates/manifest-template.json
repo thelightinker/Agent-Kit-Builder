@@ -4,31 +4,56 @@
   "kitVersion": "2026.1.0",
   "name": "{KIT_NAME}",
   "description": "{KIT_DESCRIPTION}",
+  "topology": {
+    "type": "{TOPOLOGY_TYPE}",
+    "spectrumPosition": "{SPECTRUM_POSITION}",
+    "orchestrator": "{ORCHESTRATOR_NAME}",
+    "rightAltitudeRationale": "{RIGHT_ALTITUDE_RATIONALE}"
+  },
   "metadata": {
     "author": "{AUTHOR_OR_TEAM}",
     "domain": "{TARGET_DOMAIN}",
     "tags": ["{TAG_1}", "{TAG_2}"]
   },
   "contracts": {
-    "default_agent": "{AGENT_NAME}",
+    "default_agent": "{DEFAULT_AGENT_NAME}",
     "entrypoint_workflow": "{WORKFLOW_NAME}"
   },
   "agents": {
-    "{AGENT_NAME}": {
-      "path": "agent/{AGENT_NAME}.md",
+    "{ORCHESTRATOR_NAME}": {
+      "role": "master-orchestrator",
+      "path": "agent/{ORCHESTRATOR_NAME}.md",
       "version": "1.0.0",
       "model": "inherit",
-      "tools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write", "Agent"],
+      "tools": ["Read", "Grep", "Glob", "Agent"],
+      "delegatesTo": ["{SPECIALIST_A_NAME}", "{SPECIALIST_B_NAME}"],
+      "requires": {
+        "agents": {
+          "{SPECIALIST_A_NAME}": "^1.0.0",
+          "{SPECIALIST_B_NAME}": "^1.0.0"
+        },
+        "skills": {}
+      }
+    },
+    "{SPECIALIST_A_NAME}": {
+      "role": "domain-specialist",
+      "domain": "{DOMAIN_A}",
+      "path": "agent/{SPECIALIST_A_NAME}.md",
+      "version": "1.0.0",
+      "model": "inherit",
+      "tools": ["Read", "Grep", "Glob", "Edit", "Write"],
+      "ownedSkills": ["{SKILL_A1}"],
+      "memoryScope": ["shared", "domains/{DOMAIN_A}"],
       "requires": {
         "skills": {
-          "{SKILL_NAME}": "^1.0.0"
+          "{SKILL_A1}": "^1.0.0"
         }
       }
     }
   },
   "skills": {
-    "{SKILL_NAME}": {
-      "path": "skills/{SKILL_NAME}/SKILL.md",
+    "{SKILL_A1}": {
+      "path": "skills/{SKILL_A1}/SKILL.md",
       "version": "1.0.0"
     }
   },

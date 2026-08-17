@@ -1,21 +1,24 @@
-# {KIT_NAME} — Memory Index
+# {KIT_NAME} — Memory Index (SSOT)
 
-Bộ nhớ dài hạn (persistent memory) của Agent Kit `{KIT_NAME}`. Được nạp ở đầu mỗi phiên làm việc để giữ ngữ cảnh, bài học kinh nghiệm và quyết định thiết kế.
-
----
-
-## Danh mục bộ nhớ
-
-### 1. Khuôn mẫu thiết kế (Design Patterns)
-* **File**: `memory/kit-patterns.md`
-* **Mục đích**: Lưu trữ các kỹ thuật, pattern thiết kế được rút ra từ thực tế và các bộ kit chất lượng cao.
-
-### 2. Ví dụ mẫu chất lượng cao (Golden Examples)
-* **File**: `memory/golden-examples/README.md`
-* **Mục đích**: Lưu giữ danh sách các ví dụ Agent Kit đạt chuẩn 5 sao để tham khảo làm mốc chất lượng.
+> Bộ nhớ phân tầng (Scoped Memory) của `{KIT_NAME}`. Giới hạn nghiêm ngặt $\le 200$ dòng. Nạp có chọn lọc để bảo vệ Attention Budget.
 
 ---
 
-## Hướng dẫn cập nhật bộ nhớ
-1. Khi hoàn thành 1 Agent Kit xuất sắc (đạt 5/5 ⭐), lưu trữ mẫu vào thư mục `memory/golden-examples/`.
-2. Khi đúc rút được bài học mới về thiết kế prompt/skill, ghi nhận trực tiếp vào `memory/kit-patterns.md`.
+## 1. Shared Memory (`memory/shared/`)
+*Dành cho toàn bộ Suite (Mọi Agent được phép đọc)*
+- `brand-guidelines.md`: Quy chuẩn thương hiệu, phong cách và ngôn từ.
+- `project-conventions.md`: Quy ước kiến trúc và quy chuẩn kỹ thuật chung.
+
+---
+
+## 2. Domain Memory (`memory/domains/`)
+*Dành riêng cho từng Specialist Agent tương ứng*
+- `{DOMAIN_A_NAME}.md`: Tri thức chuyên sâu và playbook của Specialist A.
+- `{DOMAIN_B_NAME}.md`: Tri thức chuyên sâu và playbook của Specialist B.
+
+---
+
+## 3. Session & Run State (`memory/runs/`)
+*Theo dõi tiến độ thực thi đa-phiên*
+- `features-tracker.json`: Danh mục trạng thái các tính năng (Definition of Done ngoài context window).
+- `golden-examples/`: Các mẫu output xuất sắc đạt 5/5 ⭐.
