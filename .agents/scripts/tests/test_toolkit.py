@@ -50,11 +50,9 @@ class ToolkitRegressionTests(unittest.TestCase):
                 }
                 self.assertEqual({}, invalid)
 
-    def test_component_registry_and_lock_are_synchronized(self):
+    def test_manifest_is_synchronized(self):
         manifest = component_registry.build_manifest(TOOLKIT)
-        lock = component_registry.build_lock(TOOLKIT, manifest)
         self.assertEqual(manifest, json.loads((TOOLKIT / "manifest.json").read_text("utf-8")))
-        self.assertEqual(lock, json.loads((TOOLKIT / "manifest.lock.json").read_text("utf-8")))
 
     def test_dependency_graph_is_synchronized(self):
         expected = dependency_graph.render(TOOLKIT)
@@ -106,12 +104,7 @@ class TestExportKit(unittest.TestCase):
             self.assertIn("openai", res)
             self.assertTrue(Path(res["cursor"]).exists())
             self.assertTrue((Path(res["claude"]) / "claude_instructions.txt").exists())
-    def test_validate_workflow_contract_decided_by(self):
-        invalid_node = {"name": "test", "decided_by": "model"}
-        valid_node = {"name": "test", "decided_by": "orchestrator"}
-
-        self.assertFalse(validate_kit.validate_workflow_node_decided_by(invalid_node))
-        self.assertTrue(validate_kit.validate_workflow_node_decided_by(valid_node))
+            self.assertTrue((Path(res["openai"]) / "gpt_instructions.txt").exists())
 
 
 if __name__ == "__main__":

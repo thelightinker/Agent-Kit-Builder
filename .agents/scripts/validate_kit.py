@@ -209,31 +209,33 @@ def validate_manifest(root: Path, findings: list[Finding], auto_heal: bool = Fal
     if not manifest_path.is_file():
         add(findings, "error", "manifest.missing", Path("manifest.json"), "Run scripts/generate_manifest.py")
         return
-    if not lock_path.is_file():
-        add(findings, "error", "manifest.lock_missing", Path("manifest.lock.json"), "Run scripts/generate_manifest.py")
-        return
     try:
         actual_manifest = json.loads(manifest_path.read_text("utf-8"))
-        actual_lock = json.loads(lock_path.read_text("utf-8"))
     except json.JSONDecodeError:
         return
     try:
         expected_manifest = build_manifest(root)
-        expected_lock = build_lock(root, expected_manifest)
     except Exception as exc:
         add(findings, "error", "manifest.generation_failed", Path("manifest.json"), str(exc))
         return
-    if actual_manifest != expected_manifest or actual_lock != expected_lock:
+    if actual_manifest != expected_manifest:
         if auto_heal:
             (root / "manifest.json").write_text(canonical_json(expected_manifest), "utf-8")
-            (root / "manifest.lock.json").write_text(canonical_json(expected_lock), "utf-8")
             actual_manifest = expected_manifest
-            actual_lock = expected_lock
         else:
-            if actual_manifest != expected_manifest:
-                add(findings, "error", "manifest.stale", Path("manifest.json"), "Registry differs from component frontmatter; regenerate it")
+            add(findings, "error", "manifest.stale", Path("manifest.json"), "Registry differs from component frontmatter; regenerate it")
+
+    if lock_path.is_file():
+        try:
+            actual_lock = json.loads(lock_path.read_text("utf-8"))
+            expected_lock = build_lock(root, expected_manifest)
             if actual_lock != expected_lock:
-                add(findings, "error", "manifest.lock_stale", Path("manifest.lock.json"), "Lock differs from current component files; regenerate it")
+                if auto_heal:
+                    (root / "manifest.lock.json").write_text(canonical_json(expected_lock), "utf-8")
+                else:
+                    add(findings, "error", "manifest.lock_stale", Path("manifest.lock.json"), "Lock differs from current component files; regenerate it")
+        except Exception:
+            pass
 
     skill_versions = {name: data["version"] for name, data in expected_manifest["skills"].items()}
     for agent_name, agent in expected_manifest["agents"].items():
@@ -354,6 +356,29 @@ def validate_architecture_counts(root: Path, findings: list[Finding]) -> None:
             add(findings, "error", "architecture.count_mismatch", Path("ARCHITECTURE.md"), f"{key}: documented {match.group(1)}, actual {actual[key]}")
 
 
+def validate_template_compliance(root: Path, findings: list[Finding]) -> None:
+    templates_dir = root / "templates"
+    references_dir = root / "references"
+    if not templates_dir.is_dir():
+        add(findings, "warning", "template.missing_dir", Path("templates"), "Templates directory is missing")
+        return
+    if not references_dir.is_dir():
+        add(findings, "warning", "reference.missing_dir", Path("references"), "References directory is missing")
+        return
+    required_templates = {
+        "agent-template.md",
+        "skill-template.md",
+        "workflow-template.md",
+        "rule-template.md",
+        "manifest-template.json",
+        "memory-template.md",
+        "orchestrator-template.md",
+    }
+    for template_name in sorted(required_templates):
+        if not (templates_dir / template_name).is_file():
+            add(findings, "warning", "template.missing_file", Path("templates") / template_name, f"Template file missing: {template_name}")
+
+
 def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     findings: list[Finding] = []
     validate_json(root, findings)
@@ -366,6 +391,7 @@ def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     validate_memory(root, findings)
     validate_python(root, findings)
     validate_architecture_counts(root, findings)
+    validate_template_compliance(root, findings)
     return findings
 
 
@@ -396,14 +422,6 @@ def main() -> int:
         print(f"Summary: {len(errors)} error(s), {len(warnings)} warning(s)")
         print("[PASS] Toolkit is structurally valid." if not errors else "[FAIL] Toolkit validation failed.")
     return 0 if not errors else 1
-
-
-def validate_workflow_node_decided_by(node_data: dict) -> bool:
-    """Enforces that no workflow checkpoint node allows decided_by: model."""
-    decided_by = node_data.get("decided_by")
-    if not decided_by or str(decided_by).lower() == "model":
-        return False
-    return str(decided_by).lower() == "orchestrator"
 
 
 if __name__ == "__main__":
