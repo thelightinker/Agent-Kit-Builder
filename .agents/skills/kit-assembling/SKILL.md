@@ -3,16 +3,16 @@ name: kit-assembling
 description: >
   Lắp ráp các cấu phần thành Agent Kit hoàn chỉnh trong thư mục cách ly
   ./output/<kit-name>/, sinh manifest.json chuẩn SSOT (khai báo topology,
-  delegatesTo, ownedSkills, memoryScope), và đóng gói theo chuẩn Kit Type.
-  Luôn kích hoạt ở bước hoàn thiện của quy trình tạo kit.
+  delegatesTo, ownedSkills, memoryScope), sinh hooks an toàn runtime (PreToolUse)
+  và đóng gói theo chuẩn Kit Type. Luôn kích hoạt ở bước hoàn thiện của quy trình tạo kit.
 when_to_use: "Khi hoàn tất các cấu phần và cần lắp ráp thành thư mục Agent Kit hoàn chỉnh."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.2.0
+version: 2.3.0
 ---
 
 # Kit Assembling
 
-Kỹ năng tổng hợp, tổ chức thư mục và đóng gói Agent Kit hoàn chỉnh, tuân thủ nghiêm ngặt ranh giới cách ly không gian làm việc và chuẩn hóa `manifest.json` làm Single Source of Truth (SSOT).
+Kỹ năng tổng hợp, tổ chức thư mục và đóng gói Agent Kit hoàn chỉnh, tuân thủ nghiêm ngặt ranh giới cách ly không gian làm việc, chuẩn hóa `manifest.json` làm Single Source of Truth (SSOT), và tích hợp Native Safety Hooks bảo vệ runtime.
 
 ---
 
@@ -34,6 +34,9 @@ output/<kit-name>/
 ├── skills/
 │   └── [skill-name]/SKILL.md # Skills trực thuộc
 ├── workflows/
+├── hooks/
+│   ├── hooks.json
+│   └── validate-tool-call.mjs # PreToolUse safety gate
 └── manifest.json
 ```
 
@@ -52,12 +55,23 @@ output/<suite-name>/
 │   ├── MEMORY.md
 │   ├── shared/
 │   └── domains/
+├── hooks/
+│   ├── hooks.json
+│   └── validate-tool-call.mjs # Boundary & Safety enforcement
 └── manifest.json              # Khai báo SSOT phân cấp
 ```
 
 ---
 
-## 3. SINH MANIFEST.JSON CHUẨN SSOT
+## 3. RUNTIME SAFETY & BOUNDARY HOOK GENERATION
+
+Mọi kit sinh ra được tự động tích hợp:
+1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse.
+2. **Specialist Boundary Enforcement (Dành cho Suite)**: Chặn đứng hành vi ghi đè file ngoài domain sở hữu của từng Specialist.
+
+---
+
+## 4. SINH MANIFEST.JSON CHUẨN SSOT
 
 Khai báo đầy đủ trường `topology`, `role`, `delegatesTo`, `ownedSkills`, `memoryScope`:
 
