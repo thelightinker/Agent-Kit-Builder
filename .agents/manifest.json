@@ -10,9 +10,9 @@
           "kit-assembling": "^2.3.0",
           "kit-evolving": "^2.3.0",
           "kit-exporting": "^2.0.0",
-          "kit-verifying": "^2.2.0",
+          "kit-verifying": "^2.3.0",
           "prompt-compiling": "^2.2.0",
-          "skill-architecting": "^2.2.0"
+          "skill-architecting": "^2.3.0"
         }
       },
       "tools": [
@@ -38,7 +38,7 @@
       "path": "rules/core-guardrails.md",
       "priority": "P0",
       "trigger": "always_on",
-      "version": "2.0.0"
+      "version": "1.0.0"
     },
     "dynamic-routing": {
       "path": "rules/dynamic-routing.md",
@@ -112,7 +112,7 @@
       ],
       "path": "skills/kit-verifying/SKILL.md",
       "scripts": [],
-      "version": "2.2.0"
+      "version": "2.3.0"
     },
     "prompt-compiling": {
       "allowedTools": [
@@ -138,7 +138,7 @@
       ],
       "path": "skills/skill-architecting/SKILL.md",
       "scripts": [],
-      "version": "2.2.0"
+      "version": "2.3.0"
     }
   },
   "support": {

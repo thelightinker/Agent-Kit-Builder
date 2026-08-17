@@ -163,6 +163,13 @@ def validate_frontmatter(
             version = data.get("version")
             if version is not None and not is_semver(str(version)):
                 add(findings, "error", "frontmatter.invalid_semver", rel, f"Invalid SemVer: {version!r}")
+            if kind == "skill":
+                lines = path.read_text("utf-8", errors="replace").splitlines()
+                if len(lines) > 500:
+                    add(findings, "error", "skill.progressive_disclosure_exceeded", rel, f"SKILL.md exceeds 500 lines ({len(lines)} lines); move details to references/")
+                desc = str(data.get("description", "")).strip()
+                if len(desc) < 20:
+                    add(findings, "warning", "skill.description_too_short", rel, "Skill description is very short; Anthropic Skill Creator requires pushy trigger context")
             registries[kind][expected] = data
     return agents, skills, workflows, rules
 
