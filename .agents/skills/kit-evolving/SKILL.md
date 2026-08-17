@@ -2,16 +2,16 @@
 name: kit-evolving
 description: >
   Phân tích sai lệch (Gap Analysis), thực hiện Delta Patch khi refactor Agent Kit,
-  và quản lý bộ nhớ dài hạn (memory/) cho design patterns và golden examples.
+  quản lý bộ nhớ dài hạn (memory/) và vận hành Self-Evolving Quality Loop có Human Approval Gate.
   Kích hoạt khi nâng cấp kit có sẵn hoặc lưu trữ bài học kinh nghiệm.
 when_to_use: "Khi cần sửa đổi, nâng cấp (refactor) Agent Kit hoặc quản lý bộ nhớ MEMORY.md."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.0.0
+version: 2.3.0
 ---
 
 # Kit Evolving
 
-Kỹ năng tiến hóa và nâng cấp Agent Kit theo thời gian, bảo đảm tính tương thích ngược và tích lũy tri thức dài hạn.
+Kỹ năng tiến hóa và nâng cấp Agent Kit theo thời gian, bảo đảm tính tương thích ngược, tích lũy tri thức dài hạn và vận hành vòng lặp tự tiến hóa có kiểm soát.
 
 ---
 
@@ -24,33 +24,26 @@ Kỹ năng tiến hóa và nâng cấp Agent Kit theo thời gian, bảo đảm 
 └─────────────────┘     └──────────────────┘     └─────────────────┘     └────────────────┘
 ```
 
-### Nguyên tắc Delta Patch:
-- **Không đập đi xây lại**: Chỉ sửa đúng phần cần thay đổi, bảo vệ các logic đang hoạt động ổn định.
-- **Tương thích ngược (Backward Compatibility)**: Đảm bảo các component không sửa đổi vẫn hoạt động bình thường.
-- **Phiên bản SemVer**:
-  - `PATCH` (1.0.0 $\rightarrow$ 1.0.1): Sửa câu chữ prompt, sửa lỗi cú pháp.
-  - `MINOR` (1.0.0 $\rightarrow$ 1.1.0): Thêm skill mới, bổ sung tính năng không phá vỡ cấu trúc cũ.
-  - `MAJOR` (1.0.0 $\rightarrow$ 2.0.0): Thay đổi hoàn toàn kiến trúc hoặc I/O schema.
+---
+
+## 2. QUẢN LÝ BỘ NHỚ SCOPED MEMORY
+
+- `MEMORY.md`: Chỉ mục chính ($\le 200$ dòng).
+- `shared/`: Quy ước chung và Brand voice.
+- `domains/`: Tri thức chuyên biệt của từng Specialist.
+- `runs/`: Lưu trữ tiến độ và Golden Runs.
 
 ---
 
-## 2. QUẢN LÝ BỘ NHỚ DÀI HẠN (MEMORY MANAGEMENT)
+## 3. SELF-EVOLVING QUALITY LOOP & HUMAN APPROVAL GATE
 
-Cấu trúc bộ nhớ lưu trữ tại `memory/`:
+Output Kits được trang bị vòng lặp tự học có kiểm soát (Controlled Self-Improvement):
 
-```
-memory/
-├── MEMORY.md                 # Chỉ mục chính (Index file, <= 200 dòng)
-├── project-conventions.md    # Quy ước của dự án
-├── user-preferences.md       # Sở thích và thói quen của người dùng
-├── tech-decisions.md         # Các quyết định kiến trúc đã thống nhất
-├── feedback-history.md       # Lịch sử phản hồi và bài học kinh nghiệm
-├── kit-patterns.md           # Các mẫu thiết kế thành công
-└── golden-examples/          # Các Agent Kit mẫu đạt 5 sao
-```
-
-### Quy tắc cập nhật Memory:
-1. `MEMORY.md` là file chỉ mục nạp đầu tiên, không bao giờ vượt quá 200 dòng.
-2. Khi có bài học mới hoặc kit mẫu đạt 5 sao:
-   - Tạo file chi tiết tại `memory/golden-examples/<kit-name>.md` hoặc bổ sung vào `memory/kit-patterns.md`.
-   - Cập nhật 1 dòng tóm tắt và liên kết tương đối trong `MEMORY.md`.
+1. **Embedded Evals (`evals/eval_suite.json`)**:
+   - Cho phép người dùng chạy kiểm thử hồi quy tức thì (`python scripts/eval_runner.py`).
+2. **Golden Run Harvester (`memory/runs/golden-runs.json`)**:
+   - Ghi nhận các quỹ đạo thực thi đạt điểm cao (DoD 100%).
+3. **⛔ HUMAN / AUDITOR APPROVAL GATE (BẮT BUỘC)**:
+   - **TUYỆT ĐỐI KHÔNG** tự động biến `golden-runs.json` hoặc raw feedback thành Rule/Knowledge mới.
+   - Trạng thái mặc định: `"gateStatus": "pending_review"`.
+   - **CHỈ KHI** có sự phê duyệt rõ ràng từ Human hoặc Auditor (`"gateStatus": "approved_golden"`, `"promotionAllowed": true`) thì tri thức mới được chưng cất và tích hợp vào `memory/domains/` hoặc `rules/`.

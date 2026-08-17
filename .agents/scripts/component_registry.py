@@ -160,10 +160,19 @@ def build_manifest(root: Path) -> dict[str, Any]:
             "trigger": str(data.get("trigger", "")),
         }
 
+    orchestrator_name = next((name for name, data in agents.items() if data.get("delegatesTo")), None)
+    topology_type = "hierarchical-multi-agent" if orchestrator_name else ("standard" if agents else "micro")
+    topology = {
+        "type": topology_type,
+        "spectrumPosition": "full-suite" if orchestrator_name and len(agents) > 2 else ("mini-suite" if orchestrator_name else "standard"),
+        "orchestrator": orchestrator_name,
+    }
+
     return {
         "$schema": "schemas/manifest.schema.json",
         "schemaVersion": "1.0.0",
         "kitVersion": kit_version,
+        "topology": topology,
         "contracts": {
             "componentApi": "1.0.0",
             "memorySchema": "1.0.0",
