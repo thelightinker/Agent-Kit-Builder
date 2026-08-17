@@ -119,13 +119,21 @@ def build_manifest(root: Path) -> dict[str, Any]:
         for skill_name in normalize_list(data.get("skills")):
             skill_version = str(skills.get(skill_name, {}).get("version", "0.0.0"))
             dependencies[skill_name] = compatible_range(skill_version) if is_semver(skill_version) else skill_version
-        agents[name] = {
+        
+        delegates_to = normalize_list(data.get("delegates_to") or data.get("delegatesTo"))
+        agent_data: dict[str, Any] = {
             "path": _relative(root, path),
             "version": str(data.get("version", "")),
             "model": str(data.get("model", "inherit")),
             "tools": normalize_list(data.get("tools")),
             "requires": {"skills": dependencies},
         }
+        if delegates_to:
+            agent_data["delegatesTo"] = delegates_to
+            agent_data["role"] = "master-orchestrator"
+        if data.get("domain"):
+            agent_data["domain"] = str(data["domain"])
+        agents[name] = agent_data
 
     workflows: dict[str, dict[str, Any]] = {}
     for path in sorted((root / "workflows").glob("*.md")):

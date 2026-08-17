@@ -41,6 +41,8 @@ def render(root: Path) -> str:
         for skill in data["requires"]["skills"]:
             lines.append(f"  {node_id('W', workflow)} -.-> {node_id('S', skill)}")
     for agent, data in manifest["agents"].items():
+        for target in data.get("delegatesTo", []):
+            lines.append(f"  {node_id('A', agent)} ==> {node_id('A', target)}")
         for skill in data["requires"]["skills"]:
             lines.append(f"  {node_id('A', agent)} --> {node_id('S', skill)}")
     lines.extend(["```", "", "## Contracts", ""])
