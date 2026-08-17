@@ -1,0 +1,47 @@
+{
+  "$schema": "schemas/manifest.schema.json",
+  "schemaVersion": "1.0.0",
+  "kitVersion": "2026.1.0",
+  "name": "{KIT_NAME}",
+  "description": "{KIT_DESCRIPTION}",
+  "metadata": {
+    "author": "{AUTHOR_OR_TEAM}",
+    "domain": "{TARGET_DOMAIN}",
+    "tags": ["{TAG_1}", "{TAG_2}"]
+  },
+  "contracts": {
+    "default_agent": "{AGENT_NAME}",
+    "entrypoint_workflow": "{WORKFLOW_NAME}"
+  },
+  "agents": {
+    "{AGENT_NAME}": {
+      "path": "agent/{AGENT_NAME}.md",
+      "version": "1.0.0",
+      "model": "inherit",
+      "tools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write", "Agent"],
+      "requires": {
+        "skills": {
+          "{SKILL_NAME}": "^1.0.0"
+        }
+      }
+    }
+  },
+  "skills": {
+    "{SKILL_NAME}": {
+      "path": "skills/{SKILL_NAME}/SKILL.md",
+      "version": "1.0.0"
+    }
+  },
+  "workflows": {
+    "{WORKFLOW_NAME}": {
+      "path": "workflows/{WORKFLOW_NAME}.md",
+      "version": "1.0.0"
+    }
+  },
+  "rules": {
+    "{RULE_NAME}": {
+      "path": "rules/{RULE_NAME}.md",
+      "version": "1.0.0"
+    }
+  }
+}
