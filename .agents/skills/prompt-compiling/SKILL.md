@@ -7,12 +7,21 @@ description: >
   Luôn kích hoạt khi sinh mới hoặc refactor System Prompt.
 when_to_use: "Khi cần biên dịch, tối ưu hoặc chuẩn hóa System Prompt cho bất kỳ Agent nào."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Prompt Compiling
 
 Kỹ năng biên dịch System Prompt chuyên nghiệp, biến yêu cầu nghiệp vụ thành chỉ dẫn tối ưu cho LLM với tỷ lệ đúng ngay lần đầu (Right-First-Time) cao nhất.
+
+---
+
+## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
+
+Khi cần tra cứu kỹ thuật biên dịch prompt nâng cao:
+- **3-Tier Autonomy Gate, Anti-Defaults & Reality Check**: Đọc [agent-design-patterns.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/agent-design-patterns.md) để thiết lập ranh giới tự chủ và tư duy đặc trưng domain.
+- **Lead Orchestrator Architecture (Suite Kits)**: Đọc [multi-agent-orchestration.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/multi-agent-orchestration.md) khi tạo System Prompt cho Agent Điều phối.
+- **Mẫu Scaffolding System Prompt**: Dùng [templates/agent-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/agent-template.md) hoặc [templates/orchestrator-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/orchestrator-template.md).
 
 ---
 

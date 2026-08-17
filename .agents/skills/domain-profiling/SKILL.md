@@ -7,12 +7,21 @@ description: >
   cấu phần tối thiểu. Luôn kích hoạt khi bắt đầu tạo kit mới hoặc đánh giá lại domain.
 when_to_use: "Khi cần phân tích nghiệp vụ, hành động cốt lõi và đòn bẩy cho Agent Kit mới hoặc refactor."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Domain Profiling
 
 Kỹ năng phân tích chiều sâu miền nghiệp vụ (domain) để xây dựng nền tảng vững chắc cho Agent Kit, loại bỏ phỏng đoán và ngăn chặn over-engineering ngay từ đầu.
+
+---
+
+## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
+
+Khi cần tra cứu chuyên sâu trong quá trình phân tích:
+- **6 Lăng kính Thiết kế & Đòn bẩy ROI**: Đọc [outcome-lenses.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/outcome-lenses.md) để đánh giá Token Efficiency, Adaptive Flexibility, Reliable Performance...
+- **Thư viện 12+ AI Failure Modes**: Đọc [failure-modes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/failure-modes.md) để tra cứu lỗi đặc trưng theo domain.
+- **Mẫu Phân tích Domain Thực tế**: Đọc [domains/README.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/domains/README.md) khi cần mẫu tham chiếu (Book writing, Business, Research, Software).
 
 ---
 
@@ -45,7 +54,7 @@ Trả lời 3 câu hỏi cốt lõi — độc lập cho từng agent cần xây
 
 ## 3. DỰ ĐOÁN FAILURE MODES
 
-Dự đoán 3-5 lỗi sai nghiêm trọng nhất mà mô hình AI thường mắc phải trong domain này:
+Dự đoán 3-5 lỗi sai nghiêm trọng nhất mà mô hình AI thường mắc phải trong domain này (tham chiếu [failure-modes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/failure-modes.md)):
 
 ```markdown
 | Failure Mode | Xác suất | Mức độ | Cơ chế phòng ngừa cụ thể |

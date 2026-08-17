@@ -6,12 +6,21 @@ description: >
   và L3 Adversarial Stress Testing. Kích hoạt khi kiểm thử, chấm điểm hoặc nghiệm thu Agent Kit.
 when_to_use: "Khi cần kiểm định chất lượng, chạy test suite hoặc chấm điểm Agent Kit mới/refactor."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Kit Verifying
 
 Kỹ năng kiểm định chất lượng toàn diện cho Agent Kit, kết hợp giữa công cụ tự động hóa tất định (Deterministic) và đánh giá ngữ nghĩa thích ứng (Adaptive Evaluation).
+
+---
+
+## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
+
+Khi thực hiện kiểm thử và đánh giá chuyên sâu:
+- **Danh mục Lỗi AI để Stress-test L3**: Đọc [failure-modes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/failure-modes.md) để thử thách các kẽ hở DoD và Hard Constraints.
+- **Quy chuẩn Xử lý Lỗi & Escalation**: Đọc [workflows/error-resilience.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflows/error-resilience.md) để kiểm tra cơ chế dừng và hỏi người dùng.
+- **Tiêu chuẩn Hợp đồng Kỹ thuật**: Đọc [component-contracts.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/component-contracts.md) để đối soát frontmatter và ACI tool.
 
 ---
 
