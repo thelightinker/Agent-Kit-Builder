@@ -6,13 +6,13 @@
       "path": "agent/kit-architect.md",
       "requires": {
         "skills": {
-          "domain-profiling": "^2.0.0",
+          "domain-profiling": "^2.1.0",
           "kit-assembling": "^2.0.0",
           "kit-evolving": "^2.0.0",
           "kit-exporting": "^2.0.0",
-          "kit-verifying": "^2.0.0",
-          "prompt-compiling": "^2.0.0",
-          "skill-architecting": "^2.0.0"
+          "kit-verifying": "^2.1.0",
+          "prompt-compiling": "^2.1.0",
+          "skill-architecting": "^2.1.0"
         }
       },
       "tools": [
@@ -60,7 +60,7 @@
       ],
       "path": "skills/domain-profiling/SKILL.md",
       "scripts": [],
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "kit-assembling": {
       "allowedTools": [
@@ -112,7 +112,7 @@
       ],
       "path": "skills/kit-verifying/SKILL.md",
       "scripts": [],
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "prompt-compiling": {
       "allowedTools": [
@@ -125,7 +125,7 @@
       ],
       "path": "skills/prompt-compiling/SKILL.md",
       "scripts": [],
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "skill-architecting": {
       "allowedTools": [
@@ -138,7 +138,7 @@
       ],
       "path": "skills/skill-architecting/SKILL.md",
       "scripts": [],
-      "version": "2.0.0"
+      "version": "2.1.0"
     }
   },
   "support": {
