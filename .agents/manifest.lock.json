@@ -26,7 +26,7 @@
     "schemas/memory.schema.json": "8592059e9efac4dda61a425c6dc8872aeb6d6ad24f389c16fe8cd010382bb53b",
     "scripts/README.md": "6f1dc942a1b810d4ec8c4b1c60ab39b8d26488c0d1e77dd5e1a5720c58df355c",
     "scripts/audit_kit.py": "6bb94cf9acaaa1594da02c18c0b381669d6354f3f474f35ed6b506b31b14814b",
-    "scripts/component_registry.py": "9faeaed764b9a32a9a7ca5a60109e5db782efc51863baa997aa6e6a03b89b99a",
+    "scripts/component_registry.py": "e884e06454bbcff860e6c087125befb026084b14ff6f8c0715bcf47455cfaba8",
     "scripts/dependency_graph.py": "324f4a55d7aa82b8e4caf44c36816836e03bad0e5ee20ff26ae20c209e1041cf",
     "scripts/eval_runner.py": "e4241d165e8d3548e34966dfc9bd891ab96f2865584e557e7d2a3013ee06271a",
     "scripts/export_kit.py": "53817e5c10a7d4a1145c393ef5b6950f0444a99742365f3713df9328f38dee86",
@@ -34,8 +34,8 @@
     "scripts/tests/test_toolkit.py": "acb0b206b91578e67168e91c0b8c532e476298f5791f308d8b63b9d6d4de6cd1",
     "scripts/validate_kit.py": "f0cc6977634d8005435472f5df63a0bb6573fc0e1ae4750762ebbe67edd8d319",
     "skills/domain-profiling/SKILL.md": "f97ad4285e35a014e1b6d427d0f55c448186c7cf6b6ae032ed41394fb1ba9aa7",
-    "skills/kit-assembling/SKILL.md": "a547036f2bfcdaa7b410f449fa5b562c3f83a94c2eb69e5d073070599cacd4d9",
-    "skills/kit-evolving/SKILL.md": "000c0ece3e2745e774fad2bedaa7ecef8e7af741275c41fd178165d1a467cec6",
+    "skills/kit-assembling/SKILL.md": "fbe826cd59f27b9b6cca37cfff0e01ebcec858bbf987c869bc9c437f3bed4234",
+    "skills/kit-evolving/SKILL.md": "2c856ae937ff9b92a6ba952f796df566ba1f383d6e39636f57b6f3b3b6a1bdf7",
     "skills/kit-exporting/SKILL.md": "a741675d5d43b3b45c71850712073cdcd5c2090362239d79643fd5854e6d097e",
     "skills/kit-verifying/SKILL.md": "a10413d1c925538f90fd82283b6577f38f7087a64d237a4a7879f18a0d960bc2",
     "skills/prompt-compiling/SKILL.md": "c3f700a2220c05f1a6481e7f0245d6b1a49c68d8b87159a3b6e02db8363ae0f5",
@@ -46,6 +46,6 @@
     "workflows/validate-kit.md": "1b302b697c263d2d0a02bc8ee14b3f5b741c4ba101805875f76aa418b8c39d22"
   },
   "kitVersion": "2026.8.17",
-  "manifestSha256": "0009527f0d36a5ae29de5709579ec5945b2fde212027ee7f657574556cbcdd3e",
+  "manifestSha256": "bdc7bb73e453367455cee940d84855761358486f3272edd490fa2d2a0fa565cd",
   "schemaVersion": "1.0.0"
 }
