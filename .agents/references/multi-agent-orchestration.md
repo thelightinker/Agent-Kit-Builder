@@ -1,38 +1,68 @@
 # Multi-Agent Orchestration & Suite Architecture
 
-> Cẩm nang thiết kế và điều phối hệ thống nhiều Agent (Suite Kits / Multi-Agent Systems) — chuẩn hóa Lead Orchestrator Protocol và cơ chế phân rã nhiệm vụ.
+> Cẩm nang thiết kế và điều phối hệ thống Suite Kit phân cấp (Master Orchestrator + Specialist Agents + Domain Skills + Workflows + Scoped Memory) — lấy cảm hứng từ triết lý `vudovn/ag-kit`.
 
 ---
 
-## 1. VAI TRÒ CỦA LEAD ORCHESTRATOR
+## 1. MÔ HÌNH PHÂN CẤP SUITE HIERARCHY
 
-Trong hệ thống Suite Kit có 2+ agent chuyên biệt, **1 Lead Orchestrator duy nhất** giữ quyền kiểm soát:
-1. **Pre-flight Check**: Kiểm tra môi trường và file kế hoạch trước khi phân rã task.
-2. **Socratic Gate**: Phân loại loại dự án, hỏi làm rõ từ 1-3 câu nếu yêu cầu mơ hồ; nếu rõ ràng thì hành động ngay.
-3. **Domain Boundary Enforcement**: Ngăn chặn worker can thiệp chéo sang vùng trách nhiệm của agent khác.
-4. **Synthesis & Context Compression**: Tổng hợp báo cáo cuối cùng từ các worker mà không làm phình context.
+Trong một hệ thống Suite Kit đa domain:
+
+```
+                            [ USER ]
+                               │
+                               ▼
+                      Master Orchestrator
+                      (Routing, Socratic, Synthesis)
+                               │
+            ┌──────────────────┴──────────────────┐
+            ▼                                     ▼
+     Specialist Agent A                    Specialist Agent B
+     (Domain SEO Specialist)               (Domain Copy Specialist)
+            │                                     │
+     ┌──────┴──────┐                       ┌──────┴──────┐
+     ▼             ▼                       ▼             ▼
+  Skill A1      Skill A2                Skill B1      Skill B2
+ (seo-audit)   (ai-seo)               (copywriting)   (emails)
+```
 
 ---
 
-## 2. STRICT DOMAIN BOUNDARY MATRIX & FILE OWNERSHIP
+## 2. NGUYÊN TẮC QUAN TRỌNG: OWNERSHIP $\ne$ EXECUTION
 
-Mọi Suite Kit phải định nghĩa rõ ma trận phân quyền:
+| Khía cạnh | Quyền Sở hữu Năng lực (Ownership) | Quy trình Thực thi (Execution) |
+|:---|:---|:---|
+| **Chủ thể** | **Specialist Agent** | **Workflow / Orchestrator** |
+| **Bản chất** | Tĩnh (Static Authority) | Động (Dynamic State Machine) |
+| **Quy tắc** | Specialist sở hữu domain & các kỹ năng trực thuộc (`ownedSkills`). Specialist là đơn vị ra quyết định chất lượng trong domain. | 1 Workflow có thể yêu cầu **nhiều Specialist phối hợp liên hoàn**. Orchestrator theo dõi chuyển tiếp State. |
 
-| Agent | Vùng trách nhiệm (Scope) | Quyền sở hữu File (Ownership Pattern) | Điều TUYỆT ĐỐI KHÔNG LÀM |
-|:---|:---|:---|:---|
-| **Lead Orchestrator** | Điều phối, giao việc, tổng hợp | `manifest.json`, `orchestrator.md` | Không tự viết code chi tiết thay worker |
-| **Frontend Worker** | UI/UX, components, styling | `src/components/**`, `src/styles/**` | Không sửa đổi backend DB schema |
-| **Backend Worker** | API, database, business logic | `src/api/**`, `src/db/**` | Không can thiệp vào CSS/frontend layouts |
-| **Test Engineer** | Unit test, integration, E2E | `tests/**`, `*.spec.ts` | Không tự sửa production code nếu chưa báo cáo |
-
-*Giao thức chuyển giao:* Nếu worker phát hiện task thuộc domain của agent khác ➔ Dừng lại và yêu cầu Orchestrator chuyển tiếp.
+*Chống bẫy:* Specialist Agent không phải là một "vỏ bọc 1 skill". Nó là một Agent thật sở hữu cụm năng lực chuyên môn.
 
 ---
 
-## 3. NATIVE AGENT INVOCATION: FORK VS SPAWN
+## 3. MASTER ORCHESTRATOR PROTOCOL (5 BƯỚC)
 
-- **Fork Semantics**: Kế thừa ngữ cảnh hiện tại. Phù hợp cho Research song song hoặc lấy góc nhìn độc lập thứ 2.
-- **Spawn Semantics**: Khởi tạo Agent mới hoàn toàn với System Prompt chuyên biệt. Phù hợp cho việc thực thi sâu theo domain.
-- **Quy tắc Vàng chỉ đạo Worker (Worker Prompt Golden Rule)**:
-  - ❌ *Sai:* "Hãy kiểm tra và sửa lỗi auth giúp tôi."
-  - ✅ *Đúng:* "Sửa lỗi ở file `src/auth/jwt.ts` dòng 45: kiểm tra hết hạn dùng `<` thay vì `<=`. Đổi từ `if (now < expiry)` thành `if (now <= expiry)`."
+1. **Pre-flight & Socratic Check**: Kiểm tra input; nếu mơ hồ, hỏi tối đa 1-3 câu trọng tâm; nếu rõ ràng, phân rã công việc ngay.
+2. **Task Decomposition**: Tách mục tiêu lớn thành các sub-tasks độc lập theo từng domain.
+3. **Specialist Dispatching**: Giao việc cho đúng Specialist Agent kèm directive cụ thể (file path, line number, scope).
+4. **Boundary Enforcement**: Nghiêm cấm worker sửa chéo file thuộc phạm vi của agent khác.
+5. **Synthesis & Output Delivery**: Gom kết quả từ các worker, giải quyết xung đột (nếu có) và xuất báo cáo tổng hợp.
+
+---
+
+## 4. KIẾN TRÚC BỘ NHỚ PHÂN TẦNG (SCOPED MEMORY)
+
+Tránh biến bộ nhớ thành "bãi rác context chung", chia thành 3 tầng:
+
+```
+memory/
+├── MEMORY.md                         # File chỉ mục chính (SSOT, ≤ 200 dòng)
+├── shared/                           # [SHARED SCOPE] Tri thức nền tảng toàn bộ Suite
+│   ├── brand-guidelines.md           # (Mọi Specialist đều được đọc)
+│   └── project-conventions.md
+├── domains/                          # [DOMAIN SCOPE] Tri thức chuyên sâu của từng Specialist
+│   ├── seo-playbook.md               # (Chỉ SEO Specialist đọc)
+│   └── copy-frameworks.md            # (Chỉ Copy Specialist đọc)
+└── runs/                             # [SESSION/RUN SCOPE] Trạng thái thực thi đa-phiên
+    └── features-tracker.json         # (DoD theo dõi tiến độ ngoài context window)
+```

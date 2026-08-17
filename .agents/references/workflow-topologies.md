@@ -16,22 +16,20 @@
 
 ---
 
-## 2. THANG ĐỘ PHỨC TẠP (COMPLEXITY LADDER)
+## 2. PHỔ KIẾN TRÚC LIÊN TỤC (CONTINUOUS ARCHITECTURE SPECTRUM)
 
-Chỉ leo thang độ phức tạp khi có bằng chứng thực tế chứng minh cải thiện outcome:
+Không ép kiến trúc vào 3 hộp cứng nhắc, Builder nhìn topology như một **dải phổ liên tục (Spectrum)**:
 
 ```
-[1] Augmented LLM (Đơn call + JIT Retrieval + Tools) ➔ Đủ cho >60% tác vụ
-      │ (nếu chưa đủ)
-      ▼
-[2] Static Workflow (Prompt Chaining / Routing / Parallelization)
-      │ (nếu path không đoán trước được ở compile-time)
-      ▼
-[3] Orchestrator-Workers (Phân rã sub-task động lúc runtime)
-      │ (nếu tác vụ hoàn toàn mở, cần tương tác môi trường)
-      ▼
-[4] Autonomous Agent Loop (Vòng lặp tự trị có ground-truth feedback + human gate)
+[ MICRO PROMPT ] ──────► [ STANDARD AGENT ] ──────► [ HYBRID / MINI-SUITE ] ──────► [ FULL SUITE HIERARCHY ]
+  1-shot, stateless       1 Agent + 1–4 Skills       1 Orchestrator + 2 Specialists      1 Master Orchestrator
+  0 thư mục               1 Workflow tuyến tính       + Shared Memory                    + 3–7 Specialists
+                                                                                         + Multi-workflows + Scoped Memory
 ```
+
+- **0 Specialist (Single Agent)**: Đủ cho 1 domain nghiệp vụ tập trung.
+- **2 Specialists (Mini-Suite)**: Khi có 2 mảng nghiệp vụ đối trọng (ví dụ: Writer & Auditor).
+- **3–7 Specialists (Full Suite)**: Khi hệ thống bao gồm nhiều mảng chức năng độc lập (ví dụ: Growth Suite gồm SEO, Copy, Ads, CRO, Analytics).
 
 ---
 
@@ -48,39 +46,21 @@ Chỉ leo thang độ phức tạp khi có bằng chứng thực tế chứng mi
 
 ---
 
-## 4. CÂY QUYẾT ĐỊNH CHỌN TOPOLOGY
+## 4. THE RIGHT ALTITUDE TEST (TIÊU CHUẨN RA QUYẾT ĐỊNH TOPOLOGY)
 
-```
-Trả lời được bằng 1 LLM call + context tốt?
-  ├─ CÓ ➔ Augmented LLM (DỪNG)
-  └─ KHÔNG ↓
-Path xử lý cố định, biết trước từng bước ở compile-time?
-  ├─ CÓ:
-  │   ├─ Cần phân loại trước khi xử lý? ➔ Routing
-  │   ├─ Sub-tasks chạy độc lập được?   ➔ Parallelization
-  │   └─ Chuỗi bước tuần tự?            ➔ Prompt Chaining
-  └─ KHÔNG ↓
-Có tiêu chí đánh giá rõ ràng, đáng lặp lại để tối ưu?
-  ├─ CÓ ➔ Evaluator-Optimizer
-  └─ KHÔNG ↓
-Độ phức tạp chỉ biết được lúc runtime?
-  ├─ CÓ ➔ Orchestrator-Workers (Đọc Scale-Out Trigger bên dưới)
-  └─ KHÔNG, tác vụ hoàn toàn mở ➔ Autonomous Agent Loop
-```
+Quy tắc cốt lõi: **Chỉ leo thang sang Multi-Agent Suite khi chi phí điều phối nhỏ hơn chi phí context/nhận thức được tiết kiệm:**
 
----
+$$\mathbf{\text{Coordination Cost (Handoff Latency + Routing)}} < \mathbf{\text{Context/Cognitive Cost Saved (Attention Rot + Tool Confusion)}}$$
 
-## 5. SCALE-OUT TRIGGER: 1 ORCHESTRATOR VS TÁCH SUB-AGENTS
-
-Mặc định kiến trúc tối ưu: **1 Orchestrator + Cognitive Profiles + Focused Skills (Lazy Load) + Deterministic Scripts**.
-
-Chỉ tách thành các Sub-Agent độc lập khi thỏa mãn **$\ge 1$ trong 4 điều kiện cô lập vận hành (Operational Isolation Triggers)**:
-
-| Điều kiện Kích hoạt Tách Agent | Biểu hiện Kỹ thuật | Hành động Kiến trúc |
-|:---|:---|:---|
-| **1. Permission Boundary (Quyền hạn)** | Agent cần bị CẤM ghi file hoặc CẤM chạy Bash (ví dụ: Read-only Auditor). | Tách thành Sub-Agent riêng với cấu hình `tools:` giới hạn nghiêm ngặt. |
-| **2. Parallel Execution (Chạy song song)** | Cần chạy $\ge 2$ luồng nghiên cứu/thực thi độc lập cùng lúc không phụ thuộc nhau. | Tách thành các Worker Agents độc lập (Breadth-First Search). |
-| **3. Context Isolation (Chống Context Rot)** | Tác vụ dài qua nhiều phiên (> 30 turns), attention budget cạn kiệt làm agent quên quy tắc. | Tách thành Initializer Agent (tạo feature list) và Coding Agent (reset context mỗi session). |
-| **4. Lifecycle & Memory Độc lập** | Mỗi vai trò cần lưu trữ memory, conventions hoặc state riêng biệt không trộn lẫn. | Tách thành Agent Suite với thư mục `memory/` và `manifest.json` độc lập. |
-
-*Cảnh báo Chống Over-Engineering:* Nếu không có nhu cầu về 4 điều kiện trên, việc chia nhỏ thành nhiều Agent chỉ tạo thêm độ trễ handoff và rủi ro context fragmentation.
+### 3 Bài kiểm tra Cân bằng (Balance Checks):
+1. **Tính kết nối Dữ liệu (Coupling Check)**:
+   - Các sub-tasks có phụ thuộc logic/dữ liệu cực chặt (Tight Coupling)?
+   - ➔ **GIỮ SINGLE AGENT**: 1 context window duy nhất đảm bảo tính nhất quán (tránh vỡ context theo Cognition Principle).
+2. **Tính cô lập Vận hành (Operational Isolation Check)**:
+   - Có xung đột quyền hạn công cụ (ví dụ: Dev Write vs Security Read-Only)?
+   - Có nhu cầu chạy song song độc lập (Breadth-First Search)?
+   - Có tác vụ dài hạn cần Session Reset để chống Attention Rot?
+   - ➔ **TÁCH SPECIALIST AGENT**: Phân định ranh giới bảo mật & context an toàn.
+3. **Độ phức tạp Nhận thức (Cognitive Overhead Check)**:
+   - Nếu nhồi toàn bộ 15 skills + 5 domains vào 1 prompt, LLM có bị quá tải và nhầm lẫn công cụ không?
+   - ➔ **NẾU CÓ: TÁCH SPECIALIST CLUSTERS**: Gom nhóm skills theo domain sở hữu.
