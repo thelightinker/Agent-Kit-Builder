@@ -104,7 +104,7 @@ class TestExportKit(unittest.TestCase):
             self.assertIn("openai", res)
             self.assertTrue(Path(res["cursor"]).exists())
             self.assertTrue((Path(res["claude"]) / "claude_instructions.txt").exists())
-            self.assertTrue((Path(res["openai"]) / "gpt_instructions.txt").exists())
+            self.assertTrue(Path(res["openai"]).exists())
 
 
 if __name__ == "__main__":

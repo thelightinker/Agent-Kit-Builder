@@ -1,52 +1,18 @@
 {
   "$schema": "schemas/manifest.schema.json",
   "agents": {
-    "domain-analyst": {
+    "kit-architect": {
       "model": "inherit",
-      "path": "agent/domain-analyst.md",
+      "path": "agent/kit-architect.md",
       "requires": {
         "skills": {
-          "analyzing-domain-verbs": "^1.0.0",
-          "discovering-enhancements": "^1.0.0",
-          "domain-analysis": "^1.0.0"
-        }
-      },
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Edit",
-        "Write"
-      ],
-      "version": "1.0.0"
-    },
-    "kit-generator": {
-      "model": "inherit",
-      "path": "agent/kit-generator.md",
-      "requires": {
-        "skills": {
-          "building-component-specs": "^1.2.0",
-          "compiling-prompts": "^1.0.0",
-          "prompt-engineering": "^1.0.0"
-        }
-      },
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Edit",
-        "Write"
-      ],
-      "version": "1.0.0"
-    },
-    "master-compiler": {
-      "model": "inherit",
-      "path": "agent/master-compiler.md",
-      "requires": {
-        "skills": {
-          "guided-intaking": "^1.0.0",
-          "kit-assembly": "^1.2.0",
-          "tiering-complexity": "^1.0.0"
+          "domain-profiling": "^2.0.0",
+          "kit-assembling": "^2.0.0",
+          "kit-evolving": "^2.0.0",
+          "kit-exporting": "^2.0.0",
+          "kit-verifying": "^2.0.0",
+          "prompt-compiling": "^2.0.0",
+          "skill-architecting": "^2.0.0"
         }
       },
       "tools": [
@@ -57,45 +23,7 @@
         "Edit",
         "Write"
       ],
-      "version": "1.0.0"
-    },
-    "quality-auditor": {
-      "model": "inherit",
-      "path": "agent/quality-auditor.md",
-      "requires": {
-        "skills": {
-          "adversarial-evaluating": "^1.0.0",
-          "auditing-quality-gates": "^1.0.0",
-          "quality-assurance": "^1.3.0"
-        }
-      },
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Edit",
-        "Write"
-      ],
-      "version": "1.0.0"
-    },
-    "skill-architect": {
-      "model": "inherit",
-      "path": "agent/skill-architect.md",
-      "requires": {
-        "skills": {
-          "optimizing-progressive-disclosure": "^1.0.0",
-          "scaffolding-skills": "^1.0.0",
-          "skill-crafting": "^1.0.0"
-        }
-      },
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Edit",
-        "Write"
-      ],
-      "version": "1.0.0"
+      "version": "2.0.0"
     }
   },
   "contracts": {
@@ -104,48 +32,24 @@
     "rulesApi": "1.0.0",
     "workflowApi": "1.0.0"
   },
-  "kitVersion": "2026.7.20",
+  "kitVersion": "2026.8.17",
   "rules": {
-    "GEMINI": {
-      "path": "rules/GEMINI.md",
+    "core-guardrails": {
+      "path": "rules/core-guardrails.md",
       "priority": "P0",
       "trigger": "always_on",
-      "version": "1.4.0"
+      "version": "2.0.0"
     },
-    "core-protocol": {
-      "path": "rules/core-protocol.md",
-      "priority": "P0",
+    "dynamic-routing": {
+      "path": "rules/dynamic-routing.md",
+      "priority": "P1",
       "trigger": "always_on",
-      "version": "1.0.0"
-    },
-    "file-standards": {
-      "path": "rules/file-standards.md",
-      "priority": "P0",
-      "trigger": "always_on",
-      "version": "1.2.0"
-    },
-    "quick-reference": {
-      "path": "rules/quick-reference.md",
-      "priority": "P2",
-      "trigger": "model_decision",
-      "version": "1.0.0"
-    },
-    "request-routing": {
-      "path": "rules/request-routing.md",
-      "priority": "P0",
-      "trigger": "always_on",
-      "version": "1.0.0"
-    },
-    "universal-rules": {
-      "path": "rules/universal-rules.md",
-      "priority": "P0",
-      "trigger": "always_on",
-      "version": "1.0.0"
+      "version": "2.0.0"
     }
   },
   "schemaVersion": "1.0.0",
   "skills": {
-    "adversarial-evaluating": {
+    "domain-profiling": {
       "allowedTools": [
         "Read",
         "Write",
@@ -154,11 +58,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/adversarial-evaluating/SKILL.md",
+      "path": "skills/domain-profiling/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
-    "analyzing-domain-verbs": {
+    "kit-assembling": {
       "allowedTools": [
         "Read",
         "Write",
@@ -167,11 +71,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/analyzing-domain-verbs/SKILL.md",
+      "path": "skills/kit-assembling/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
-    "auditing-quality-gates": {
+    "kit-evolving": {
       "allowedTools": [
         "Read",
         "Write",
@@ -180,11 +84,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/auditing-quality-gates/SKILL.md",
+      "path": "skills/kit-evolving/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
-    "building-component-specs": {
+    "kit-exporting": {
       "allowedTools": [
         "Read",
         "Write",
@@ -193,11 +97,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/building-component-specs/SKILL.md",
+      "path": "skills/kit-exporting/SKILL.md",
       "scripts": [],
-      "version": "1.2.0"
+      "version": "2.0.0"
     },
-    "compiling-prompts": {
+    "kit-verifying": {
       "allowedTools": [
         "Read",
         "Write",
@@ -206,11 +110,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/compiling-prompts/SKILL.md",
+      "path": "skills/kit-verifying/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
-    "discovering-enhancements": {
+    "prompt-compiling": {
       "allowedTools": [
         "Read",
         "Write",
@@ -219,11 +123,11 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/discovering-enhancements/SKILL.md",
+      "path": "skills/prompt-compiling/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
-    "domain-analysis": {
+    "skill-architecting": {
       "allowedTools": [
         "Read",
         "Write",
@@ -232,191 +136,9 @@
         "Grep",
         "Bash"
       ],
-      "path": "skills/domain-analysis/SKILL.md",
+      "path": "skills/skill-architecting/SKILL.md",
       "scripts": [],
-      "version": "1.0.0"
-    },
-    "eval-running": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/eval-running/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "exporting-kits": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/exporting-kits/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "guided-intaking": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/guided-intaking/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "kit-assembly": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/kit-assembly/SKILL.md",
-      "scripts": [],
-      "version": "1.2.0"
-    },
-    "kit-evolution": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/kit-evolution/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "kit-extending": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/kit-extending/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "memory-system": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/memory-system/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "optimizing-progressive-disclosure": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/optimizing-progressive-disclosure/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "output-checkpointing": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/output-checkpointing/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "prompt-engineering": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/prompt-engineering/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "quality-assurance": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/quality-assurance/SKILL.md",
-      "scripts": [],
-      "version": "1.3.0"
-    },
-    "scaffolding-skills": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/scaffolding-skills/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "skill-crafting": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/skill-crafting/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
-    "tiering-complexity": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/tiering-complexity/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
+      "version": "2.0.0"
     }
   },
   "support": {
@@ -434,17 +156,17 @@
       "path": "workflows/create-kit.md",
       "requires": {
         "agents": [
-          "master-compiler",
-          "domain-analyst",
-          "kit-generator"
+          "kit-architect"
         ],
         "skills": [
-          "domain-analysis",
-          "prompt-engineering",
-          "kit-assembly"
+          "domain-profiling",
+          "prompt-compiling",
+          "skill-architecting",
+          "kit-assembling",
+          "kit-verifying"
         ]
       },
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
     "refactor-kit": {
       "artifactOutputs": [
@@ -453,16 +175,16 @@
       "path": "workflows/refactor-kit.md",
       "requires": {
         "agents": [
-          "master-compiler",
-          "quality-auditor",
-          "kit-generator"
+          "kit-architect"
         ],
         "skills": [
-          "kit-evolution",
-          "quality-assurance"
+          "kit-evolving",
+          "kit-verifying",
+          "prompt-compiling",
+          "skill-architecting"
         ]
       },
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
     "remember-kit": {
       "artifactOutputs": [
@@ -471,13 +193,13 @@
       "path": "workflows/remember-kit.md",
       "requires": {
         "agents": [
-          "master-compiler"
+          "kit-architect"
         ],
         "skills": [
-          "memory-system"
+          "kit-evolving"
         ]
       },
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
     "validate-kit": {
       "artifactOutputs": [
@@ -486,15 +208,13 @@
       "path": "workflows/validate-kit.md",
       "requires": {
         "agents": [
-          "quality-auditor"
+          "kit-architect"
         ],
         "skills": [
-          "quality-assurance",
-          "auditing-quality-gates",
-          "adversarial-evaluating"
+          "kit-verifying"
         ]
       },
-      "version": "1.0.0"
+      "version": "2.0.0"
     }
   }
 }
