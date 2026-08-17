@@ -1,13 +1,12 @@
 ---
 name: prompt-compiling
 description: >
-  Biên dịch System Prompt chuẩn 4 khối (Vai trò, Quy trình, Hard Constraints, Format),
-  thiết lập Binary Definition of Done (DoD), Hard Constraints dạng phủ định,
-  và tối ưu hóa cho multi-target LLM (Claude XML, OpenAI Markdown, Gemini Structured).
-  Luôn kích hoạt khi sinh mới hoặc refactor System Prompt.
+  Biên dịch System Prompt cho 3 dạng Archetypes (Standalone Agent, Master Orchestrator,
+  hoặc Domain Specialist Agent), thiết lập Binary Definition of Done (DoD),
+  Hard Constraints dạng phủ định và cấu trúc chuẩn 4 khối.
 when_to_use: "Khi cần biên dịch, tối ưu hoặc chuẩn hóa System Prompt cho bất kỳ Agent nào."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Prompt Compiling
@@ -19,41 +18,37 @@ Kỹ năng biên dịch System Prompt chuyên nghiệp, biến yêu cầu nghi�
 ## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
 
 Khi cần tra cứu kỹ thuật biên dịch prompt nâng cao:
-- **3-Tier Autonomy Gate, Anti-Defaults & Reality Check**: Đọc [agent-design-patterns.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/agent-design-patterns.md) để thiết lập ranh giới tự chủ và tư duy đặc trưng domain.
-- **Lead Orchestrator Architecture (Suite Kits)**: Đọc [multi-agent-orchestration.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/multi-agent-orchestration.md) khi tạo System Prompt cho Agent Điều phối.
+- **Nguyên tắc Điều phối Suite & Specialist Authority**: Đọc [multi-agent-orchestration.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/multi-agent-orchestration.md).
+- **3-Tier Autonomy Gate, Anti-Defaults & Reality Check**: Đọc [agent-design-patterns.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/agent-design-patterns.md).
 - **Mẫu Scaffolding System Prompt**: Dùng [templates/agent-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/agent-template.md) hoặc [templates/orchestrator-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/orchestrator-template.md).
 
 ---
 
-## 1. CẤU TRÚC SYSTEM PROMPT 4 KHỐI CHUẨN
+## 1. 3 PROMPT ARCHETYPES
 
-Mọi System Prompt sinh ra phải có cấu trúc tối thiểu gồm 4 khối cốt lõi:
+Biên dịch prompt theo đúng vai trò kiến trúc:
 
-```markdown
-# [TÊN AGENT]
+### 🌟 Archetype A: Standalone Single Agent
+Dành cho Micro / Standard Kit. 1 agent duy nhất nắm toàn bộ quy trình:
+1. **Vai trò & Outcome**: 3-5 dòng tóm tắt đời thường + tiêu chí hoàn thành.
+2. **Quy trình & Action Matrix**: Các bước tuần tự.
+3. **Hard Constraints**: Ràng buộc phủ định.
+4. **Output Format**: Khung mẫu đầu ra.
 
-## TÓM TẮT CHO NGƯỜI DÙNG
-[3-5 dòng ngôn ngữ đời thường: Làm gì / Dùng khi nào / Giới hạn. Tuyệt đối 0 thuật ngữ AI.]
+### 🌟 Archetype B: Master Orchestrator
+Dành cho Suite Kit. Đóng vai trò nhạc trưởng điều phối:
+1. **Socratic & Pre-flight Check**: Làm rõ từ 1-3 câu nếu mơ hồ; nếu rõ thì phân rã task ngay.
+2. **Decomposition Protocol**: Tách task lớn thành các sub-tasks độc lập theo domain.
+3. **Specialist Routing Table**: Ma trận chọn Specialist Agent phù hợp.
+4. **Boundary Enforcement**: Cấm worker can thiệp chéo domain.
+5. **Synthesis Format**: Cấu trúc báo cáo tổng hợp bàn giao cho User.
 
----
-
-# SYSTEM PROMPT: [TÊN AGENT]
-
-## 1. VAI TRÒ & DEFINITION OF DONE (DoD)
-- **Vai trò**: Định vị chuyên gia và ranh giới trách nhiệm.
-- **Definition of Done**: Danh sách tiêu chí hoàn thành đạt chuẩn nhị phân (Pass/Fail).
-
-## 2. QUY TRÌNH XỬ LÝ & MA TRẬN HÀNH ĐỘNG
-- Quy trình tuần tự (Step 1, Step 2...).
-- Ma trận phân loại xử lý theo từng tình huống đầu vào.
-
-## 3. HARD CONSTRAINTS (RÀNG BUỘC PHỦ ĐỊNH)
-- Danh sách điều TUYỆT ĐỐI KHÔNG LÀM (Negative guidance).
-- Cụ thể, đo lường được, không mơ hồ.
-
-## 4. FORMAT ĐẦU RA (OUTPUT TEMPLATE)
-- Khung mẫu Markdown/JSON chính xác mà Agent bắt buộc dùng khi trả kết quả.
-```
+### 🌟 Archetype C: Domain Specialist Agent (Real Agent)
+Dành cho các chuyên gia trong Suite Kit:
+1. **Domain Authority**: Khẳng định quyền quyết định cao nhất trong domain được giao.
+2. **Owned Skills Authority**: Danh sách các kỹ năng thuộc quyền chỉ huy và điều kiện kích hoạt.
+3. **Strict Boundaries**: Danh mục những điều ĐƯỢC LÀM và KHÔNG ĐƯỢC LÀM (File ownership).
+4. **Handoff Trigger**: Điều kiện khi nào cần dừng lại và chuyển tiếp yêu cầu về cho Orchestrator.
 
 ---
 
@@ -70,28 +65,3 @@ Mọi tiêu chí trong DoD bắt buộc phải thỏa mãn 3 kiểm định:
 
 - Viết ở dạng **phủ định bắt buộc** ("KHÔNG BAO GIỜ...", "TUYỆT ĐỐI KHÔNG...").
 - Ngăn chặn trực diện các Failure Modes đã dự đoán ở bước Domain Profiling.
-- Ví dụ:
-  - ❌ *Sai:* "Hãy cố gắng giữ câu trả lời chính xác."
-  - ✅ *Đúng:* "KHÔNG BAO GIỜ bịa số liệu — nếu thiếu dữ kiện, ghi rõ `[CHƯA XÁC MINH]`."
-
----
-
-## 4. MULTI-TARGET TRANSPILER GUIDELINES
-
-Tùy biến định dạng prompt theo nền tảng LLM đích:
-
-| Nền tảng | Cấu trúc tối ưu | Kỹ thuật khuyến nghị |
-|:---|:---|:---|
-| **Anthropic Claude** | XML Tags (`<role>`, `<instructions>`, `<constraints>`) | CoT trong `<thinking>`, tag-based separation |
-| **OpenAI / Cursor** | Flat Markdown, Bullet points ngắn gọn | Inline `.cursorrules` format, role priming |
-| **Google Gemini** | Markdown rõ ràng với tiêu đề và bảng tra cứu | Structured steps, declarative guidelines |
-
----
-
-## 5. QUALITY SELF-CHECK
-
-Trước khi xuất prompt, kiểm tra:
-- [ ] Có phần TÓM TẮT CHO NGƯỜI DÙNG ở đầu (0 jargon)?
-- [ ] DoD có tối thiểu 3 tiêu chí nhị phân?
-- [ ] Hard Constraints có tối thiểu 2 điều phủ định cụ thể?
-- [ ] Có Output Template mẫu rõ ràng?

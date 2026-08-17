@@ -3,11 +3,11 @@ name: domain-profiling
 description: >
   Phân tích domain nghiệp vụ cho Agent Kit: trích xuất Core Verbs,
   tìm đòn bẩy 80/20 (Dynamic Enhancement Discovery), dự đoán failure modes,
-  xác định Complexity Tier (Micro/Standard/Professional/Suite) và đề xuất
-  cấu phần tối thiểu. Luôn kích hoạt khi bắt đầu tạo kit mới hoặc đánh giá lại domain.
-when_to_use: "Khi cần phân tích nghiệp vụ, hành động cốt lõi và đòn bẩy cho Agent Kit mới hoặc refactor."
+  thực hiện Right Altitude Test để chọn Topology trên Spectrum (Micro/Standard/Mini-Suite/Full Suite)
+  và đề xuất cấu phần tối thiểu. Luôn kích hoạt khi bắt đầu tạo kit mới hoặc đánh giá lại domain.
+when_to_use: "Khi cần phân tích nghiệp vụ, hành động cốt lõi, đòn bẩy và topology cho Agent Kit mới hoặc refactor."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Domain Profiling
@@ -19,9 +19,9 @@ Kỹ năng phân tích chiều sâu miền nghiệp vụ (domain) để xây d�
 ## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
 
 Khi cần tra cứu chuyên sâu trong quá trình phân tích:
+- **Cây quyết định Topology & Right Altitude Test**: Đọc [workflow-topologies.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflow-topologies.md) để cân nhắc chi phí điều phối vs lợi ích context.
 - **6 Lăng kính Thiết kế & Đòn bẩy ROI**: Đọc [outcome-lenses.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/outcome-lenses.md) để đánh giá Token Efficiency, Adaptive Flexibility, Reliable Performance...
 - **Thư viện 12+ AI Failure Modes**: Đọc [failure-modes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/failure-modes.md) để tra cứu lỗi đặc trưng theo domain.
-- **Mẫu Phân tích Domain Thực tế**: Đọc [domains/README.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/domains/README.md) khi cần mẫu tham chiếu (Book writing, Business, Research, Software).
 
 ---
 
@@ -42,7 +42,7 @@ Xác định 5-10 hành động xảy ra thường xuyên nhất trong domain. M
 
 ## 2. DYNAMIC ENHANCEMENT DISCOVERY (ĐÒN BẨY 80/20)
 
-Trả lời 3 câu hỏi cốt lõi — độc lập cho từng agent cần xây dựng:
+Trả lời 3 câu hỏi cốt lõi — độc lập cho từng agent/specialist cần xây dựng:
 
 1. **Outcome quan trọng nhất** của agent này là gì? *(Kết quả thực tế nào chứng minh agent thành công?)*
 2. **Điểm thất vọng phổ biến nhất** của người dùng thực tế khi dùng agent này? *(Đây là đòn bẩy 80/20 ưu tiên hàng đầu).*
@@ -52,35 +52,27 @@ Trả lời 3 câu hỏi cốt lõi — độc lập cho từng agent cần xây
 
 ---
 
-## 3. DỰ ĐOÁN FAILURE MODES
+## 3. THE RIGHT ALTITUDE TEST & TOPOLOGY SELECTION
 
-Dự đoán 3-5 lỗi sai nghiêm trọng nhất mà mô hình AI thường mắc phải trong domain này (tham chiếu [failure-modes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/failure-modes.md)):
+Thay vì ép cứng 3 hộp, xác định vị trí tối ưu trên **Phổ Kiến trúc (Spectrum)**:
 
-```markdown
-| Failure Mode | Xác suất | Mức độ | Cơ chế phòng ngừa cụ thể |
-|:---|:---:|:---:|:---|
-| [Mô tả lỗi cụ thể] | High/Med/Low | Critical/High | [Ràng buộc phủ định hoặc cơ chế kiểm tra] |
-```
+$$\mathbf{\text{Coordination Cost (Handoff + Routing)}} < \mathbf{\text{Context/Cognitive Cost Saved (Attention Rot + Confusion)}}$$
 
----
-
-## 4. PHÂN LOẠI COMPLEXITY TIER & ĐỀ XUẤT CẤU PHẦN
-
-| Tier | Tiêu chí | Cấu phần khuyến nghị |
+| Vị trí trên Spectrum | Điều kiện Thỏa mãn | Cấu trúc Khuyến nghị |
 |:---|:---|:---|
-| **Tier 1 (Micro)** | 1 tác vụ đơn lẻ, stateless, 1-shot | 1 System Prompt duy nhất (< 500 từ) |
-| **Tier 2 (Standard)** | Quy trình nhiều bước, có trạng thái ngắn hạn | System Prompt + 1-2 Skills + Workflows |
-| **Tier 3 (Professional)** | Hệ thống nghiệp vụ phức tạp, context lớn | System Prompt + Multi-skills + Memory + `manifest.json` |
-| **Tier 4 (Suite)** | Nhiều agent phối hợp có lead/worker | Lead Orchestrator + Sub-agent Kits độc lập |
+| **Micro** | 1 tác vụ đơn lẻ, stateless, 1-shot | 1 System Prompt duy nhất (< 500 từ) |
+| **Standard** | 1 domain tập trung, $\le 4-5$ skills, luồng tuyến tính | 1 Single Agent + Skills + Workflows |
+| **Mini-Suite** | 2 mảng đối trọng (ví dụ: Maker & Reviewer / Coder & Auditor) | 1 Lead Orchestrator + 2 Specialist Agents |
+| **Full Suite Hierarchy** | $\ge 3$ domain độc lập, $\ge 6-15$ skills, cần Scoped Memory | 1 Master Orchestrator + 3–7 Specialist Agents + Scoped Memory |
 
 ---
 
-## 5. REPORT FORMAT
+## 4. REPORT FORMAT
 
 Sau khi phân tích, trả về Domain Profile theo mẫu:
 
 ```markdown
-# Domain Profile: [Tên Domain / Agent]
+# Domain Profile: [Tên Domain / Kit]
 
 ## 1. Core Verbs Matrix
 [Bảng 5-10 core verbs]
@@ -90,10 +82,10 @@ Sau khi phân tích, trả về Domain Profile theo mẫu:
 - Điểm thất vọng lớn nhất: ...
 - Đòn bẩy đề xuất (ROI >= 1.25): ...
 
-## 3. Predicted Failure Modes
-[Bảng failure modes & phòng ngừa]
-
-## 4. Tier Classification & Components
-- Phân loại: [Tier 1 / 2 / 3 / 4]
-- Cấu phần cần sinh: [Danh sách file cụ thể]
+## 3. Right Altitude Test & Topology Selection
+- Vị trí Spectrum: [Micro / Standard / Mini-Suite / Full Suite]
+- Rationale: Coordination Cost < Context Cost Saved vì ...
+- Danh sách Specialist Agents đề xuất (nếu là Suite):
+  - Specialist A: Domain X -> Cụm Skills [skill-1, skill-2]
+  - Specialist B: Domain Y -> Cụm Skills [skill-3, skill-4]
 ```
