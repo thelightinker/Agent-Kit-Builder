@@ -64,13 +64,23 @@ Có tiêu chí đánh giá rõ ràng, đáng lặp lại để tối ưu?
   ├─ CÓ ➔ Evaluator-Optimizer
   └─ KHÔNG ↓
 Độ phức tạp chỉ biết được lúc runtime?
-  ├─ CÓ ➔ Orchestrator-Workers (Đọc cảnh báo Cognition vs Anthropic bên dưới)
+  ├─ CÓ ➔ Orchestrator-Workers (Đọc Scale-Out Trigger bên dưới)
   └─ KHÔNG, tác vụ hoàn toàn mở ➔ Autonomous Agent Loop
 ```
 
 ---
 
-## 5. CẢNH BÁO MULTI-AGENT: COGNITION VS ANTHROPIC
+## 5. SCALE-OUT TRIGGER: 1 ORCHESTRATOR VS TÁCH SUB-AGENTS
 
-- **Cognition Warning (Context Fragmentation)**: Chia đa-agent song song dễ làm vỡ tính nhất quán vì các worker thiếu context quyết định của nhau. Nếu các sub-task **phụ thuộc logic/kiến trúc** $\rightarrow$ Dùng **1 agent tuyến tính với full context**.
-- **Anthropic Condition (Breadth-First Independence)**: Đa-agent chỉ vượt trội khi các sub-task **hoàn toàn độc lập** (ví dụ: research song song trên nhiều nguồn độc lập), có 1 Lead Agent điều phối và ranh giới output tường minh.
+Mặc định kiến trúc tối ưu: **1 Orchestrator + Cognitive Profiles + Focused Skills (Lazy Load) + Deterministic Scripts**.
+
+Chỉ tách thành các Sub-Agent độc lập khi thỏa mãn **$\ge 1$ trong 4 điều kiện cô lập vận hành (Operational Isolation Triggers)**:
+
+| Điều kiện Kích hoạt Tách Agent | Biểu hiện Kỹ thuật | Hành động Kiến trúc |
+|:---|:---|:---|
+| **1. Permission Boundary (Quyền hạn)** | Agent cần bị CẤM ghi file hoặc CẤM chạy Bash (ví dụ: Read-only Auditor). | Tách thành Sub-Agent riêng với cấu hình `tools:` giới hạn nghiêm ngặt. |
+| **2. Parallel Execution (Chạy song song)** | Cần chạy $\ge 2$ luồng nghiên cứu/thực thi độc lập cùng lúc không phụ thuộc nhau. | Tách thành các Worker Agents độc lập (Breadth-First Search). |
+| **3. Context Isolation (Chống Context Rot)** | Tác vụ dài qua nhiều phiên (> 30 turns), attention budget cạn kiệt làm agent quên quy tắc. | Tách thành Initializer Agent (tạo feature list) và Coding Agent (reset context mỗi session). |
+| **4. Lifecycle & Memory Độc lập** | Mỗi vai trò cần lưu trữ memory, conventions hoặc state riêng biệt không trộn lẫn. | Tách thành Agent Suite với thư mục `memory/` và `manifest.json` độc lập. |
+
+*Cảnh báo Chống Over-Engineering:* Nếu không có nhu cầu về 4 điều kiện trên, việc chia nhỏ thành nhiều Agent chỉ tạo thêm độ trễ handoff và rủi ro context fragmentation.
