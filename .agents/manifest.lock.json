@@ -37,15 +37,15 @@
     "skills/kit-assembling/SKILL.md": "de78ed43d6a920b026e3ba7581c30f23d3e4cd57d0845e645926a9790103f370",
     "skills/kit-evolving/SKILL.md": "000c0ece3e2745e774fad2bedaa7ecef8e7af741275c41fd178165d1a467cec6",
     "skills/kit-exporting/SKILL.md": "a741675d5d43b3b45c71850712073cdcd5c2090362239d79643fd5854e6d097e",
-    "skills/kit-verifying/SKILL.md": "fe5b5462c2e61fb6dfe6c69025c1f2bb9971cb8c9cc6ffbf19f023614238879c",
+    "skills/kit-verifying/SKILL.md": "fc27e121cad42eab922c6c78e0853a9c2d20c5d884aa085bae5582f67d934e31",
     "skills/prompt-compiling/SKILL.md": "facca223e490dce0be753b8e6d648579fd94f0b0d0af02f2f5ed425a5c072406",
-    "skills/skill-architecting/SKILL.md": "813a37b4095609965640fa7d34f820b8a93ce78f33f87a91436dce2c4596a610",
-    "workflows/create-kit.md": "8e55238e5c7eca71347744af11514e0101c8f271db9c49d72e1db009359f6cf5",
-    "workflows/refactor-kit.md": "3eb659810dceeceb3a7b4178f0eb3c29df8467034fe1063db9df15ccc455e250",
+    "skills/skill-architecting/SKILL.md": "5f2275b2247ae7db50d0dca2f12889052a660025af726b12ff012e3c1dc7996e",
+    "workflows/create-kit.md": "e72733e419fe4d949d970ab693854f7bf41cf35f945381bb1c95b7d25eab9efd",
+    "workflows/refactor-kit.md": "2d9f9fa2972061f7801196b00270bc5b2fdfeb8e3afc14602f2ca81a119f58c2",
     "workflows/remember-kit.md": "c68b4428ab3d3d442155431b0a1d5bdb3062734bb122f0343914de4d74c519b3",
     "workflows/validate-kit.md": "1b302b697c263d2d0a02bc8ee14b3f5b741c4ba101805875f76aa418b8c39d22"
   },
   "kitVersion": "2026.8.17",
-  "manifestSha256": "a459c7fa667fbb2e9a975bd35047b6a0a4ae01a621feeb5ae0efb6b99cf55a87",
+  "manifestSha256": "1a70c2245d4e37d0e07c1eadcb15732a895788ba2fb511360ecd822870dd51a9",
   "schemaVersion": "1.0.0"
 }

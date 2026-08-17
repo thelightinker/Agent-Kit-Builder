@@ -33,8 +33,6 @@ flowchart LR
   W_refactor_kit --> A_kit_architect
   W_refactor_kit -.-> S_kit_evolving
   W_refactor_kit -.-> S_kit_verifying
-  W_refactor_kit -.-> S_prompt_compiling
-  W_refactor_kit -.-> S_skill_architecting
   W_remember_kit --> A_kit_architect
   W_remember_kit -.-> S_kit_evolving
   W_validate_kit --> A_kit_architect

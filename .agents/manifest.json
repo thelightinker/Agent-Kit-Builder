@@ -151,7 +151,10 @@
   "workflows": {
     "create-kit": {
       "artifactOutputs": [
-        "agent-kit-spec"
+        "domain_profile",
+        "system_prompt",
+        "skill_manifest",
+        "validation_report"
       ],
       "path": "workflows/create-kit.md",
       "requires": {
@@ -166,11 +169,13 @@
           "kit-verifying"
         ]
       },
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "refactor-kit": {
       "artifactOutputs": [
-        "refactored-kit-spec"
+        "gap_analysis",
+        "delta_patch",
+        "validation_report"
       ],
       "path": "workflows/refactor-kit.md",
       "requires": {
@@ -179,12 +184,10 @@
         ],
         "skills": [
           "kit-evolving",
-          "kit-verifying",
-          "prompt-compiling",
-          "skill-architecting"
+          "kit-verifying"
         ]
       },
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "remember-kit": {
       "artifactOutputs": [

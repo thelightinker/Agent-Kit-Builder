@@ -1,50 +1,59 @@
 ---
 name: refactor-kit
-description: "Cải tiến & Nâng cấp Agent Kit đã có sẵn (Refactor Kit)."
-version: 2.0.0
+description: "Cải tiến & Nâng cấp Agent Kit đã có sẵn theo chuẩn Delta Patch (Refactor Kit)."
+version: 2.1.0
 requires_agents: kit-architect
-requires_skills: kit-evolving, kit-verifying, prompt-compiling, skill-architecting
-artifact_outputs: refactored-kit-spec
+requires_skills: [kit-evolving, kit-verifying]
+artifact_outputs: [gap_analysis, delta_patch, validation_report]
 ---
 
-# Workflow: Refactor Kit (Cải tiến & Nâng cấp Kit)
+# Workflow: /refactor-kit
 
-Sử dụng khi người dùng yêu cầu nâng cấp, sửa đổi hoặc thêm tính năng cho một Agent Kit đã có sẵn.
-
----
-
-## Các bước thực hiện
-
-### Bước 1: Tiếp nhận & Đánh giá hiện trạng
-1. Đọc toàn bộ cấu trúc của Agent Kit hiện tại.
-2. Chạy workflow: `workflows/validate-kit.md` trên kit hiện tại để tìm điểm yếu, lỗi cấu trúc hoặc sự thiếu hụt.
-3. Xác định yêu cầu nâng cấp của user: Bổ sung skill, sửa lỗi prompt, tối ưu hóa token.
+Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit đã có sẵn thông qua Gap Analysis và Delta Patch, có bảo vệ bởi Superpowers Process Gate.
 
 ---
 
-### Bước 2: Phân tích sự lệch pha (Gap Analysis)
-1. Kích hoạt skill: `skills/kit-evolving/SKILL.md`.
-2. Xác định mức độ thay đổi:
-   - *Patch* (1.0.0 $\rightarrow$ 1.0.1): Sửa lỗi nhỏ/câu chữ prompt.
-   - *Minor* (1.0.0 $\rightarrow$ 1.1.0): Thêm skill phụ / workflow mới.
-   - *Major* (1.0.0 $\rightarrow$ 2.0.0): Đổi cấu trúc kit hoặc ranh giới kiến trúc.
+## 🚦 BƯỚC 0: SUPERPOWERS PROCESS & SKILL GATE (BẮT BUỘC)
+
+Trước khi chỉnh sửa bất kỳ file nào trong `./output/<kit-name>/`:
+
+1. **Invoke Brainstorming:** BẮT BUỘC invoke `superpowers:brainstorming`.
+2. **Khóa Refactor Scope:** Thống nhất với User: Điểm cần sửa, Nguyên nhân gốc rễ, Phạm vi ảnh hưởng và SemVer bump (`patch` hay `minor`).
+3. **Approval Gate:** Nhận sự phê duyệt (`APPROVED`) từ User cho Refactor Plan trước khi sửa code.
+   - 🚫 **HARD CONSTRAINT:** Không tự ý sửa file kit khi chưa xác định rõ Gap Analysis và nhận được sự đồng thuận.
+   - ⚠️ **Quy tắc Bypass:** Chỉ cho phép bypass khi chạy script tự động (như `export_kit.py` hay `generate_manifest.py`) không làm thay đổi logic nghiệp vụ.
 
 ---
 
-### Bước 3: Thực hiện chỉnh sửa chọn lọc (Delta Patch)
-1. **Chỉ sửa phần cần thiết**: Không viết lại toàn bộ các file lớn nếu không được yêu cầu.
-2. Nếu sửa System Prompt: Kích hoạt `skills/prompt-compiling/SKILL.md`.
-3. Nếu thêm Skill mới: Kích hoạt `skills/skill-architecting/SKILL.md`.
-4. Cập nhật SemVer trong frontmatter của các thành phần bị ảnh hưởng.
-5. Cập nhật `manifest.json` (nếu có).
+## 🔄 STATE MACHINE NODES
+
+### Bước 1: Phân tích Sai lệch (Gap Analysis)
+- **Skill:** `kit-evolving`
+- **[Input Artifacts]:** Thư mục kit hiện tại (`./output/<kit-name>/`) + Feedback/Yêu cầu mới.
+- **[Output Artifacts]:** `gap_analysis.md` (Liệt kê chính xác điểm thiếu sót hoặc cần tối ưu).
+- **[DoD]:** 
+  - [ ] Chỉ ra đúng nguyên nhân gốc rễ (Root Cause).
+  - [ ] Liệt kê danh sách file cụ thể bị tác động.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 2.
 
 ---
 
-### Bước 4: Tái kiểm định (Re-Audit)
-1. Chạy lại workflow: `workflows/validate-kit.md` trên kit sau khi chỉnh sửa.
-2. Đảm bảo kit mới đạt ít nhất **4/5 ⭐** và không vi phạm tính tương thích ngược.
+### Bước 2: Thực hiện Bản vá (Delta Patch)
+- **Role Profile:** `@compiler` (nếu sửa prompt) hoặc `@architect` (nếu sửa skill/memory)
+- **[Input Artifacts]:** `gap_analysis.md`
+- **[Output Artifacts]:** Các file được sửa đổi trong `./output/<kit-name>/`.
+- **[DoD]:**
+  - [ ] Chỉ sửa các khối cần thiết (Delta Patch), giữ nguyên 100% các phần đang chạy tốt.
+  - [ ] Nâng version trong YAML Frontmatter và `manifest.json` theo chuẩn SemVer.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 3.
 
 ---
 
-### Bước 5: Bàn giao (Delivery)
-Bàn giao kèm theo bản tóm tắt các thay đổi (Changelog/Delta summary) và phần **TÓM TẮT CHO NGƯỜI DÙNG** ở đầu.
+### Bước 3: Tái kiểm định & Nghiệm thu (Re-verification)
+- **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
+- **[Input Artifacts]:** Kit sau khi refactor.
+- **[Output Artifacts]:** `validation_report.md`
+- **[DoD]:**
+  - [ ] `validate_kit.py` trả về `0 error(s)`.
+  - [ ] Regression test không bị gãy bất kỳ tiêu chí nào trước đó.
+- **[Evaluation Loop]:** Pass ➔ Hoàn tất & Bàn giao.

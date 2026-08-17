@@ -19,8 +19,8 @@ Kỹ năng thiết kế cấu trúc thư mục skill và đặc tả chuẩn k�
 
 Khi cần tra cứu chuẩn kỹ thuật và cấu trúc nâng cao:
 - **Chuẩn Contract & Tool ACI Design**: Đọc [component-contracts.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/component-contracts.md) để tra cứu chuẩn YAML frontmatter, namespacing và permissions.
-- **Cây quyết định Topology Workflow**: Đọc [workflows/topology-decision.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflows/topology-decision.md) khi chọn 6 khối kiến trúc workflow.
-- **Cấu trúc 5 thành phần State Node**: Đọc [workflows/state-machine-nodes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflows/state-machine-nodes.md) khi viết node state machine.
+- **Cây quyết định Topology Workflow & Scale-Out Trigger**: Đọc [workflow-topologies.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflow-topologies.md) khi chọn 6 khối kiến trúc workflow và xác định ranh giới tách agent.
+- **Cấu trúc 5 thành phần State Node**: Đọc [state-machine-nodes.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/state-machine-nodes.md) khi viết node state machine.
 - **Scaffolding Templates**: Sử dụng [templates/skill-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/skill-template.md) hoặc [templates/workflow-template.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/templates/workflow-template.md).
 
 ---

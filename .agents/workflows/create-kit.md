@@ -1,65 +1,90 @@
 ---
 name: create-kit
-description: "Quy trình tạo Agent Kit mới từ đầu (Create Kit)."
-version: 2.0.0
+description: "Quy trình tạo Agent Kit mới từ đầu theo chuẩn Evolvable Architecture (Create Kit)."
+version: 2.1.0
 requires_agents: kit-architect
-requires_skills: domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying
-artifact_outputs: agent-kit-spec
+requires_skills: [domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying]
+artifact_outputs: [domain_profile, system_prompt, skill_manifest, validation_report]
 ---
 
-# Workflow: Create Kit (Tạo Agent Kit Mới)
+# Workflow: /create-kit
 
-Sử dụng khi người dùng yêu cầu xây dựng một Agent Kit mới từ đầu theo quy trình Deep Track.
-
----
-
-## Các bước thực hiện
-
-### Bước 1: Tiếp nhận thông tin & Phân loại
-1. **Xác định Trình độ kỹ thuật**:
-   - *Low-tech*: Dùng `superpowers:brainstorming` phỏng vấn 2-3 câu đơn giản bằng ngôn ngữ đời thường.
-   - *Tech User*: Sử dụng trực tiếp spec từ prompt.
-2. **Xác định North Star & Constraints**: Trích xuất mục tiêu cốt lõi và các điều kiện bắt buộc.
+Quy trình chuẩn mực để tạo một Agent Kit mới từ đầu, áp dụng cơ chế kỷ luật quy trình (Process Gate) kết hợp Superpowers.
 
 ---
 
-### Bước 2: Phân tích Domain (`@analyst`)
-1. Kích hoạt skill: `skills/domain-profiling/SKILL.md`.
-2. Phân tích:
-   - Core Verbs (Hành động cốt lõi).
-   - Dynamic Enhancement Discovery (Tìm đòn bẩy 80/20 với ROI $\ge 1.25$).
-   - Predicted Failure Modes (Dự đoán lỗi và cơ chế phòng ngừa).
-3. **Xác định Kit Type**: Micro, Standard, Professional hoặc Suite.
-4. Lập danh sách component tối thiểu cần tạo.
+## 🚦 BƯỚC 0: SUPERPOWERS PROCESS & SKILL GATE (BẮT BUỘC)
+
+Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-name>/`:
+
+1. **Invoke Brainstorming:** BẮT BUỘC invoke `superpowers:brainstorming`.
+2. **Khóa Design Spec:** Thống nhất với User về: Mục tiêu cốt lõi, Complexity Tier, 5 Core Verbs, 80/20 Leverage và Danh sách Cấu phần tối thiểu.
+3. **Approval Gate:** Nhận sự phê duyệt (`APPROVED`) từ User cho Design Spec trước khi tiến hành viết Plan.
+   - 🚫 **HARD CONSTRAINT:** TUYỆT ĐỐI KHÔNG tự ý viết code, tạo file hay scaffold thư mục khi Design Spec chưa được User phê duyệt.
+   - ⚠️ **Quy tắc Bypass:** Chỉ được bỏ qua Bước 0 khi yêu cầu là `FAST_TRACK` (Micro Kit 1-shot đơn lẻ đã có sẵn prompt hoàn chỉnh và không tạo thư mục/skill). Agent tuyệt đối KHÔNG được tự ý phán đoán để bypass khi tạo Standard/Pro/Suite Kit.
+4. **Planning & Execution:** Sau khi Design Spec được duyệt ➔ Invoke `superpowers:writing-plans` để lập kế hoạch ➔ Thực thi qua `superpowers:executing-plans`.
 
 ---
 
-### Bước 3: Biên dịch System Prompt (`@compiler`)
-1. Kích hoạt skill: `skills/prompt-compiling/SKILL.md`.
-2. Nạp template: `templates/agent-template.md` (hoặc `templates/orchestrator-template.md` nếu là Suite Kit).
-3. Viết System Prompt 4 khối (Vai trò & DoD nhị phân, Quy trình, Hard Constraints phủ định, Format đầu ra).
+## 🔄 STATE MACHINE NODES
+
+### Bước 1: Phân tích Nghiệp vụ (Domain Profiling)
+- **Role Profile:** `@analyst` | **Skill:** `domain-profiling`
+- **[Input Artifacts]:** Yêu cầu của User + Design Spec đã duyệt.
+- **[Output Artifacts]:** `domain_profile.md` (Core Verbs, ROI leverage $\ge 1.25$, Predicted Failure Modes).
+- **[DoD]:** 
+  - [ ] Liệt kê đủ 5-10 Core Verbs kèm 4 tiêu chí đánh giá.
+  - [ ] Có ít nhất 1 đòn bẩy 80/20 đạt tỷ lệ ROI $\ge 1.25$.
+  - [ ] Dự đoán $\ge 3$ Failure Modes đặc trưng domain.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 2 | Fail ➔ Bổ sung phân tích.
 
 ---
 
-### Bước 4: Thiết kế Skills & Cấu phần Bổ trợ (`@architect`)
-1. Nếu cần Skill: Kích hoạt `skills/skill-architecting/SKILL.md` và dùng `templates/skill-template.md`.
-2. Nếu cần Memory/Workflow: Thiết kế theo `templates/memory-template.md` hoặc `templates/workflow-template.md`.
+### Bước 2: Biên dịch System Prompt (Prompt Compiling)
+- **Role Profile:** `@compiler` | **Skill:** `prompt-compiling`
+- **[Input Artifacts]:** `domain_profile.md`
+- **[Output Artifacts]:** System Prompt của Agent (`agent/<name>.md` hoặc `<name>.md`).
+- **[DoD]:**
+  - [ ] Có phần TÓM TẮT CHO NGƯỜI DÙNG ở đầu (0 thuật ngữ AI, 3-5 dòng).
+  - [ ] Có đủ 4 khối chuẩn: Vai trò, Quy trình, Hard Constraints, Format đầu ra.
+  - [ ] Binary DoD: 100% nhị phân, đo lường được, 0 tính từ cảm tính.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 3 | Fail ➔ Tinh chỉnh prompt.
 
 ---
 
-### Bước 5: Lắp ráp & Đóng gói (`kit-assembling`)
-1. Kích hoạt skill: `skills/kit-assembling/SKILL.md`.
-2. Tạo thư mục cách ly bắt buộc tại `./output/<kit-name>/`.
-3. Ghi toàn bộ các files vào đúng cấu trúc thư mục. Sinh `manifest.json` nếu là Professional/Suite.
+### Bước 3: Thiết kế Kỹ năng & Kiến trúc (Skill Architecting)
+*(Chỉ thực hiện cho Standard / Professional / Suite Kits)*
+- **Role Profile:** `@architect` | **Skill:** `skill-architecting`
+- **[Input Artifacts]:** `domain_profile.md`, System Prompt.
+- **[Output Artifacts]:** Thư mục `skills/<skill-name>/SKILL.md`.
+- **[DoD]:**
+  - [ ] `SKILL.md` có đầy đủ YAML frontmatter hợp lệ.
+  - [ ] Chiều dài `SKILL.md` $\le 500$ dòng (tách `references/` nếu dài hơn).
+  - [ ] Có ví dụ minh họa và checklist kiểm thử.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 4.
 
 ---
 
-### Bước 6: Kiểm định Chất lượng (`@auditor` + `kit-verifying`)
-1. Chạy workflow: `workflows/validate-kit.md` trên thư mục `./output/<kit-name>/`.
-2. Thực hiện 3 lớp kiểm định (L1 Linting $\rightarrow$ L2 Scenario $\rightarrow$ L3 Adversarial).
-3. Đảm bảo kit đạt tối thiểu **4/5 ⭐**. Nếu chưa đạt, revise trước khi bàn giao.
+### Bước 4: Lắp ráp & Đóng gói (Kit Assembling)
+- **Skill:** `kit-assembling`
+- **[Input Artifacts]:** Toàn bộ components đã tạo.
+- **[Output Artifacts]:** `./output/<kit-name>/` hoàn chỉnh kèm `manifest.json`.
+- **[DoD]:**
+  - [ ] Toàn bộ file nằm trong `./output/<kit-name>/`.
+  - [ ] `manifest.json` đồng bộ 100% danh mục files và SemVer `1.0.0`.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 5.
 
 ---
 
-### Bước 7: Bàn giao (Delivery)
-Bàn giao Agent Kit hoàn chỉnh tại `./output/<kit-name>/` kèm phần **TÓM TẮT CHO NGƯỜI DÙNG** (0 thuật ngữ AI) ở đầu output.
+### Bước 5: Kiểm định Chất lượng 3 Lớp (Quality Verification)
+- **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
+- **[Input Artifacts]:** `./output/<kit-name>/`
+- **[Output Artifacts]:** `validation_report.md`
+- **[DoD]:**
+  - [ ] L1: `python .agents/scripts/validate_kit.py ./output/<kit-name>` trả về `0 error(s)`.
+  - [ ] L2: Chạy thành công 2 kịch bản input thực tế theo domain.
+  - [ ] L3: Vượt qua bài test đối kháng (Adversarial stress test).
+  - [ ] Điểm Rubric $\ge 4/5$ ⭐.
+- **[Evaluation Loop]:** 
+  - PASS: Bàn giao kit cho User kèm hướng dẫn sử dụng.
+  - FAIL: Kích hoạt `/refactor-kit` để khắc phục lỗi.
