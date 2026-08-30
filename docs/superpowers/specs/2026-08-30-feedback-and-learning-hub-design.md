@@ -1,15 +1,17 @@
 # Unified Feedback & Learning Hub Specification
 
-> **Trạng thái:** FROZEN (Brainstorming Finalized)  
+> **Trạng thái:** FROZEN & OPTIMIZED (Deep Audit Finalized)  
 > **Ngày:** 2026-08-30  
 > **Tác giả:** @kit-architect & Sếp  
-> **Mục tiêu:** Nâng cấp toàn diện hệ thống Feedback & Learning của Agent Kit Builder tại `Downloads/Shared Workspace/Feedback/`, áp dụng Event Sourcing (Append-Only JSONL làm SSOT duy nhất), phân tách rõ 2 nguồn và 2 đối tượng đích (`source` + `target`), phân định nguồn gốc (`user` vs `system`), quản lý vòng đời nhị phân (`new` → `verified`), biến verified feedback thành regression knowledge phòng ngừa lỗi, và dỡ bỏ triệt để hệ thống feedback cũ cồng kềnh.
+> **Mục tiêu:** Nâng cấp toàn diện kiến trúc Shared Workspace & Feedback Hub tại `Downloads/Shared Workspace/`, áp dụng Event Sourcing (Append-Only JSONL làm SSOT duy nhất), đóng băng 3 Invariant bất biến, chống rò rỉ file trung gian bằng Whitelist Contract, bảo vệ Concurrency bằng File Lock, và biến verified feedback thành Regression Knowledge phòng ngừa lỗi từ gốc.
 
 ---
 
-## 1. Triết Lý Cốt Lõi (Core Principles)
+## 1. Triết Lý Cốt Lõi & 3 Invariants Bất Biến
 
-> **"Mọi phản hồi là một Event bất biến. JSONL là Single Source of Truth duy nhất. Chỉ đóng ticket khi có bằng chứng Verified. Mọi feedback đã verified trở thành Regression Knowledge phòng ngừa lỗi từ gốc."**
+> **"Không declared → Không được xuất vào outputs."**  
+> **"Không evidence → Không được verified."**  
+> **"Không lock → Không được concurrent-write feedback."**
 
 ### 4 Câu Hỏi Bất Biến Cho Mọi Phản Hồi:
 1. **Lỗi gì / Yêu cầu gì?** (`content` + `context`)
@@ -17,15 +19,23 @@
 3. **Đã sửa chưa? Sửa ở đâu?** (`status == "fixed"` kèm `commit` / `version`)
 4. **Đã thực sự giải quyết dứt điểm chưa?** (`status == "verified"` kèm `evidence`)
 
-### 6 Nguyên Tắc Thiết Kế 80/20:
-1. **JSONL Là Single Source of Truth (SSOT)**: Toàn bộ dữ liệu phản hồi nằm trong các file JSONL. `FEEDBACK_BOARD.md` CHỈ là một generated view được render lại bất kỳ lúc nào từ JSONL, tuyệt đối không coi board là nguồn sự thật.
-2. **Append-Only Event Stream**: Không bao giờ sửa/ghi đè dòng cũ trong JSONL. Mỗi lần đổi trạng thái (`investigating`, `fixed`, `failed`, `retry`, `verified`) chỉ append 1 dòng event mới cùng `id`. Tránh hoàn toàn race condition, hỏng dữ liệu và mất dấu lịch sử.
-3. **Tách Bạch Bằng `source` và `target`**:
-   - `source`: `"user"` (người dùng phản ánh chất lượng/nghiệp vụ) vs `"system"` (lỗi crash runtime, timeout kỹ thuật).
-   - `target`: `"agent_kit"` (phản hồi tới kit cụ thể) vs `"builder"` (chỉ đạo nâng cấp kiến trúc của Builder).
-4. **`fixed` Không Đồng Nghĩa Là Xong**: Trạng thái `fixed` chỉ xác nhận đã có code patch hoặc commit. Ticket CHỈ được đóng khi đạt trạng thái `verified` (có bằng chứng thực nghiệm từ test hoặc xác nhận của sếp). Nếu tái kiểm thử thất bại: chuyển ngay `fixed` $\rightarrow$ `failed` $\rightarrow$ `retry` $\rightarrow$ `investigating`.
-5. **Verified Feedback = Regression Knowledge**: Mọi feedback đã `verified` không nằm yên như một tấm vé lưu trữ chết, mà trở thành kho tri thức phòng ngừa (Pre-flight Immunity Knowledge). Khi Builder tạo hoặc nâng cấp Kit trong cùng domain, nó tự động đọc các lỗi cũ để **ngăn chặn lỗi xuất hiện ngay từ đầu**.
-6. **Dỡ Bỏ Hệ Thống Cũ (Zero Debt)**: Khai tử hoàn toàn cơ chế 4 tầng Waterfall, inbox/outbox cồng kềnh và các file rác của hệ thống evolution cũ.
+### 6 Nguyên Tắc Vận Hành 80/20:
+1. **Whitelist Outputs (Không declared → Không xuất ra outputs)**:
+   - Agent chỉ được phép ghi thành phẩm sạch vào `outputs/` nếu artifact đó khớp với định nghĩa trong hợp đồng `manifest.artifact_contracts.produces` (hoặc Output DoD).
+   - Mọi file trung gian (intermediate, chunk, temporary, debug log, cache) **bắt buộc nhốt trong `.workspace/`**. Sanitizer đóng vai trò lớp bảo vệ thứ 2 để chặn đứng extension rác (`.tmp`, `.log`, `.cache`, `.*`).
+2. **Lock-Protected Append-Only JSONL (Không lock → Không ghi)**:
+   - File JSONL là Single Source of Truth (SSOT).
+   - Mọi thao tác ghi/append vào `kit_feedback.jsonl` hoặc `builder_feedback.jsonl` **bắt buộc phải qua File Lock** (cross-platform atomic lock) kết hợp `flush()` và `os.fsync()` để ngăn chặn race condition khi nhiều process/agent cùng ghi dữ liệu.
+3. **Hard Verification Gate (Không evidence → Không verified)**:
+   - Trạng thái `fixed` chưa bao giờ là xong. Ticket chỉ được đóng khi chuyển sang `status: "verified"`.
+   - Hàm ghi event **BẮT BUỘC REJECT** nếu event `verified` thiếu trường `evidence` (chứng cứ kiểm thử, lệnh test pass hoặc xác nhận của sếp). Nếu tái kiểm thử thất bại: `fixed` $\rightarrow$ `failed` $\rightarrow$ `retry` $\rightarrow$ `investigating`.
+4. **Versioned Shared Promotion (Không overwrite âm thầm)**:
+   - Khi chia sẻ (promote) thành phẩm từ `Projects/<Project>/outputs/` lên `Shared/`, luôn sử dụng lệnh COPY, tuyệt đối không MOVE (giữ nguyên tính toàn vẹn của dự án gốc).
+   - Nếu tài nguyên đã tồn tại trong `Shared/`, không được ghi đè âm thầm mà phải đánh dấu version rõ ràng (ví dụ: `book-vi-v2.epub`).
+5. **Zero-Copy Direct Read**:
+   - Khi cần tài nguyên từ `_Dropzone/` hoặc `Shared/`, Agent đọc trực tiếp từ đường dẫn gốc. Tuyệt đối không copy file nặng (video, sách) sang `inputs/` để tránh lãng phí dung lượng ổ đĩa và I/O vô ích.
+6. **Purgeable `.workspace/`**:
+   - Vùng `.workspace/` là khu vực nháp tạm thời. User hoặc tiện ích dọn dẹp có thể xóa sạch `.workspace/` bất kỳ lúc nào mà không sợ mất mát dữ liệu đầu vào (`inputs/`) hay thành phẩm cuối cùng (`outputs/`).
 
 ---
 
@@ -35,19 +45,29 @@ Nằm trực tiếp trong `Downloads/Shared Workspace/`:
 
 ```plaintext
 Downloads/Shared Workspace/
-├── 📥 _Dropzone/
-├── 🏛️ Shared/
-├── 🚀 Projects/
 │
-└── 📋 Feedback/
-    ├── kit_feedback.jsonl       <-- [SSOT] Event stream cho phản hồi sử dụng Agent Kits
-    ├── builder_feedback.jsonl   <-- [SSOT] Event stream cho chỉ đạo trực tiếp tới Builder
-    └── FEEDBACK_BOARD.md        <-- [GENERATED VIEW] Tự động render từ JSONL, không phải SSOT
+├── 📥 _Dropzone/              ← Zero-Copy Direct Read (Agent chỉ đọc trực tiếp, không copy bừa bãi)
+│
+├── 🏛️ Shared/                 ← Thư viện dùng chung (Bản copy đã publish, version rõ ràng, không overwrite)
+│   ├── Books/
+│   ├── Videos/
+│   └── Files/
+│
+├── 🚀 Projects/               ← Không gian dự án độc lập
+│   └── <Project-Name>/
+│       ├── inputs/          ← Tài liệu đầu vào của dự án (User sở hữu, không tự ý xóa)
+│       ├── outputs/         ← [CONTRACT WHITELIST] Thành phẩm sạch (Khớp artifact_contracts)
+│       └── .workspace/      ← [PURGEABLE] Intermediate, chunks, logs (Agent tự do ghi, thoải mái xóa)
+│
+└── 📋 Feedback/               ← Central Feedback & Learning Hub (SSOT)
+    ├── kit_feedback.jsonl     ← [SSOT: LOCK + APPEND + FSYNC] Phản hồi thực chiến từ Agent Kits
+    ├── builder_feedback.jsonl ← [SSOT: LOCK + APPEND + FSYNC] Chỉ đạo chiến lược sếp giao Builder
+    └── FEEDBACK_BOARD.md      ← [GENERATED VIEW + HASH-GUARD] Tự động render, không rác I/O
 ```
 
 ---
 
-## 3. Cấu Trúc Dữ Liệu Event-Sourced (Data Schema)
+## 3. Cấu Trúc Dữ Liệu & Ràng Buộc Hợp Đồng
 
 ### 3.1. Kit Feedback Event Schema (`kit_feedback.jsonl`)
 
@@ -72,7 +92,7 @@ Mỗi dòng trong JSONL là một JSON object độc lập đại diện cho m�
 }
 ```
 
-#### B. Event Chuyển Trạng Thái (`investigating` / `fixed` / `failed` / `retry`)
+#### B. Event Đổi Trạng Thái Sửa Lỗi (`status: "fixed"`)
 ```json
 {
   "event_id": "evt-20260830-160000-002",
@@ -87,119 +107,76 @@ Mỗi dòng trong JSONL là một JSON object độc lập đại diện cho m�
 }
 ```
 
-#### C. Event Xác Nhận Triệt Để (`status: "verified"`)
+#### C. Event Tái Kiểm Thử Thất Bại (`status: "failed"` / `"retry"`)
 ```json
 {
-  "event_id": "evt-20260830-163000-003",
+  "event_id": "evt-20260830-161500-003",
+  "id": "fb-kit-20260830-001",
+  "timestamp": "2026-08-30T16:15:00Z",
+  "status": "failed",
+  "note": "Kiểm tra lại chương 3 vẫn còn lặp ở trang 12",
+  "failed_attempt": {
+    "commit": "a413720",
+    "reason": "Chưa xử lý trường hợp page break giữa chừng"
+  }
+}
+```
+
+#### D. Event Nghiệm Thu Triệt Để (`status: "verified"` - BẮT BUỘC CÓ EVIDENCE)
+```json
+{
+  "event_id": "evt-20260830-163000-004",
   "id": "fb-kit-20260830-001",
   "timestamp": "2026-08-30T16:30:00Z",
   "status": "verified",
   "verification": {
     "verified_by": "user",
-    "evidence": "Chạy lại bản dịch chương 3 không còn hiện tượng lặp đoạn văn",
+    "evidence": "Chạy lại toàn bộ chương 3 và chương 4, đối soát 0 câu trùng lặp",
     "regression_rule": "Luôn kiểm tra deduplication overlap threshold khi chia nhỏ markdown chapters"
   }
 }
 ```
-
-### 3.2. Builder Feedback Event Schema (`builder_feedback.jsonl`)
-
-Dành riêng cho các yêu cầu, quy tắc thiết kế mà sếp giao trực tiếp cho Builder:
-```json
-{
-  "event_id": "evt-20260830-170000-001",
-  "id": "fb-bld-20260830-001",
-  "source": "user",
-  "target": "builder",
-  "timestamp": "2026-08-30T17:00:00Z",
-  "content": "Mọi Agent Kit sinh ra bắt buộc phải có card README 4 dòng và schema artifact_contracts",
-  "scope": "creator_global",
-  "status": "verified",
-  "resolution": {
-    "commit": "5a0a405",
-    "version": "v2026.8.25",
-    "evidence": "Đã cập nhật template và kiểm định qua test_templates.py"
-  }
-}
-```
+> ⚠️ **Hàm `append_event` sẽ ném ngoại lệ (REJECT)** nếu `status == "verified"` nhưng trường `verification.evidence` bị rỗng.
 
 ---
 
-## 4. Máy Trạng Thái Vòng Đời (Lifecycle State Machine)
+## 4. Máy Trạng Thái Vòng Đời Hoàn Chỉnh
 
 ```
         ┌─────────────────────────────────────────────────────────────┐
         │                                                             │
         ▼                                                             │
      [ new ] ──► [ investigating ] ──► [ fixed ] ──┬──► [ verified ]  │
-                                          ▲        │                  │
-                                          │        └──► [ failed ] ───┘ (retry)
-                                          └─────────────────┘
+                                          ▲        │    (Evidence OK) │
+                                          │        │                  │
+                                          │        └──► [ failed ] ───┘
+                                          │               │
+                                          └─ [ retry ] ◄──┘
 ```
 
-1. **`new`**: Phản hồi mới ghi nhận (từ user hoặc system auto-log khi crash).
-2. **`investigating`**: Builder hoặc Agent đang phân tích root cause.
-3. **`fixed`**: Đã áp dụng code patch, nâng version hoặc commit vá lỗi. **Chưa xong! Phải chờ kiểm chứng.**
-4. **`verified`**: Đã kiểm chứng thực tế (User xác nhận hoặc test runner pass). Ticket chính thức đóng và chuyển vào **Regression Knowledge**.
-5. **`failed`**: Đã vá nhưng khi chạy lại vẫn lỗi $\rightarrow$ chuyển tiếp ngay sang **`retry`** để mở lại vòng điều tra mới.
+1. **`new`**: Phản hồi mới ghi nhận.
+2. **`investigating`**: Đang phân tích root cause.
+3. **`fixed`**: Đã áp dụng commit/version vá lỗi. **(CHƯA XONG)**
+4. **`failed`**: Kiểm thử lại thất bại $\rightarrow$ lưu vết `failed_attempt`.
+5. **`retry`**: Mở lại vòng điều tra mới $\rightarrow$ `investigating`.
+6. **`verified`**: Cung cấp đủ `evidence` thực nghiệm. Ticket đóng, lưu thành **Regression Knowledge**.
 
 ---
 
-## 5. Bảng Điều Khiển Tự Động (`FEEDBACK_BOARD.md` - Generated View)
+## 5. Cơ Chế Chống Xung Đột & Concurrency (Locking Protocol)
 
-`FEEDBACK_BOARD.md` được script `feedback_hub.py` tự động render lại toàn bộ từ JSONL SSOT:
-
-```markdown
-# 📋 Feedback & Learning Dashboard (Generated View)
-
-> ⚠️ Đây là bảng hiển thị tự động được sinh từ JSONL. Nguồn sự thật duy nhất nằm tại `kit_feedback.jsonl` và `builder_feedback.jsonl`.  
-> Cập nhật tự động lúc: 2026-08-30 16:35:00 UTC
-
-## 🚨 Kit Feedback: Cần Xử Lý (Active & Unverified)
-| ID | Kit | Nguồn | Nội Dung | Trạng Thái | Fix Ref | Hành Động Tiếp Theo |
-|:---|:---|:---|:---|:---|:---|:---|
-| `fb-kit-001` | `vietnamese-book-translator` | 👤 user | Lặp đoạn văn ch.3 | `fixed` | `commit: a413720` | Chờ User / Test verify |
-| `fb-kit-002` | `video-editing` | 🤖 system | Timeout render whisper | `new` | — | Phân tích root cause |
-
-## 🛡️ Regression Knowledge: Đã Giải Quyết Triệt Để (Verified)
-| ID | Kit | Nội Dung | Đã Sửa Ở | Verified Bởi | Bài Học Phòng Ngừa |
-|:---|:---|:---|:---|:---|:---|
-| `fb-kit-000` | `writing-book` | Lỗi thiếu frontmatter | `v3.0.0` | 👤 sếp (test passed) | Luôn validate YAML frontmatter trước khi xuất file |
-
-## 🏛️ Builder Feedback (Chỉ Đạo Chiến Lược)
-| ID | Nội Dung | Trạng Thái | Bằng Chứng Áp Dụng |
-|:---|:---|:---|:---|
-| `fb-bld-001` | Card README 4 dòng + artifact_contracts | `verified` | Commit `5a0a405` |
-```
+Để đảm bảo không bị lỗi đè file trên Windows hoặc Linux khi nhiều Agent/Process cùng ghi JSONL:
+1. **FileLock Context Manager**: Sử dụng cơ chế khóa file dựa trên atomic lockfile (`.lock`) và kiểm tra PID / stale lock timeout (3 giây).
+2. **Write Sequence**:
+   `Acquire Lock` $\rightarrow$ `Open(append)` $\rightarrow$ `Write JSON` $\rightarrow$ `f.flush()` $\rightarrow$ `os.fsync()` $\rightarrow$ `Close` $\rightarrow$ `Release Lock`.
+3. **Zero Polling Lock Wait**: Thử khóa tối đa 10 lần (mỗi lần ngủ 50ms). Nếu quá thời gian, báo lỗi rõ ràng thay vì treo vĩnh viễn.
 
 ---
 
-## 6. Cơ Chế Builder Tự Học & Tự Audit
+## 6. Cơ Chế Whitelist Outputs & Sanitization
 
-Khi Builder kích hoạt (`/refactor-kit <kit-name>`, `/validate-kit <kit-name>`, `/create-kit`):
-
-1. **Giai Đoạn Pre-flight Feedback & Knowledge Audit**:
-   - Quét `kit_feedback.jsonl`, fold event theo `id`:
-     - **Chưa giải quyết / Chưa verified**: Lọc các feedback của kit có latest `status != "verified"` (`new`, `investigating`, `failed`, `retry`, `fixed`). Bắt buộc đưa vào danh sách sửa chữa & kiểm thử.
-     - **Regression Knowledge**: Lọc các feedback đã `verified` của kit hoặc domain tương ứng để đọc các `regression_rule`, chủ động chặn đứng lỗi ngay từ khâu thiết kế prompt/code.
-   - Báo cáo rõ ràng:
-     ```text
-     ⚠️ [FEEDBACK_AUDIT] Kit có 1 lỗi fixed chưa verify (fb-kit-001) và 1 bài học phòng ngừa đã verified (fb-kit-000).
-     → Builder sẽ kiểm chứng fb-kit-001 và áp dụng bài học của fb-kit-000 trong phiên làm việc này.
-     ```
-2. **Giai Đoạn Post-fix Verification Gate**:
-   - Khi sửa xong: Tự động append event `status: "fixed"` kèm mã commit và version mới.
-   - Khi kiểm thử thực tế pass: Append event `status: "verified"` kèm bằng chứng và bài học `regression_rule`.
-
----
-
-## 7. Kế Hoạch Dỡ Bỏ Hệ Thống Cũ (Deprecation & Clean-up)
-
-1. **Dỡ bỏ Workflows cồng kềnh**:
-   - Xóa bỏ các file `/log-feedback.md`, `/submit-evolution.md`, `/process-evolution.md`.
-   - Cập nhật `/refactor-kit` và `/evolve-kit` sang kết nối trực tiếp với `Downloads/Shared Workspace/Feedback/`.
-2. **Dọn dẹp mã nguồn & thư mục rác**:
-   - Xóa `evolution_submitter.py`, `evolution_engine.py`, `feedback_collector.py` cũ, và thư mục `evolution/inbox/`, `evolution/outbox/`.
-   - Thay thế bằng **1 script duy nhất**: `.agents/scripts/feedback_hub.py` (Append event, Fold state, Render Board, Query pending/regression knowledge).
-3. **Cập nhật Manifest SSOT & Dependency Graph**:
-   - Đồng bộ hóa registry, loại bỏ các references chết và tái sinh lockfile sạch sẽ.
+1. **Artifact Whitelist**:
+   - Khi Agent tạo sản phẩm vào `outputs/`, kiểm tra với khai báo `artifact_contracts.produces` trong `manifest.json`.
+   - Nếu artifact không nằm trong hợp đồng hoặc là file tạm, script/agent phải chuyển nó vào `.workspace/`.
+2. **Sanitizer Rule trong L1 Linter**:
+   - Quét thư mục `outputs/`: Cấm mọi file có đuôi `.tmp`, `.log`, `.cache`, `.chunk`, `.part`, `.bak` hoặc bắt đầu bằng dấu chấm `.*`.
