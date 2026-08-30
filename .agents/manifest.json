@@ -6,13 +6,16 @@
       "path": "agent/kit-architect.md",
       "requires": {
         "skills": {
-          "domain-profiling": "^2.2.0",
-          "kit-assembling": "^2.3.0",
-          "kit-evolving": "^2.3.0",
-          "kit-exporting": "^2.0.0",
-          "kit-verifying": "^2.3.0",
-          "prompt-compiling": "^2.2.0",
-          "skill-architecting": "^2.3.0"
+          "architecture-mapping": "^1.0.0",
+          "context-compression": "^1.0.0",
+          "domain-profiling": "^2.3.0",
+          "kit-assembling": "^2.6.0",
+          "kit-evolving": "^2.5.0",
+          "kit-exporting": "^2.1.0",
+          "kit-verifying": "^2.7.0",
+          "prompt-compiling": "^2.5.0",
+          "skill-architecting": "^2.6.0",
+          "ui-ux-pro-max": "^1.1.0"
         }
       },
       "tools": [
@@ -23,7 +26,7 @@
         "Edit",
         "Write"
       ],
-      "version": "2.0.0"
+      "version": "2.8.0"
     }
   },
   "contracts": {
@@ -32,23 +35,52 @@
     "rulesApi": "1.0.0",
     "workflowApi": "1.0.0"
   },
-  "kitVersion": "2026.8.17",
+  "kitVersion": "2026.8.22",
   "rules": {
-    "core-guardrails": {
-      "path": "rules/core-guardrails.md",
+    "collaboration-protocol": {
+      "description": "Giao thức cộng tác & điều phối hệ thống: Mandatory Grounding Gate, Truthful Status HUD Protocol, 3-Layer Cognitive Context, High-Automation Auto-Transition và Anti-Approval Fatigue.",
+      "path": "rules/collaboration-protocol.md",
       "priority": "P0",
       "trigger": "always_on",
       "version": "1.0.0"
     },
+    "core-guardrails": {
+      "description": "Core guardrails cho Kit Architect & Agent Kit Creator: workspace isolation, deterministic structural gates, Verification Abstraction, Anti-Copy Gate, Worker Briefing và chuẩn Anthropic Skill Creator.",
+      "path": "rules/core-guardrails.md",
+      "priority": "P0",
+      "trigger": "always_on",
+      "version": "2.6.0"
+    },
     "dynamic-routing": {
+      "description": "Phân loại Mode (Fast/Targeted/Deep/Refactor/Audit/Compression) và Capability Bundle dưới sự điều phối của Kit Architect.",
       "path": "rules/dynamic-routing.md",
       "priority": "P1",
       "trigger": "always_on",
-      "version": "2.0.0"
+      "version": "2.5.0"
     }
   },
   "schemaVersion": "1.0.0",
   "skills": {
+    "architecture-mapping": {
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "path": "skills/architecture-mapping/SKILL.md",
+      "scripts": [],
+      "version": "1.0.0"
+    },
+    "context-compression": {
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Grep"
+      ],
+      "path": "skills/context-compression/SKILL.md",
+      "scripts": [],
+      "version": "1.0.0"
+    },
     "domain-profiling": {
       "allowedTools": [
         "Read",
@@ -60,7 +92,7 @@
       ],
       "path": "skills/domain-profiling/SKILL.md",
       "scripts": [],
-      "version": "2.2.0"
+      "version": "2.3.0"
     },
     "kit-assembling": {
       "allowedTools": [
@@ -73,7 +105,7 @@
       ],
       "path": "skills/kit-assembling/SKILL.md",
       "scripts": [],
-      "version": "2.3.0"
+      "version": "2.6.0"
     },
     "kit-evolving": {
       "allowedTools": [
@@ -86,7 +118,7 @@
       ],
       "path": "skills/kit-evolving/SKILL.md",
       "scripts": [],
-      "version": "2.3.0"
+      "version": "2.5.0"
     },
     "kit-exporting": {
       "allowedTools": [
@@ -99,7 +131,7 @@
       ],
       "path": "skills/kit-exporting/SKILL.md",
       "scripts": [],
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     "kit-verifying": {
       "allowedTools": [
@@ -112,7 +144,7 @@
       ],
       "path": "skills/kit-verifying/SKILL.md",
       "scripts": [],
-      "version": "2.3.0"
+      "version": "2.7.0"
     },
     "prompt-compiling": {
       "allowedTools": [
@@ -125,7 +157,7 @@
       ],
       "path": "skills/prompt-compiling/SKILL.md",
       "scripts": [],
-      "version": "2.2.0"
+      "version": "2.5.0"
     },
     "skill-architecting": {
       "allowedTools": [
@@ -138,7 +170,26 @@
       ],
       "path": "skills/skill-architecting/SKILL.md",
       "scripts": [],
-      "version": "2.3.0"
+      "version": "2.6.0"
+    },
+    "ui-ux-pro-max": {
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Bash"
+      ],
+      "path": "skills/ui-ux-pro-max/SKILL.md",
+      "scripts": [
+        "skills/ui-ux-pro-max/scripts/core.py",
+        "skills/ui-ux-pro-max/scripts/design_system.py",
+        "skills/ui-ux-pro-max/scripts/reasoning_contract.py",
+        "skills/ui-ux-pro-max/scripts/search.py",
+        "skills/ui-ux-pro-max/scripts/validate_data.py"
+      ],
+      "version": "1.1.0"
     }
   },
   "support": {
@@ -154,6 +205,41 @@
     "type": "standard"
   },
   "workflows": {
+    "architecture-evolution": {
+      "artifactOutputs": [
+        "impact_assessment.md",
+        "change_proposal.md",
+        "validation_report.md",
+        "map.md"
+      ],
+      "path": "workflows/architecture-evolution.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "architecture-mapping",
+          "kit-evolving",
+          "kit-verifying"
+        ]
+      },
+      "version": "1.0.0"
+    },
+    "copy-kit": {
+      "artifactOutputs": [
+        "copy_summary.md"
+      ],
+      "path": "workflows/copy-kit.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "kit-exporting"
+        ]
+      },
+      "version": "1.0.0"
+    },
     "create-kit": {
       "artifactOutputs": [
         "domain_profile",
@@ -174,13 +260,80 @@
           "kit-verifying"
         ]
       },
-      "version": "2.1.0"
+      "version": "2.5.0"
+    },
+    "create-visual": {
+      "artifactOutputs": [
+        "design-system",
+        "visual-kit-html",
+        "visual-qa-report"
+      ],
+      "path": "workflows/create-visual.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "ui-ux-pro-max",
+          "kit-verifying"
+        ]
+      },
+      "version": "1.0.0"
+    },
+    "evolve-kit": {
+      "artifactOutputs": [
+        "EVOLUTION_LEDGER.json",
+        "snapshot_manifest.json",
+        "EVOLUTION_HISTORY.json"
+      ],
+      "path": "workflows/evolve-kit.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "kit-evolving",
+          "kit-verifying"
+        ]
+      },
+      "version": "2.0.0"
+    },
+    "log-feedback": {
+      "artifactOutputs": [
+        "feedback.jsonl"
+      ],
+      "path": "workflows/log-feedback.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "kit-evolving"
+        ]
+      },
+      "version": "1.0.0"
+    },
+    "process-evolution": {
+      "artifactOutputs": [
+        "evolution_report.md"
+      ],
+      "path": "workflows/process-evolution.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "kit-evolving",
+          "kit-verifying",
+          "kit-exporting"
+        ]
+      },
+      "version": "1.0.0"
     },
     "refactor-kit": {
       "artifactOutputs": [
-        "gap_analysis",
-        "delta_patch",
-        "validation_report"
+        "gap_analysis.md",
+        "delta_patch"
       ],
       "path": "workflows/refactor-kit.md",
       "requires": {
@@ -192,11 +345,12 @@
           "kit-verifying"
         ]
       },
-      "version": "2.1.0"
+      "version": "3.0.0"
     },
     "remember-kit": {
       "artifactOutputs": [
-        "memory-entry"
+        "memory_ref",
+        "lifecycle.json"
       ],
       "path": "workflows/remember-kit.md",
       "requires": {
@@ -207,11 +361,28 @@
           "kit-evolving"
         ]
       },
-      "version": "2.0.0"
+      "version": "3.0.0"
+    },
+    "submit-evolution": {
+      "artifactOutputs": [
+        "manifest.json",
+        "receipt.json"
+      ],
+      "path": "workflows/submit-evolution.md",
+      "requires": {
+        "agents": [
+          "kit-architect"
+        ],
+        "skills": [
+          "kit-exporting"
+        ]
+      },
+      "version": "1.0.0"
     },
     "validate-kit": {
       "artifactOutputs": [
-        "audit-report"
+        "audit_findings.json",
+        "validation_report.md"
       ],
       "path": "workflows/validate-kit.md",
       "requires": {
@@ -222,7 +393,7 @@
           "kit-verifying"
         ]
       },
-      "version": "2.0.0"
+      "version": "3.0.0"
     }
   }
 }
