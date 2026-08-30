@@ -298,38 +298,6 @@
       },
       "version": "2.0.0"
     },
-    "log-feedback": {
-      "artifactOutputs": [
-        "feedback.jsonl"
-      ],
-      "path": "workflows/log-feedback.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "kit-evolving"
-        ]
-      },
-      "version": "1.0.0"
-    },
-    "process-evolution": {
-      "artifactOutputs": [
-        "evolution_report.md"
-      ],
-      "path": "workflows/process-evolution.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "kit-evolving",
-          "kit-verifying",
-          "kit-exporting"
-        ]
-      },
-      "version": "1.0.0"
-    },
     "refactor-kit": {
       "artifactOutputs": [
         "gap_analysis.md",
@@ -362,22 +330,6 @@
         ]
       },
       "version": "3.0.0"
-    },
-    "submit-evolution": {
-      "artifactOutputs": [
-        "manifest.json",
-        "receipt.json"
-      ],
-      "path": "workflows/submit-evolution.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "kit-exporting"
-        ]
-      },
-      "version": "1.0.0"
     },
     "validate-kit": {
       "artifactOutputs": [

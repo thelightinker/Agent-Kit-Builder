@@ -89,7 +89,7 @@ Mọi kit sinh ra được tự động tích hợp:
 1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse (`hooks/validate-tool-call.mjs`).
 2. **Antigravity 6-Phase Contract (`antigravity.json`)**: Khai báo đầy đủ các pha discovery, mcp, hooks, orchestration, plugin, validation.
 3. **Specialist Boundary Enforcement (Dành cho Suite)**: Chặn đứng hành vi ghi đè file ngoài domain sở hữu của từng Specialist.
-4. **Closed-Loop Evolution Infrastructure**: Tự động trang bị `feedback_collector.py`, `evolution_submitter.py`, `/log-feedback`, `/submit-evolution` và thư mục `.agents/evolution/` để sẵn sàng kết nối vào Evolution Loop của Engine.
+4. **Central Feedback & Learning Connectivity**: Mọi Kit sinh ra được cấu hình kết nối trực tiếp với Central Feedback Hub tại `Downloads/Shared Workspace/Feedback/kit_feedback.jsonl` qua `feedback_hub.py` để ghi nhận lỗi runtime (`source: "system"`) và phản hồi người dùng (`source: "user"`), loại bỏ hoàn toàn các thư mục evolution cục bộ cồng kềnh.
 5. **Universal Filesystem & Workspace Contract**:
    - Khối lệnh `### 🔒 FILESYSTEM & WORKSPACE CONTRACT (BẤT BIẾN)` bắt buộc xuất hiện trong System Prompt của các Agent.
    - Nhốt toàn bộ intermediate files, chunks, debug logs, cache vào `.workspace/` để giữ `outputs/` sạch sẽ hoàn toàn.
