@@ -19,6 +19,23 @@
     "default_agent": "{DEFAULT_AGENT_NAME}",
     "entrypoint_workflow": "{WORKFLOW_NAME}"
   },
+  "artifact_contracts": {
+    "consumes": [
+      {
+        "type": "{CONSUMED_ARTIFACT_TYPE}",
+        "preferred_sources": ["Shared/{TARGET_SHARED_DIR}", "inputs"]
+      }
+    ],
+    "produces": [
+      {
+        "type": "{PRODUCED_ARTIFACT_TYPE}",
+        "default_scope": "project",
+        "path_pattern": "outputs/{OUTPUT_FILENAME_PATTERN}",
+        "promotable_to": "Shared/{TARGET_SHARED_DIR}"
+      }
+    ],
+    "workspace_dir": ".workspace"
+  },
   "agents": {
     "{ORCHESTRATOR_NAME}": {
       "role": "master-orchestrator",
@@ -68,5 +85,9 @@
       "path": "rules/{RULE_NAME}.md",
       "version": "1.0.0"
     }
+  },
+  "orchestration": {
+    "execution_policy": "execution_policy.json",
+    "complexity_ladder": ["L0_DIRECT", "L1_ROUTED", "L2_STAGED", "L3_FORK_JOIN"]
   }
 }

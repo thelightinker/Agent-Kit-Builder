@@ -79,5 +79,15 @@ class TestTemplates(unittest.TestCase):
             content = doc_path.read_text(encoding="utf-8")
             self.assertGreater(len(content), 100, f"{doc_path.name} must have substantive content")
 
+    def test_manifest_template_artifact_contracts(self):
+        manifest_template = self.templates_dir / "manifest-template.json"
+        self.assertTrue(manifest_template.is_file(), "manifest-template.json must exist")
+        data = json.loads(manifest_template.read_text(encoding="utf-8"))
+        self.assertIn("artifact_contracts", data)
+        contracts = data["artifact_contracts"]
+        self.assertIn("consumes", contracts)
+        self.assertIn("produces", contracts)
+        self.assertEqual(contracts.get("workspace_dir"), ".workspace")
+
 if __name__ == "__main__":
     unittest.main()
