@@ -89,5 +89,20 @@ class TestTemplates(unittest.TestCase):
         self.assertIn("produces", contracts)
         self.assertEqual(contracts.get("workspace_dir"), ".workspace")
 
+    def test_readme_card_template_and_assembling_skill(self):
+        readme_card = self.templates_dir / "readme-card-template.md"
+        self.assertTrue(readme_card.is_file(), "readme-card-template.md must exist")
+        content = readme_card.read_text(encoding="utf-8")
+        self.assertIn("Input:", content)
+        self.assertIn("Output:", content)
+        self.assertIn("Share:", content)
+        self.assertIn("Working Files:", content)
+
+        assembling_skill = self.root / "skills" / "kit-assembling" / "SKILL.md"
+        self.assertTrue(assembling_skill.is_file(), "kit-assembling/SKILL.md must exist")
+        skill_text = assembling_skill.read_text(encoding="utf-8")
+        self.assertIn("FILESYSTEM & WORKSPACE CONTRACT", skill_text)
+        self.assertIn(".workspace", skill_text)
+
 if __name__ == "__main__":
     unittest.main()
