@@ -19,6 +19,52 @@ if hasattr(sys.stdout, "reconfigure"):
 
 DEFAULT_HUB_DIR = Path.home() / "Downloads" / "Shared Workspace" / "Feedback"
 
+class FileLock:
+    """Cross-platform advisory file lock using atomic lockfile creation."""
+    def __init__(self, lock_path: Path, timeout: float = 3.0, poll_interval: float = 0.05):
+        self.lock_path = Path(lock_path)
+        self.timeout = timeout
+        self.poll_interval = poll_interval
+        self._is_locked = False
+
+    def acquire(self) -> None:
+        import time
+        deadline = time.time() + self.timeout
+        self.lock_path.parent.mkdir(parents=True, exist_ok=True)
+        while time.time() < deadline:
+            try:
+                fd = os.open(str(self.lock_path), os.O_CREAT | os.O_EXCL | os.O_RDWR)
+                with os.fdopen(fd, "w") as f:
+                    f.write(str(os.getpid()))
+                self._is_locked = True
+                return
+            except FileExistsError:
+                # Check for stale lock (> 10s old)
+                try:
+                    mtime = self.lock_path.stat().st_mtime
+                    if time.time() - mtime > 10.0:
+                        self.lock_path.unlink(missing_ok=True)
+                        continue
+                except OSError:
+                    pass
+                time.sleep(self.poll_interval)
+        raise TimeoutError(f"Could not acquire file lock for {self.lock_path} within {self.timeout}s")
+
+    def release(self) -> None:
+        if self._is_locked:
+            try:
+                self.lock_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+            self._is_locked = False
+
+    def __enter__(self) -> "FileLock":
+        self.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.release()
+
 def get_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -29,7 +75,7 @@ def generate_event_id() -> str:
     return f"evt-{ts}-{micro:03d}"
 
 def append_event(jsonl_path: Path, event_data: Dict[str, Any]) -> Dict[str, Any]:
-    """Append an immutable event to the specified JSONL stream."""
+    """Append an immutable event to the specified JSONL stream protected by FileLock."""
     jsonl_path = Path(jsonl_path)
     jsonl_path.parent.mkdir(parents=True, exist_ok=True)
     
@@ -41,8 +87,22 @@ def append_event(jsonl_path: Path, event_data: Dict[str, Any]) -> Dict[str, Any]
     if "id" not in entry:
         entry["id"] = f"fb-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
 
-    with open(jsonl_path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    # Invariant 2: Không evidence -> không được verified
+    if entry.get("status") == "verified":
+        ver = entry.get("verification")
+        evidence = ""
+        if isinstance(ver, dict):
+            evidence = str(ver.get("evidence", "")).strip()
+        if not evidence:
+            raise ValueError("Không evidence -> không được verified. (Bắt buộc cung cấp verification.evidence để đóng ticket)")
+
+    # Invariant 3: Không lock -> không được concurrent-write feedback
+    lock_file = jsonl_path.with_suffix(jsonl_path.suffix + ".lock")
+    with FileLock(lock_file):
+        with open(jsonl_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
     return entry
 
 def load_and_fold_events(jsonl_path: Path) -> Dict[str, Dict[str, Any]]:
@@ -71,10 +131,22 @@ def load_and_fold_events(jsonl_path: Path) -> Dict[str, Dict[str, Any]]:
             if fb_id not in folded:
                 folded[fb_id] = dict(evt)
                 folded[fb_id]["history"] = [dict(evt)]
+                if evt.get("failed_attempt"):
+                    folded[fb_id]["failed_attempts"] = [dict(evt["failed_attempt"])]
             else:
                 current = folded[fb_id]
                 history = current.get("history", [])
                 history.append(dict(evt))
+                
+                # If new status is failed or retry:
+                if evt.get("status") in ("failed", "retry"):
+                    # clear previous active resolution to avoid false positive "fixed"
+                    current["resolution"] = None
+                    if evt.get("failed_attempt"):
+                        failed_attempts = current.get("failed_attempts", [])
+                        failed_attempts.append(dict(evt["failed_attempt"]))
+                        current["failed_attempts"] = failed_attempts
+                
                 # Merge new attributes over current state
                 current.update(evt)
                 current["history"] = history

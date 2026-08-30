@@ -87,6 +87,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "agent.missing_worker_briefing": ("llm_patch", True),
     "agent.missing_dod": ("llm_patch", True),
     "agent.missing_filesystem_contract": ("llm_patch", True),
+    "output.sanitizer_violation": ("deterministic", True),
     "memory.missing_required_topics": ("llm_patch", True),
     "reference.unknown_skill": ("llm_patch", True),
     "reference.unknown_agent": ("llm_patch", True),
@@ -584,6 +585,16 @@ def validate_structural_anchors(root: Path, findings: list[Finding]) -> None:
         has_topics = bool(re.search(r"(?i)(domain|feedback|failure|pattern|convention|checklist|run|evolution)", text))
         if not has_topics:
             add(findings, "warning", "memory.missing_required_topics", rel, "MEMORY.md index lacks links to standard knowledge topic categories")
+
+    # 5. Output Sanitizer Anchor (Invariant 1: Không declared -> không xuất ra outputs)
+    outputs_dir = root / "outputs" if (root / "outputs").is_dir() else (root.parent / "outputs" if (root.name == ".agents" and (root.parent / "outputs").is_dir()) else None)
+    if outputs_dir and outputs_dir.is_dir():
+        FORBIDDEN_EXTENSIONS = {".tmp", ".log", ".cache", ".chunk", ".part", ".bak", ".swp"}
+        for item in outputs_dir.rglob("*"):
+            if item.is_file():
+                rel_file = item.relative_to(outputs_dir)
+                if item.suffix.lower() in FORBIDDEN_EXTENSIONS or item.name.startswith("."):
+                    add(findings, "error", "output.sanitizer_violation", Path("outputs") / rel_file, f"Forbidden intermediate/temporary file in outputs/: {item.name}. Intermediate files must be placed in .workspace/")
 
 
 def validate_template_compliance(root: Path, findings: list[Finding]) -> None:

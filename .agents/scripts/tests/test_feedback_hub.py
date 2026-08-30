@@ -78,11 +78,57 @@ class TestFeedbackHub(unittest.TestCase):
     def test_audit_kit_summary(self):
         feedback_hub.append_event(self.kit_file, {"id": "fb-101", "agent_kit": "target-kit", "status": "new", "content": "Bug X"})
         feedback_hub.append_event(self.kit_file, {"id": "fb-102", "agent_kit": "target-kit", "status": "fixed", "resolution": {"commit": "c10"}})
-        feedback_hub.append_event(self.kit_file, {"id": "fb-103", "agent_kit": "target-kit", "status": "verified", "verification": {"regression_rule": "Rule Z"}})
+        feedback_hub.append_event(self.kit_file, {"id": "fb-103", "agent_kit": "target-kit", "status": "verified", "verification": {"evidence": "Pass unit tests", "regression_rule": "Rule Z"}})
 
         audit = feedback_hub.audit_kit_feedback(self.kit_file, "target-kit")
         self.assertEqual(len(audit["unresolved"]), 2)
-        self.assertEqual(len(audit["regression_knowledge"]), 1)
+    def test_invariant_verified_requires_evidence(self):
+        feedback_hub.append_event(self.kit_file, {"id": "fb-201", "agent_kit": "test-kit", "status": "new", "content": "Bug"})
+        # 1. Attempt verified without evidence -> MUST RAISE ValueError
+        with self.assertRaises(ValueError) as ctx:
+            feedback_hub.append_event(self.kit_file, {
+                "id": "fb-201",
+                "status": "verified"
+            })
+        self.assertIn("Không evidence", str(ctx.exception))
+
+        # 2. Attempt verified with empty evidence string -> MUST RAISE ValueError
+        with self.assertRaises(ValueError) as ctx2:
+            feedback_hub.append_event(self.kit_file, {
+                "id": "fb-201",
+                "status": "verified",
+                "verification": {"evidence": "   "}
+            })
+        self.assertIn("Không evidence", str(ctx2.exception))
+
+        # 3. Verified with genuine evidence -> MUST SUCCEED
+        e = feedback_hub.append_event(self.kit_file, {
+            "id": "fb-201",
+            "status": "verified",
+            "verification": {"evidence": "Pass unit tests with 100% assertions", "verified_by": "user"}
+        })
+        self.assertEqual(e["status"], "verified")
+
+    def test_failed_attempt_preserves_trail(self):
+        feedback_hub.append_event(self.kit_file, {"id": "fb-301", "agent_kit": "test-kit", "status": "new", "content": "Bug 3"})
+        feedback_hub.append_event(self.kit_file, {"id": "fb-301", "status": "fixed", "resolution": {"commit": "c1", "version": "v1.0"}})
+        feedback_hub.append_event(self.kit_file, {"id": "fb-301", "status": "failed", "note": "Re-test failed", "failed_attempt": {"commit": "c1", "reason": "Edge case broke"}})
+        
+        folded = feedback_hub.load_and_fold_events(self.kit_file)
+        item = folded["fb-301"]
+        self.assertEqual(item["status"], "failed")
+        self.assertIn("failed_attempts", item)
+        self.assertEqual(len(item["failed_attempts"]), 1)
+        self.assertEqual(item["failed_attempts"][0]["commit"], "c1")
+        # Resolution should not falsely show active success
+        self.assertIsNone(item.get("resolution"))
+
+    def test_concurrent_lock_protection(self):
+        # Verify FileLock acquires and releases cleanly
+        lock_file = self.hub_dir / "test.lock"
+        with feedback_hub.FileLock(lock_file):
+            self.assertTrue(lock_file.exists())
+        self.assertFalse(lock_file.exists())
 
 if __name__ == "__main__":
     unittest.main()

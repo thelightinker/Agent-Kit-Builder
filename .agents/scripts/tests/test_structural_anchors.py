@@ -314,6 +314,31 @@ Do not fail.
         fs_errors = [f for f in findings if f.code == "agent.missing_filesystem_contract"]
         self.assertEqual(fs_errors, [])
 
+    def test_outputs_sanitizer_violation(self):
+        outputs_dir = self.root / "outputs"
+        outputs_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 1. Inject forbidden temporary and cache files
+        (outputs_dir / "dirty_log.tmp").write_text("temp", encoding="utf-8")
+        (outputs_dir / "raw_chunk.chunk").write_text("chunk", encoding="utf-8")
+        (outputs_dir / ".hidden_intermediate").write_text("hidden", encoding="utf-8")
+        (outputs_dir / "clean_book.epub").write_text("clean", encoding="utf-8")
+
+        findings: list[Finding] = []
+        validate_structural_anchors(self.root, findings)
+        sanitizer_errors = [f for f in findings if f.code == "output.sanitizer_violation"]
+        self.assertEqual(len(sanitizer_errors), 3)
+
+        # 2. Clean up forbidden files, leaving only valid deliverable
+        (outputs_dir / "dirty_log.tmp").unlink()
+        (outputs_dir / "raw_chunk.chunk").unlink()
+        (outputs_dir / ".hidden_intermediate").unlink()
+
+        findings.clear()
+        validate_structural_anchors(self.root, findings)
+        sanitizer_errors_after = [f for f in findings if f.code == "output.sanitizer_violation"]
+        self.assertEqual(len(sanitizer_errors_after), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
