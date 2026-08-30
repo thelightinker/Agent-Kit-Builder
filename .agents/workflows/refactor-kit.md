@@ -1,59 +1,88 @@
 ---
 name: refactor-kit
-description: "Cải tiến & Nâng cấp Agent Kit đã có sẵn theo chuẩn Delta Patch (Refactor Kit)."
-version: 2.1.0
+description: "Cải tiến & Nâng cấp Agent Kit đã có sẵn theo chuẩn Delta Patch (Refactor Kit), tiêu thụ audit_findings.json và quản lý hạn ngạch repair cycle."
+version: 3.0.0
 requires_agents: kit-architect
 requires_skills: [kit-evolving, kit-verifying]
-artifact_outputs: [gap_analysis, delta_patch, validation_report]
+artifact_outputs: [gap_analysis.md, delta_patch]
+topology: evaluator-optimizer
+trigger: chained_from_validation_or_manual
+permissions: read-write
+tools_allowed: [Read, Write, Edit, Glob, Grep, Bash]
+safe_outputs:
+  apply_delta_patch: Chỉ sửa đổi trong ./output/<kit-name>/
+max_retry_per_node: 2
 ---
 
-# Workflow: /refactor-kit
+# Workflow: /refactor-kit (Bản Vá Delta Patch & Quản Lý Chu Trình Sửa Lỗi)
 
-Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit đã có sẵn thông qua Gap Analysis và Delta Patch, có bảo vệ bởi Superpowers Process Gate.
+Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua việc tiêu thụ trực tiếp `audit_findings.json`, lập `gap_analysis.md` và thực thi bản vá tối giản Delta Patch.
+
+> 🚫 **NEGATIVE CONSTRAINT BẤT BIẾN**: `/refactor-kit` **TUYỆT ĐỐI KHÔNG** được phép tự cập nhật `lifecycle_state: "VALIDATED"`. Sau khi sửa chữa xong, workflow CHỈ được chuyển trạng thái sang `READY_FOR_VALIDATION` và bàn giao lại cho `/validate-kit`.
 
 ---
 
-## 🚦 BƯỚC 0: SUPERPOWERS PROCESS & SKILL GATE (BẮT BUỘC)
+## 🚦 BƯỚC 0: ENTRY GUARD & SUPERPOWERS GATE
 
-Trước khi chỉnh sửa bất kỳ file nào trong `./output/<kit-name>/`:
-
-1. **Invoke Brainstorming:** BẮT BUỘC invoke `superpowers:brainstorming`.
-2. **Khóa Refactor Scope:** Thống nhất với User: Điểm cần sửa, Nguyên nhân gốc rễ, Phạm vi ảnh hưởng và SemVer bump (`patch` hay `minor`).
-3. **Approval Gate:** Nhận sự phê duyệt (`APPROVED`) từ User cho Refactor Plan trước khi sửa code.
-   - 🚫 **HARD CONSTRAINT:** Không tự ý sửa file kit khi chưa xác định rõ Gap Analysis và nhận được sự đồng thuận.
-   - ⚠️ **Quy tắc Bypass:** Chỉ cho phép bypass khi chạy script tự động (như `export_kit.py` hay `generate_manifest.py`) không làm thay đổi logic nghiệp vụ.
+1. **Condition Guard & Pre-flight Feedback & Knowledge Audit:** 
+   - Kit ở trạng thái `lifecycle_state == "NEEDS_REFACTOR"` (hoặc yêu cầu refactor tính năng từ người dùng).
+   - Kiểm tra `audit_findings.json` từ `handoff.payload_file`.
+   - **Central Feedback Hub Audit**: Chạy `python .agents/scripts/feedback_hub.py --audit <kit-name>`:
+     - Nạp toàn bộ feedback chưa giải quyết (`new`, `investigating`, `failed`, `retry`) và các bản fix chưa verified (`fixed`) vào `gap_analysis.md`.
+     - Nạp các `regression_rule` đã `verified` từ kho tri thức của kit để làm rào chắn kiểm thử hồi quy.
+     - Thông báo trực tiếp cho sếp nếu phát hiện lỗi chưa đóng dứt điểm.
+2. **Brainstorming / Refactor Scope:**
+   - Nếu là refactor tính năng mới: Thống nhất Scope với User qua `superpowers:brainstorming`.
+   - Nếu là tự động sửa lỗi theo `audit_findings.json`: Bỏ qua Bước 0, tiến thẳng vào Bước 1.
 
 ---
 
 ## 🔄 STATE MACHINE NODES
 
-### Bước 1: Phân tích Sai lệch (Gap Analysis)
+### Bước 1: Phân tích Sai lệch theo Bằng chứng (Targeted Gap Analysis)
 - **Skill:** `kit-evolving`
-- **[Input Artifacts]:** Thư mục kit hiện tại (`./output/<kit-name>/`) + Feedback/Yêu cầu mới.
-- **[Output Artifacts]:** `gap_analysis.md` (Liệt kê chính xác điểm thiếu sót hoặc cần tối ưu).
+- **[Input Artifacts]:** `audit_findings.json` từ handoff payload + Thư mục kit (`./output/<kit-name>/`).
+- **[Output Artifacts]:** `gap_analysis.md` (Mapping trực tiếp từ từng mã lỗi `error.code` sang chính xác file và dòng cần sửa).
 - **[DoD]:** 
-  - [ ] Chỉ ra đúng nguyên nhân gốc rễ (Root Cause).
-  - [ ] Liệt kê danh sách file cụ thể bị tác động.
+  - [ ] Liệt kê 100% các lỗi từ `audit_findings.json`.
+  - [ ] Xác định nguyên nhân gốc rễ (Root Cause) và danh sách file cụ thể.
 - **[Evaluation Loop]:** Pass ➔ Chuyển Bước 2.
 
 ---
 
-### Bước 2: Thực hiện Bản vá (Delta Patch)
-- **Role Profile:** `@compiler` (nếu sửa prompt) hoặc `@architect` (nếu sửa skill/memory)
+### Bước 2: Thực hiện Bản vá & Tái Biên Dịch (Delta Patch & Recompilation)
+- **Role Profile:** `@compiler` (nếu sửa prompt) hoặc `@architect` (nếu sửa skill/memory/workflow)
+- **[Mandatory Grounding Template & Prerequisites]:** 
+  - Chỉ nạp đúng template của loại component đang được refactor (ví dụ: refactor workflow $\rightarrow$ đọc `templates/workflow-template.md`).
+  - **Đặc biệt với Skill**: Nếu tạo mới hoặc sửa đổi `skills/*/SKILL.md`, BẮT BUỘC phải nạp / kích hoạt `skill-creator` (`C:\Users\nhdcb\.gemini\config\plugins\anthropic-skills\skills\skill-creator\SKILL.md`) kết hợp với `templates/skill-template.md`.
 - **[Input Artifacts]:** `gap_analysis.md`
-- **[Output Artifacts]:** Các file được sửa đổi trong `./output/<kit-name>/`.
+- **[Output Artifacts]:** Các file được sửa đổi trong `./output/<kit-name>/` và các decision artifacts được tái biên dịch (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`).
 - **[DoD]:**
-  - [ ] Chỉ sửa các khối cần thiết (Delta Patch), giữ nguyên 100% các phần đang chạy tốt.
-  - [ ] Nâng version trong YAML Frontmatter và `manifest.json` theo chuẩn SemVer.
+  - [ ] Chỉ sửa đúng các khối lỗi (Delta Patch), giữ nguyên 100% các phần đang chạy tốt.
+  - [ ] Thỏa mãn Evidence Gate của component được refactor.
+  - [ ] Tự động chạy lại các script Compiler để cập nhật `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json` và `manifest.lock.json`.
+  - [ ] Nâng SemVer patch trong YAML Frontmatter và `manifest.json` nếu có thay đổi logic.
 - **[Evaluation Loop]:** Pass ➔ Chuyển Bước 3.
+
 
 ---
 
-### Bước 3: Tái kiểm định & Nghiệm thu (Re-verification)
-- **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
-- **[Input Artifacts]:** Kit sau khi refactor.
-- **[Output Artifacts]:** `validation_report.md`
+### Bước 3: Đóng Gói Handoff & Tái Thẩm Định (Handoff to Re-validation)
+- **Role Profile:** `@architect` / `@compiler`
+- **[Input Artifacts]:** Các file đã sửa đổi + `gap_analysis.md`.
+- **[Output Artifacts]:** `lifecycle.json` cập nhật trạng thái + Handoff contract.
 - **[DoD]:**
-  - [ ] `validate_kit.py` trả về `0 error(s)`.
-  - [ ] Regression test không bị gãy bất kỳ tiêu chí nào trước đó.
-- **[Evaluation Loop]:** Pass ➔ Hoàn tất & Bàn giao.
+  - [ ] Ghi nhận `repair_cycle_count += 1` trong `lineage` của `lifecycle.json`.
+  - [ ] Cập nhật `lifecycle_state: "READY_FOR_VALIDATION"`.
+  - [ ] Thiết lập Handoff payload:
+    ```json
+    {
+      "contract_version": "1.0.0",
+      "source_workflow": "refactor-kit",
+      "target_workflow": "validate-kit",
+      "payload_file": "gap_analysis.md",
+      "evidence_refs": ["audit_findings.json", "gap_analysis.md"],
+      "notes": "Delta patch applied. Handing off for re-validation."
+    }
+    ```
+- **[Evaluation Loop]:** Chuyển giao sang `/validate-kit` để chạy kiểm tra 3 lớp (nếu vượt quá 3 vòng repair cycle ➔ `[ESCALATE_HUMAN]`).

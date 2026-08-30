@@ -882,11 +882,26 @@ def main() -> int:
     parser.add_argument("--quick", action="store_true", help="Fast check of syntax and frontmatter only")
     parser.add_argument("--converge", action="store_true", help="Run bounded self-healing convergence loop (max 3 iterations)")
     parser.add_argument("--no-auto-heal", action="store_false", dest="auto_heal", default=True, help="Disable auto-healing stale lockfiles")
+    parser.add_argument("--audit-feedback", action="store_true", help="Audit feedback health from Central Feedback Hub")
     args = parser.parse_args()
     root = Path(args.path).resolve() if args.path else Path(__file__).resolve().parents[1]
     if not root.is_dir():
         parser.error(f"Toolkit directory does not exist: {root}")
     
+    if args.audit_feedback:
+        try:
+            from feedback_hub import audit_kit_feedback, DEFAULT_HUB_DIR
+            kit_name = root.name if root.name != ".agents" else "agent-kit-builder"
+            kit_jsonl = DEFAULT_HUB_DIR / "kit_feedback.jsonl"
+            audit = audit_kit_feedback(kit_jsonl, kit_name)
+            unres = audit["unresolved"]
+            know = audit["regression_knowledge"]
+            print(f"📋 [FEEDBACK AUDIT] Kit: {kit_name}")
+            print(f"   ├─ Chưa giải quyết / Chưa verified: {len(unres)}")
+            print(f"   └─ Bài học phòng ngừa (Verified): {len(know)}")
+        except Exception as e:
+            print(f"ℹ️ Feedback Hub check: {e}")
+
     if args.sync:
         count, files = sync_registry(root)
         print(f"[+] Synchronized {count} registry files: {', '.join(files)}")
