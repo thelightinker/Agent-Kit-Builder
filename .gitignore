@@ -1,7 +1,11 @@
 # Ignore output directory and scratch files
+Output/
 output/
 dist/
+scratch/
 __pycache__/
 *.pyc
+.pytest_cache/
 .superpowers/
 docs/
+
