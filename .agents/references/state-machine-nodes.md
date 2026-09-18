@@ -10,10 +10,11 @@ Mọi trạng thái (State Node) trong Workflow bắt buộc phải có đầy �
 
 ```
 [STATE: <Tên_Trạng_Thái>]
-[Input Artifacts]   — Danh sách khoá dữ liệu/file node được phép đọc.
-[Output Artifacts]  — Danh sách khoá dữ liệu/file node sẽ ghi vào.
-[DoD]               — Danh sách tiêu chí hoàn thành nhị phân (Pass 100% mới chuyển tiếp).
-[Evaluation Loop]   — Vòng lặp tự kiểm tra: Pass ➔ Chuyển tiếp | Fail ➔ Revise (tối đa Max Retry) | Quá hạn ➔ ESCALATE_HUMAN.
+[Input Artifacts]               — Danh sách khoá dữ liệu/file node được phép đọc.
+[Output Artifacts]              — Danh sách khoá dữ liệu/file node sẽ ghi vào.
+[Action Prompts & Execution]    — Chỉ thị hành động trực tiếp cho AI (đọc gì, phân tích gì, tương tác gì).
+[DoD]                           — Danh sách tiêu chí hoàn thành nhị phân (Pass 100% mới chuyển tiếp).
+[Evaluation Loop]               — Vòng lặp tự kiểm tra: Pass ➔ Chuyển tiếp | Fail ➔ Revise (tối đa Max Retry) | Quá hạn ➔ ESCALATE_HUMAN.
 ```
 
 ---
@@ -51,3 +52,9 @@ Node thực thi ➔ Kiểm tra Output theo DoD
 Nếu một Node ở bước sau phát hiện mâu thuẫn phủ định giả định của Node trước đó:
 - Khai báo **cạnh ngược tường minh** trong sơ đồ workflow kèm điều kiện kích hoạt.
 - Tuyệt đối không để agent âm thầm quay lại sửa mà không ghi log lý do.
+
+---
+
+## 5. ANTI-PATTERNS CẦN TRÁNH TUYỆT ĐỐI
+- **Paper Architecture Trap**: Chỉ viết metadata/schema YAML trừu tượng mà không có chỉ dẫn hành động cụ thể `[Action Prompts]` khiến LLM không biết phải làm gì trong phiên chat.
+- **Granularity / Deadlock Gate Trap**: Chia 1 workflow thành 20+ micro-phases với hàng chục Hard Lock Gates khiến AI bị khựng và người dùng cảm thấy workflow không chạy. Mỗi workflow chuẩn chỉ nên có 2–4 State Nodes logic và 1 Gate chốt giao nộp deliverable.

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompiledInvariantRules",
+  "description": "Compiled global workflow invariants and negative boundary rules for Invariant Guard evaluation.",
+  "type": "object",
+  "required": ["version", "generated_at", "global_invariants", "negative_boundaries"],
+  "properties": {
+    "version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "global_invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "check"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "check": { "type": "string" }
+        }
+      }
+    },
+    "negative_boundaries": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "cannot_modify": { "type": "array", "items": { "type": "string" } },
+          "cannot_trigger_state_transition": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -104,6 +104,10 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "state.unknown_key": ("llm_patch", True),
     "negative_scope.conflict": ("llm_patch", True),
     "evidence.missing_schema": ("llm_patch", True),
+    # routing integrity (P0 invariants)
+    "routing.empty_capabilities": ("llm_patch", True),
+    "routing.agent_missing_skill_matrix": ("llm_patch", True),
+    "routing.orchestrator_missing_routing_table": ("llm_patch", True),
     # escalate_human (ambiguous / high-risk)
     "json.invalid": ("escalate_human", False),
     "python.syntax": ("escalate_human", False),
@@ -682,6 +686,67 @@ def validate_compiler_artifacts(root: Path, findings: list[Finding]) -> None:
                 except Exception:
                     pass
         check_execution_policy(root, findings)
+
+    # === ROUTING INVARIANTS (P0) ===
+    # Any kit with ≥1 agent MUST have ≥1 compiled capability
+    # (Skip if ALL agents are routing_exempt, e.g. meta-agents like kit-architect)
+    agent_count = len(list((root / "agent").glob("*.md"))) if (root / "agent").is_dir() else 0
+    non_exempt_count = 0
+    if (root / "agent").is_dir():
+        for ap in (root / "agent").glob("*.md"):
+            rf, _ = extract_frontmatter(ap)
+            if rf:
+                fd = fallback_frontmatter(rf) if yaml is None else yaml.safe_load(rf)
+                if isinstance(fd, dict) and str(fd.get("routing_exempt", "")).lower() not in ("true", "yes"):
+                    non_exempt_count += 1
+    if non_exempt_count > 0 and not has_capabilities:
+        add(findings, "error", "routing.empty_capabilities", Path("agent/"),
+            f"Kit has {non_exempt_count} non-exempt agent(s) but 0 compiled capabilities in frontmatter. "
+            f"Routing will be blind. Populate 'capabilities:' block in agent frontmatter "
+            f"using domain profiling output (Section 6: Compiled Routing Contract).")
+
+    # Orchestrator with delegates_to MUST have routing table in body
+    # Agent with skills (non-orchestrator) MUST have skill invocation matrix
+    for agent_path in sorted((root / "agent").glob("*.md")):
+        raw_fm, _ = extract_frontmatter(agent_path)
+        if not raw_fm:
+            continue
+        fm_data = fallback_frontmatter(raw_fm) if yaml is None else yaml.safe_load(raw_fm)
+        if not isinstance(fm_data, dict):
+            continue
+        # Skip routing_exempt agents (meta-agents that route via prose)
+        if str(fm_data.get("routing_exempt", "")).lower() in ("true", "yes"):
+            continue
+        text = agent_path.read_text("utf-8", errors="replace")
+
+        delegates = fm_data.get("delegates_to", [])
+        if isinstance(delegates, str):
+            delegates = [d.strip() for d in delegates.strip("[]").split(",") if d.strip()]
+
+        if delegates:
+            has_routing_table = bool(re.search(
+                r"(?i)(routing\s*table|bảng\s*định\s*tuyến|intent.*pattern.*agent|dispatch\s*matrix)",
+                text
+            ))
+            if not has_routing_table:
+                add(findings, "error", "routing.orchestrator_missing_routing_table",
+                    agent_path.relative_to(root),
+                    "Master Orchestrator has delegates_to but no Routing Table section in body. "
+                    "Add '## ROUTING TABLE' with populated intent→agent→skill mapping.")
+        else:
+            skills_declared = fm_data.get("skills", [])
+            if isinstance(skills_declared, str):
+                skills_declared = [s.strip() for s in skills_declared.strip("[]").split(",") if s.strip()]
+            if skills_declared:
+                has_skill_matrix = bool(re.search(
+                    r"(?i)(skill\s*invocation\s*matrix|ma\s*trận\s*chiến\s*lược|skill\s*loading\s*protocol|strategy\s*matrix.*skill)",
+                    text
+                ))
+                if not has_skill_matrix:
+                    add(findings, "error", "routing.agent_missing_skill_matrix",
+                        agent_path.relative_to(root),
+                        f"Agent declares skills {skills_declared} but has no Skill Invocation Matrix in body. "
+                        f"Add '## SKILL INVOCATION MATRIX' with scenario→skill→reason mapping.")
 
 
 def check_execution_policy(root: Path, findings: list[Finding]) -> None:

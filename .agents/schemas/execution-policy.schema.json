@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompiledExecutionPolicy",
+  "description": "Compiled orchestration intent for AgentKit runtime. Advisory contract — tells Host Agent what orchestration mode, parallelism rules, retry limits, recovery cascade, and context handoff strategy the kit was designed for.",
+  "type": "object",
+  "required": ["schemaVersion", "generated_at", "mode", "parallel", "retry", "recovery", "context"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "ISO 8601 UTC timestamp of compilation"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["direct", "stage_machine", "fork_join"],
+      "description": "Primary orchestration mode. direct = single agent, stage_machine = multi-step sequential, fork_join = parallel reads + sequential writes"
+    },
+    "complexity_ceiling": {
+      "type": "string",
+      "enum": ["L0_DIRECT", "L1_ROUTED", "L2_STAGED", "L3_FORK_JOIN"],
+      "description": "Maximum complexity level this kit supports based on topology"
+    },
+    "parallel": {
+      "type": "object",
+      "required": ["reads", "writes"],
+      "properties": {
+        "reads": {
+          "type": "boolean",
+          "description": "Whether parallel read operations across agents are permitted"
+        },
+        "writes": {
+          "type": "boolean",
+          "const": false,
+          "description": "Parallel writes are ALWAYS false — architectural invariant"
+        }
+      },
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "required": ["max_attempts", "same_error_limit"],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "description": "Maximum retry attempts per task before escalation"
+        },
+        "same_error_limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2,
+          "description": "If same error signature appears this many times, skip retry and escalate"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recovery": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["repair", "reroute", "replan"]
+      },
+      "maxItems": 3,
+      "description": "Ordered recovery cascade. After exhausting all entries: HARD STOP + human escalation"
+    },
+    "context": {
+      "type": "string",
+      "enum": ["artifact_reference", "inline_summary", "full_text"],
+      "description": "Default context handoff strategy between agents"
+    }
+  },
+  "additionalProperties": false
+}

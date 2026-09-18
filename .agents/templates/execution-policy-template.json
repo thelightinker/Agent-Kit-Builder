@@ -1,0 +1,17 @@
+{
+  "$schema": "schemas/execution-policy.schema.json",
+  "schemaVersion": "1.0.0",
+  "generated_at": "{GENERATED_AT}",
+  "mode": "{MODE}",
+  "complexity_ceiling": "{COMPLEXITY_CEILING}",
+  "parallel": {
+    "reads": true,
+    "writes": false
+  },
+  "retry": {
+    "max_attempts": 2,
+    "same_error_limit": 1
+  },
+  "recovery": ["repair", "reroute", "replan"],
+  "context": "artifact_reference"
+}

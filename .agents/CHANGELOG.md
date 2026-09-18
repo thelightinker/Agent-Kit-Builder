@@ -1,5 +1,11 @@
 # Agent Kit Creator Changelog
 
+## 2026.8.22 (Mandatory Skill Creator Gate & Trigger Hardening)
+- **Zero-Bypass Mandatory Skill Creator Gate**: Thiết lập quy chuẩn bắt buộc 100% các thao tác tạo mới hoặc sửa đổi `SKILL.md` phải nạp và kích hoạt `skill-creator` (`plugins/anthropic-skills/skills/skill-creator`).
+- **Orchestrator Profile Hardening**: Bổ sung Negative Constraint trong profile `@architect` của `kit-architect` cấm sinh `SKILL.md` khi chưa nạp `skill-creator`.
+- **Dynamic Routing & Plugin Delegation**: Cập nhật `dynamic-routing` để tự động ủy quyền tới `skill-creator` khi tạo hoặc sửa skill.
+- **Workflow & Skill Hardening**: Cập nhật `create-kit` (Bước 3), `refactor-kit` (Bước 2) và `skill-architecting` nâng chuẩn kích hoạt `skill-creator` thành Mandatory Hard Gate.
+
 ## 2026.8.17 (v2.0.0 Evolvable Architecture Release)
 - **Unified Orchestrator**: Hợp nhất 5 agents thành 1 Orchestrator duy nhất (`kit-architect`) với 4 Dynamic Role Profiles (`@analyst`, `@compiler`, `@architect`, `@auditor`).
 - **Focused Skills**: Tinh gọn từ 21 skills xuống 7 Focused Skills (`domain-profiling`, `prompt-compiling`, `skill-architecting`, `kit-assembling`, `kit-verifying`, `kit-exporting`, `kit-evolving`).

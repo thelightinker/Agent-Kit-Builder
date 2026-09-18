@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompiledRoutingIndex",
+  "description": "Compiled snapshot of all capability declarations, preconditions, postconditions, and failure policies in the kit.",
+  "type": "object",
+  "required": ["version", "generated_at", "capabilities", "intent_map"],
+  "properties": {
+    "version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "domain": { "type": "string" },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "owner_agent", "preconditions", "postconditions", "evidence_schema", "failure_policy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_-]+\\.[a-z0-9_-]+\\.[a-z0-9_-]+$" },
+          "owner_agent": { "type": "string" },
+          "owned_skills": { "type": "array", "items": { "type": "string" } },
+          "intent_patterns": { "type": "array", "items": { "type": "string" } },
+          "preconditions": {
+            "type": "object",
+            "properties": {
+              "structural": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["key", "value"],
+                  "properties": {
+                    "key": { "type": "string" },
+                    "value": {}
+                  }
+                }
+              },
+              "semantic": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "evaluator"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "evaluator": { "type": "string" },
+                    "required": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "postconditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["key", "value"],
+              "properties": {
+                "key": { "type": "string" },
+                "value": {}
+              }
+            }
+          },
+          "evidence_schema": { "type": "object" },
+          "failure_policy": { "type": "object" },
+          "checkpoint_resume_policy": { "type": "object" },
+          "negative_scope": { "type": "object" }
+        }
+      }
+    },
+    "intent_map": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  }
+}

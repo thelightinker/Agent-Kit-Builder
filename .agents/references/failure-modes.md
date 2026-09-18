@@ -49,6 +49,16 @@ Builder dùng tài liệu này để phòng ngừa và phát hiện lỗi.
 | **Dead Letter** | Agent gửi handoff nhưng không ai nhận | Handoff map thiếu | Mọi handoff phải map tới agent cụ thể trong Manifest |
 | **Overhead > Value** | Bộ 5 agent cho task 1 agent làm đủ | Không kiểm tra: multi-state agent có đủ không? | Check: nếu 1 agent multi-state đủ → không cần SUITE_BUILD |
 
+## 🔴 Critical — Routing Architecture Failures (P0)
+
+| Failure Mode | Triệu chứng | Nguyên nhân | Đòn bẩy khắc phục |
+|:-------------|:-------------|:------------|:-------------------|
+| **Silent Agent Bypass (F1)** | Task cần Agent nhưng hệ thống xử lý inline, không gọi Agent | Orchestrator thiếu Routing Table hoặc Entry Gate | Populate Routing Table trong Orchestrator prompt từ Domain Profile routing_table |
+| **Skill Amnesia (F2)** | Agent được gọi nhưng không nạp Skill, xử lý bằng general reasoning | Agent thiếu Skill Invocation Matrix hoặc Hard Loading Rule | Inject Skill Invocation Matrix vào mọi Agent prompt, kèm HARD RULE đọc SKILL.md |
+| **Orchestrator Paralysis (F3)** | Orchestrator được kích hoạt nhưng không biết phân bổ task cho Agent nào | routing_index.json rỗng, capabilities frontmatter là placeholder | Bắt buộc Domain Profiling xuất routing_table, Prompt Compiler populate capabilities |
+| **Broken Composition (F4)** | Task multi-step chỉ step 1 chạy, step 2+ bị bỏ qua | Thiếu Execution Plan Protocol, không track dependency giữa steps | Inject Execution Plan Composition vào Orchestrator với dependency graph |
+| **Phantom Routing (F5)** | routing_index.json tồn tại nhưng rỗng, kit pass validation giả | Compiler compile placeholder thành empty, validator không check empty | Thêm routing.empty_capabilities lint rule: ≥1 agent → ≥1 capability bắt buộc |
+
 ---
 
 ## Self-Check trước khi deliver
@@ -64,4 +74,8 @@ Builder chạy qua danh sách này trước khi hoàn thành Agent Kit:
 □ Provider: không lock-in?
 □ Tier: phù hợp complexity?
 □ Dynamic Enhancement: đã chạy, findings đã xử lý?
+□ Routing Table: Orchestrator prompt có bảng routing đã populated (không placeholder)?
+□ Skill Invocation Matrix: Mọi Agent prompt có bảng scenario→skill→reason?
+□ routing_index.json: ≥1 capability (không rỗng)?
 ```
+

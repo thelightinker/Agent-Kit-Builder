@@ -1,0 +1,82 @@
+{
+  "suite_name": "Regression Benchmark v1",
+  "version": "1.0.0",
+  "description": "Bộ kiểm thử hồi quy 5 domain chuẩn hóa nhằm phát hiện regression khi nâng cấp Agent Kit Builder.",
+  "test_cases": [
+    {
+      "id": "REG-01-CONTENT",
+      "name": "Content Marketing Domain - Anti-Cliche & Readability Verification",
+      "domain": "content-marketing",
+      "risk_profile": ["Voice Degeneration", "AI Cliches", "Omission of CTA"],
+      "expected_archetypes": ["Presence", "Negative Completeness (Banned Words)"],
+      "target_file": "references/verification-abstraction.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "keywords": ["Readability", "Banned Words", "Negative Completeness"],
+          "description": "Verification abstraction supports Content Readability and Banned Words"
+        }
+      ]
+    },
+    {
+      "id": "REG-02-GROWTH",
+      "name": "E-commerce Growth Domain - Deterministic Computation Guardrail",
+      "domain": "ecommerce-growth",
+      "risk_profile": ["Arithmetic Hallucination", "Metric Inconsistency"],
+      "expected_archetypes": ["Presence", "Deterministic Computation Guard"],
+      "target_file": "skills/prompt-compiling/SKILL.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "keywords": ["Deterministic Arithmetic", "phép tính", "script Python"],
+          "description": "Prompt compiling mandates script execution for multi-variable math"
+        }
+      ]
+    },
+    {
+      "id": "REG-03-UIUX",
+      "name": "UI/UX Visual Kit Domain - Token SSOT & Contrast Guard",
+      "domain": "ui-ux",
+      "risk_profile": ["Visual Regression", "Color Inconsistency", "WCAG Failure"],
+      "expected_archetypes": ["Presence", "Visual QA Evidence", "Token Compliance"],
+      "target_file": "templates/design-spec-template.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "keywords": ["colors:", "typography:", "rounded:", "spacing:"],
+          "description": "Design spec template enforces complete YAML design tokens"
+        }
+      ]
+    },
+    {
+      "id": "REG-04-LEGAL",
+      "name": "Legal Review Domain - Negative Completeness Matrix (Omission Detection)",
+      "domain": "legal-compliance",
+      "risk_profile": ["Missing Mandatory Clause", "Hidden Liability", "Omission Error"],
+      "expected_archetypes": ["Presence", "Negative Completeness Matrix"],
+      "target_file": "skills/prompt-compiling/SKILL.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "keywords": ["Negative Completeness Matrix", "MISSING", "Omission"],
+          "description": "Prompt compiling enforces two-way negative completeness checking"
+        }
+      ]
+    },
+    {
+      "id": "REG-05-DEVOPS",
+      "name": "DevOps & System Domain - Transactional Mutation & Rollback Pattern",
+      "domain": "devops-system",
+      "risk_profile": ["State Corruption", "Unsafe Execution", "Non-atomic Failures"],
+      "expected_archetypes": ["Presence", "Transactional Mutation Safety"],
+      "target_file": "templates/workflow-template.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "keywords": ["Transactional Mutation", "Snapshot", "Rollback"],
+          "description": "Workflow template provides atomic snapshot and rollback pattern"
+        }
+      ]
+    }
+  ]
+}

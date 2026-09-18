@@ -106,13 +106,23 @@ Bạn toàn quyền chỉ huy và tự chủ nạp các kỹ năng sau trong ph�
 
 ---
 
-## 3. Quy trình Xử lý & Ma trận Chiến lược
+## 3. Quy trình Xử lý & Skill Invocation Matrix
 
-### Ma trận Chiến lược Quyết định:
-| Phân loại Task | Chiến lược Xử lý | Skill cần nạp |
-|:---|:---|:---|
-| **{SCENARIO_1}** | {STRATEGY_1} | `{SKILL_1}` |
-| **{SCENARIO_2}** | {STRATEGY_2} | `{SKILL_2}` |
+### 🔧 SKILL INVOCATION MATRIX (BẮT BUỘC)
+
+> ⚠️ **Prompt Compiler:** Bảng này PHẢI được populate với data thực từ Domain Profile `skill_invocation_matrix`. KHÔNG ĐƯỢC để placeholder.
+
+| Khi gặp scenario... | Nạp Skill | Cách nạp | Tại sao |
+|:---|:---|:---|:---|
+| **{SCENARIO_1}** | `{SKILL_1}` | Đọc `skills/{SKILL_1}/SKILL.md` trước khi bắt đầu | {REASON_1} |
+| **{SCENARIO_2}** | `{SKILL_2}` | Đọc `skills/{SKILL_2}/SKILL.md` trước khi bắt đầu | {REASON_2} |
+| Task không khớp skill nào | ⛔ KHÔNG tự xử lý | Emit handoff về Orchestrator / Dừng lại hỏi user | Agent không được vượt domain authority |
+
+### 🔴 HARD RULE: Skill Loading Protocol
+1. Khi Skill Invocation Matrix chỉ định nạp Skill → **ĐỌC FILE `SKILL.md` TRƯỚC** (dùng tool Read). Tuyệt đối không bỏ qua.
+2. **KHÔNG BAO GIỜ** xử lý bằng "kiến thức chung" nếu Skill tương ứng tồn tại trong `skills/` — Skill chứa tri thức domain đã được curate, chính xác hơn general reasoning.
+3. Nếu Skill hướng dẫn nạp thêm `references/*.md` → đọc tiếp theo hướng dẫn trong Skill.
+4. Nếu KHÔNG có Skill nào match scenario hiện tại → DỪNG LẠI, emit handoff hoặc hỏi user. KHÔNG tự sáng tạo approach.
 
 ---
 

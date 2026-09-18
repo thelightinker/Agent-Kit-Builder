@@ -3,11 +3,12 @@
 ## Entry points
 
 ### `validate_kit.py`
-Tự kiểm định cấu trúc và liên kết của Agent Kit. Kiểm tra JSON schema, SemVer frontmatter, tham chiếu chéo workflow/agent/skill, bộ đăng ký manifest, Markdown links, cú pháp Python, v.v.
+Tự kiểm định cấu trúc và liên kết của Agent Kit. Kiểm tra JSON schema, SemVer frontmatter, tham chiếu chéo workflow/agent/skill, bộ đăng ký manifest, Markdown links, cú pháp Python, v.v. Kèm cờ `--audit` để đánh giá chất lượng Audit 3 lớp.
 
 ```bash
 python .agents/scripts/validate_kit.py
 python .agents/scripts/validate_kit.py --json
+python .agents/scripts/validate_kit.py --audit <path-to-kit>
 ```
 
 ### `generate_manifest.py`
@@ -31,6 +32,7 @@ Chạy tự động các bộ kiểm thử eval suite (`evals/*.json`) và tính
 
 ```bash
 python .agents/scripts/eval_runner.py evals/eval_suite_example.json .agents
+python .agents/scripts/eval_runner.py --regression
 ```
 
 ### `export_kit.py`
@@ -40,13 +42,30 @@ python .agents/scripts/eval_runner.py evals/eval_suite_example.json .agents
 python .agents/scripts/export_kit.py .agents ./dist --target all
 ```
 
-### `audit_kit.py`
-Đánh giá chất lượng Agent Kit theo quy trình Audit 3 lớp và thang điểm Rubric 5 sao.
+### `copy_kit.py`
+Sao chép an toàn Agent Kit từ thư mục output sang thư mục quản lý dự án AI Agent đích mà không làm thay đổi file nguồn.
 
 ```bash
-python .agents/scripts/audit_kit.py
+python .agents/scripts/copy_kit.py ./output/<kit-name>
+```
+
+### `feedback_hub.py`
+Append-only event stream JSONL cho feedback thực chiến của Kit và Builder.
+
+```bash
+python .agents/scripts/feedback_hub.py --summary
+```
+
+### `equip_evolution.py`
+Tự động trang bị trọn bộ Evolution Suite (scripts, workflows, hooks) cho Agent Kit.
+
+```bash
+python .agents/scripts/equip_evolution.py ./output/<kit-name>
+python .agents/scripts/equip_evolution.py --all
 ```
 
 ## Exit-code contract
 - `0`: kiểm tra đạt (pass)
 - `1`: phát hiện lỗi (fail)
+
+Xem thêm bảng tra cứu nhanh tại [`BUILDER_CLI.md`](BUILDER_CLI.md).

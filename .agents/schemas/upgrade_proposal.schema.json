@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UpgradeProposalSchema",
+  "description": "Schema SSOT cho các đề xuất nâng cấp Agent Kit Creator và Kit con theo chuẩn Net System Gain.",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "title",
+    "target_scope",
+    "extraction_provenance",
+    "evidence",
+    "value_deltas",
+    "cost_deltas"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^UPG-[0-9]{4}-[0-9]{3,}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 10
+    },
+    "target_scope": {
+      "type": "string",
+      "enum": ["builder_core", "kit_architecture", "component"]
+    },
+    "extraction_provenance": {
+      "type": "object",
+      "required": [
+        "what_works",
+        "why_it_works",
+        "generalizable_principle",
+        "domain_specific_discarded",
+        "adapted_architecture_plan"
+      ],
+      "properties": {
+        "what_works": { "type": "string", "minLength": 10 },
+        "why_it_works": { "type": "string", "minLength": 10 },
+        "generalizable_principle": { "type": "string", "minLength": 10 },
+        "domain_specific_discarded": { "type": "string" },
+        "adapted_architecture_plan": { "type": "string", "minLength": 10 }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "benchmarks",
+        "automated_tests",
+        "measurable_metrics"
+      ],
+      "properties": {
+        "benchmarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["metric_name", "baseline", "after", "source"],
+            "properties": {
+              "metric_name": { "type": "string" },
+              "baseline": { "type": "number" },
+              "after": { "type": "number" },
+              "source": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "automated_tests": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "measurable_metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "delta_summary"],
+            "properties": {
+              "name": { "type": "string" },
+              "delta_summary": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "execution_logs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "value_deltas": {
+      "type": "object",
+      "required": [
+        "power",
+        "flexibility",
+        "automation",
+        "optimization",
+        "collaboration"
+      ],
+      "properties": {
+        "power": { "type": "number", "minimum": -2.0, "maximum": 2.0 },
+        "flexibility": { "type": "number", "minimum": -2.0, "maximum": 2.0 },
+        "automation": { "type": "number", "minimum": -2.0, "maximum": 2.0 },
+        "optimization": { "type": "number", "minimum": -2.0, "maximum": 2.0 },
+        "collaboration": { "type": "number", "minimum": -2.0, "maximum": 2.0 }
+      },
+      "additionalProperties": false
+    },
+    "cost_deltas": {
+      "type": "object",
+      "required": [
+        "token_delta_percent",
+        "latency_delta_percent",
+        "structural_complexity_delta",
+        "human_attention_friction",
+        "regression_risk"
+      ],
+      "properties": {
+        "token_delta_percent": { "type": "number" },
+        "latency_delta_percent": { "type": "number" },
+        "structural_complexity_delta": { "type": "number", "minimum": -2.0, "maximum": 2.0 },
+        "human_attention_friction": { "type": "number", "minimum": 0.0, "maximum": 3.0 },
+        "regression_risk": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

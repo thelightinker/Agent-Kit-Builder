@@ -14,6 +14,8 @@ Bộ nhớ dài hạn (persistent memory) của Agent Kit Creator. Được đ�
 *   **File**: `memory/golden-examples/README.md`
 *   **Mục đích**: Lưu giữ danh sách các ví dụ Agent Kit đạt chuẩn 5 sao để tham khảo làm mốc chất lượng (eval seed).
 *   **Các ví dụ hiện có**:
+    *   `memory/golden-examples/writing-book-agent-v3.md` (Evolved Full Suite — Decoupled Goldilocks Workflows + 5 Craft Doctrines + Zero Voice Mutation + World Cup Winner 🏆)
+    *   `memory/golden-examples/writing-book-agent-v2.md` (Full Suite — 6 Specialists + SVG Engine + 6 Workflows)
     *   `memory/golden-examples/book-writing-kit.md` (Standard Kit)
     *   `memory/golden-examples/micro-agent-example.md` (Micro Kit)
     *   `memory/golden-examples/short-video-builder-kit.md` (Pipeline Kit — Idea→MP4)

@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-08-25T18:42:19.187625+00:00",
+  "global_invariants": [],
+  "negative_boundaries": {
+    "kit-architect": {
+      "cannot_modify": [],
+      "cannot_trigger_state_transition": []
+    }
+  },
+  "version": "2026.8.22"
+}

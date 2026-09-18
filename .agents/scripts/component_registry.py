@@ -150,15 +150,30 @@ def build_manifest(root: Path) -> dict[str, Any]:
         }
 
     rules: dict[str, dict[str, Any]] = {}
+    valid_triggers = {"always_on", "manual", "model_decision"}
+    valid_priorities = {"P0", "P1", "P2"}
     for path in sorted((root / "rules").glob("*.md")):
         data = load_frontmatter(path)
         name = path.stem
-        rules[name] = {
+        trigger = str(data.get("trigger", "")).strip()
+        priority = str(data.get("priority", "")).strip()
+        desc = str(data.get("description", "")).strip()
+        if trigger not in valid_triggers:
+            raise ValueError(f"Rule {name} has invalid trigger {trigger!r}. Must be one of {sorted(valid_triggers)}")
+        if priority not in valid_priorities:
+            raise ValueError(f"Rule {name} has invalid priority {priority!r}. Must be one of {sorted(valid_priorities)}")
+        if trigger == "model_decision" and len(desc) < 20:
+            raise ValueError(f"Rule {name} with trigger='model_decision' must provide a 'description' (>= 20 chars)")
+        
+        rule_entry = {
             "path": _relative(root, path),
             "version": str(data.get("version", "")),
-            "priority": str(data.get("priority", "")),
-            "trigger": str(data.get("trigger", "")),
+            "priority": priority,
+            "trigger": trigger,
         }
+        if desc:
+            rule_entry["description"] = desc
+        rules[name] = rule_entry
 
     orchestrator_name = next((name for name, data in agents.items() if data.get("delegatesTo")), None)
     topology_type = "hierarchical-multi-agent" if orchestrator_name else ("standard" if agents else "micro")
@@ -198,7 +213,7 @@ def component_files(root: Path) -> list[Path]:
     """Return all managed source files covered by the integrity lock."""
     root = root.resolve()
     files: list[Path] = []
-    for name in ("VERSION", "README.md", "ARCHITECTURE.md", "CHANGELOG.md", "mcp_config.json"):
+    for name in ("VERSION", "README.md", "ARCHITECTURE.md", "CHANGELOG.md", "mcp_config.json", "UPGRADE_PRINCIPLES.md"):
         path = root / name
         if path.is_file():
             files.append(path)

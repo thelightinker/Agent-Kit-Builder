@@ -34,6 +34,61 @@ delegates_to: [{SPECIALIST_A_NAME}, {SPECIALIST_B_NAME}]
 
 ---
 
+## 🚦 ENTRY GATE: Task Classification (BẮT BUỘC CHẠY ĐẦU TIÊN)
+
+Trước mọi hành động, phân loại task theo Complexity Ladder:
+
+| Signal | Execution Mode | Action |
+|:---|:---|:---|
+| Task chỉ cần 1 thao tác đơn (format, lookup, compile) | **L0 Direct** | Thực thi ngay bằng skill/script. Không gọi Agent. |
+| Task thuộc 1 domain duy nhất, 1 Agent rõ ràng trong Routing Table | **L1 Routed** | Gọi 1 Agent bằng tool `Agent` với Worker Briefing đầy đủ. |
+| Task đa bước tuần tự, output bước trước là input bước sau | **L2 Staged** | Lập Execution Plan → gọi Agent tuần tự theo dependency. |
+| Task có 2+ nhánh độc lập rồi hợp nhất kết quả | **L3 Fork→Join** | Fork parallel reads → Join synthesis → Sequential writes. |
+
+**HARD RULE:** Nếu task chạm ≥ 2 domain trong Specialist Registry → BẮT BUỘC L2/L3. KHÔNG BAO GIỜ xử lý inline.
+
+---
+
+## 📡 ROUTING TABLE (COMPILED — DO NOT MODIFY AT RUNTIME)
+
+> ⚠️ **Prompt Compiler:** Bảng này PHẢI được populate với data thực từ Domain Profile. KHÔNG ĐƯỢC để placeholder.
+
+| User Intent Pattern | Target Agent | Required Skills | Execution Mode |
+|:---|:---|:---|:---|
+| "{INTENT_PATTERN_1}" | `{SPECIALIST_A_NAME}` | `{SKILL_A1}` | {EXECUTION_MODE_1} |
+| "{INTENT_PATTERN_2}" | `{SPECIALIST_B_NAME}` | `{SKILL_B1}` | {EXECUTION_MODE_2} |
+| "{CROSS_DOMAIN_INTENT}" | **STAGED** | Step 1: `{SPECIALIST_A_NAME}` → Step 2: `{SPECIALIST_B_NAME}` | L2 Staged |
+| Intent không khớp bất kỳ pattern nào | **ESCALATE** | — | ⛔ Hỏi user |
+
+### Invocation Protocol (Khi Routing Table match):
+```
+Tool: Agent
+Agent: {agent_name}
+Briefing:
+  1. Goal & Context: [Mục tiêu cụ thể + lý do]
+  2. Ruled Out: [Những gì Orchestrator đã kiểm tra/loại trừ]
+  3. File Scope: [Chính xác file path và line range]
+  4. Negative Boundaries: [File/domain KHÔNG được đụng]
+  5. Verification: [Lệnh/tiêu chí kiểm tra kết quả]
+```
+
+### Execution Plan Composition (Cho L2/L3):
+
+Khi task cần nhiều Agent phối hợp, BẮT BUỘC lập Execution Plan trước khi dispatch:
+
+| Step | Agent | Skill(s) | Input Artifact | Output Artifact | Dependency |
+|:---:|:---|:---|:---|:---|:---|
+| 1 | `{SPECIALIST_A_NAME}` | `{SKILL_A1}` | user_input | `shared_state/{ARTIFACT_1}` | — |
+| 2 | `{SPECIALIST_B_NAME}` | `{SKILL_B1}` | `shared_state/{ARTIFACT_1}` | `outputs/{FINAL_OUTPUT}` | Step 1 |
+
+**Rules:**
+- Steps có dependency → Sequential.
+- Steps không dependency → Parallel (L3).
+- Mỗi step: Orchestrator kiểm tra output artifact tồn tại trước khi chuyển step tiếp theo.
+- Nếu step fail → Recovery Cascade: repair(1) → reroute(1) → replan(1) → STOP.
+
+---
+
 ## 🎯 ORCHESTRATION PROTOCOL (ACO Lite)
 
 ### Complexity Ladder

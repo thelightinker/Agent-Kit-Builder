@@ -1,109 +1,107 @@
 ---
 name: {WORKFLOW_NAME}
-description: {DESCRIPTION_OF_WORKFLOW_PURPOSE_AND_TRIGGERS}
-version: 1.0.0
-requires_agents: [{REQUIRED_AGENT_1}]
-requires_skills: [{REQUIRED_SKILL_1}, {REQUIRED_SKILL_2}]
-artifact_outputs: [{OUTPUT_1}, {OUTPUT_2}]
-# === MASTER FRAMEWORK EXTENSIONS (Compile-Time) ===
-topology: {TOPOLOGY} # [chaining | routing | parallelization | orchestrator-workers | evaluator-optimizer | autonomous-agent]
-trigger: {TRIGGER_TYPE} # [manual | schedule | event]
-permissions: {PERMISSIONS} # mặc định: read-only
-tools_allowed: [{TOOL_1}, {TOOL_2}] # namespaced & consolidated tools
-safe_outputs:
-  {SAFE_ACTION}: {RANG_BUOC_CU_THE}
+description: {DESCRIPTION_MAX_250_CHARS}
+version: 4.0.0
+initial_state: {INITIAL_STATE_NAME}
+terminal_states: [{TERMINAL_STATE_NAME}]
+global_invariants:
+  - id: {INVARIANT_ID_1}
+    description: "{INVARIANT_DESCRIPTION_1}"
+    check: "{STATE_CHECK_EXPRESSION_1}"
+  - id: {INVARIANT_ID_2}
+    description: "{INVARIANT_DESCRIPTION_2}"
+    check: "{STATE_CHECK_EXPRESSION_2}"
+nodes:
+  {NODE_1_NAME}:
+    required_outcome: "{REQUIRED_OUTCOME_KEY_1}"
+    human_gate: false
+    transitions:
+      - to: "{NODE_2_NAME}"
+        when: "{STATE_CONDITION_EXPR_1}"
+  {NODE_2_NAME}:
+    required_outcome: "{REQUIRED_OUTCOME_KEY_2}"
+    human_gate: true
+    transitions:
+      - to: "{TERMINAL_STATE_NAME}"
+        when: "{STATE_CONDITION_EXPR_2}"
+topology: {TOPOLOGY} # [chaining | routing | sequential | parallelization | orchestrator-workers | evaluator-optimizer | autonomous-agent]
+trigger: {TRIGGER_TYPE} # [manual | chained | schedule | event]
 max_retry_per_node: 2
 ---
 
-# Workflow Master Template: {WORKFLOW_TITLE}
+# 🔄 MASTER FLOW: /{WORKFLOW_NAME} ({WORKFLOW_TITLE})
 
-> **Mục tiêu**: {Mô tả mục tiêu bằng ngôn ngữ tự nhiên như giải thích cho đồng nghiệp mới: bối cảnh dự án, constraint tuyệt đối, định nghĩa "xong" cấp toàn workflow.}
+> **Mục tiêu**: {Mô tả mục tiêu cốt lõi, bối cảnh thực thi, ràng buộc tuyệt đối và định nghĩa "Xong" cấp toàn hệ thống.}
 
 ---
 
-## 🏗️ [WORKFLOW META & TOPOLOGY]
+## 🏛️ 1. GOVERNANCE & CONSTITUTIONAL INVARIANTS
 
-- **Topology Selected**: `{TOPOLOGY}` (Đã qua kiểm tra Complexity Ladder - chọn giải pháp tối giản nhất)
-- **Shared State Schema**:
+Workflow này đóng vai trò là **Hiến pháp (Constitution)** của hệ thống:
+1. **Zero Agent Coupling (CANON 1)**: Workflow chỉ định nghĩa trạng thái cần đạt (`required_outcome`) và các bất biến toàn cục (`global_invariants`). Thẩm quyền điều phối chọn Specialist Agent và Skill hoàn toàn thuộc về Runtime Router.
+2. **No Evidence $\rightarrow$ No Transition**: Không có bất kỳ State Transition nào được kích hoạt nếu chưa có bằng chứng thực thi (`Evidence`) thỏa mãn `evidence_schema`.
+3. **Verdict Staleness Gate (CANON 5)**: Mọi semantic verdict phải mang `content_version`. Nếu nội dung bị thay đổi (mutation), verdict trở thành stale và workflow bắt buộc yêu cầu re-evaluation.
+
+---
+
+## 🔄 2. WORKFLOW NODES & TRANSITION CONTRACTS
+
+### [NODE 1: {NODE_1_NAME}]
+- **[Required Outcome]:** `{REQUIRED_OUTCOME_KEY_1}`
+- **[Input Prerequisites]:** `{PREREQUISITE_STATE_KEYS}`
+- **[Expected Artifact]:** `{OUTPUT_ARTIFACT_1}`
+- **[Human Gate]:** `{false | true}`
+
+- **⚡ Action Objectives (Mục tiêu kết quả cần đạt)**:
+  1. **Khảo sát & Chuẩn bị**: Xác thực các điều kiện tiền đề trong State.
+  2. **Thực thi Chuyên môn**: Router tự động điều phối Capability phù hợp để hoàn thành mục tiêu `{REQUIRED_OUTCOME_KEY_1}`.
+  3. **Kiểm chứng Bằng chứng**: Xác thực output theo `evidence_schema`.
+
+- **Definition of Done (DoD - State Transition Guard)**:
+  - [ ] `{STATE_CONDITION_EXPR_1}` thỏa mãn 100%.
+  - [ ] Evidence Artifact tồn tại và hợp lệ trên đĩa.
+- **[Transition Path]:** Thỏa mãn điều kiện ➔ Chuyển `{NODE_2_NAME}` | Thất bại ➔ Áp dụng Failure Policy.
+
+---
+
+### [NODE 2: {NODE_2_NAME}]
+- **[Required Outcome]:** `{REQUIRED_OUTCOME_KEY_2}`
+- **[Input Prerequisites]:** `{REQUIRED_OUTCOME_KEY_1} == true`
+- **[Expected Artifact]:** `{OUTPUT_ARTIFACT_2}`
+- **[Human Gate]:** `true (1-Touch Approval Required)`
+
+- **⚡ Action Objectives**:
+  1. **Thực thi**: Router điều phối hoàn thiện `{REQUIRED_OUTCOME_KEY_2}`.
+  2. **Trình duyệt**: Xuất Decision Package / Deliverable cho Người dùng / Sếp.
+- **Definition of Done (DoD)**:
+  - [ ] `{STATE_CONDITION_EXPR_2}` thỏa mãn.
+  - [ ] User phê duyệt qua Human Gate.
+- **[Transition Path]:** Phê duyệt ➔ Chuyển `{TERMINAL_STATE_NAME}`.
+
+---
+
+## 🛑 3. HUMAN GATES & DECISION PACKAGES
+
+Khi workflow đi qua Node có `human_gate: true` hoặc khi Router chạm ngưỡng `escalate_human`:
+- Hệ thống xuất **Decision Package**:
   ```json
   {
-    "workflow_state": {
-      "session_id": "string",
-      "input_artifacts": "object",
-      "output_artifacts": "object",
-      "status": "pending | running | needs_human_review | completed"
-    }
+    "gate_type": "human_approval",
+    "current_node": "{NODE_2_NAME}",
+    "required_outcome": "{REQUIRED_OUTCOME_KEY_2}",
+    "evidence_summary": "{PATH_TO_EVIDENCE}",
+    "options": ["APPROVE", "REVISE", "ABORT"]
   }
   ```
-- **Context & Tool Strategy**: Just-in-Time retrieval + Namespaced/Consolidated Tools (không pre-load thừa).
+- Dừng an toàn chờ phản hồi, tuyệt đối không tự ý vượt rào.
 
 ---
 
-## 🔄 State Machine & Node Execution (5-Part Node Anatomy)
+## 🛡️ 4. TRANSACTIONAL MUTATION & ROLLBACK PATTERN (Dành cho Tác vụ Đột biến Hệ thống)
 
-### [STATE: INIT]
-- **Input Artifacts**: `{INITIAL_INPUT_ARTIFACTS}` (Artifacts Isolation - chỉ nạp đúng khoá dữ liệu cần thiết)
-- **Output Artifacts**: `workflow_state.{INIT_KEY}`
-- **Definition of Done (DoD - 3 Kiểm định nhị phân)**:
-  - [ ] `{DOD_COND_1}` (Binary: Pass/Fail rõ ràng)
-  - [ ] `{DOD_COND_2}` (Measurable: Đo trực tiếp từ Output Artifact)
-  - [ ] `{DOD_COND_3}` (Concrete: Không dùng tính từ sáo ngữ "chuyên nghiệp/đầy đủ")
-- **Evaluation Loop & Checkpoint Gate**:
-  - Checkpoint Command: `python .agents/scripts/checkpoint_gate.py --node {INIT_KEY} --target {TARGET_OUTPUT} --op {OP}`
-  - Risk Tier: `{RISK_TIER}` | Reason: `{REASON_CODE}` | Decided By: `orchestrator`
-  - Evaluate output ➔ Pass ➔ Transition sang `[STATE: {STEP_1_NAME}]`
-  - Fail ➔ Revise (Tối đa `{MAX_RETRY}` lần) ➔ Vượt ngưỡng ➔ Escalate sang `[ESCALATE_HUMAN]`
+Khi workflow thực hiện các thao tác có rủi ro cao (ghi đè file, sửa code, thay đổi DB, deploy), BẮT BUỘC tuân thủ 4 bước Transactional Mutation:
+1. **Snapshot**: Tạo bản sao lưu hoặc ghi nhận git commit SHA / file copy trước khi sửa đổi.
+2. **Mutate**: Thực hiện thao tác thay đổi dữ liệu/cấu hình trong scoped boundary.
+3. **Verify**: Chạy ngay checklist hoặc test suite xác thực kết quả.
+4. **Commit / Rollback**: Nếu PASS $\rightarrow$ xác nhận Commit. Nếu FAIL $\rightarrow$ tự động hoàn nguyên (Restore Snapshot / Rollback) về trạng thái an toàn trước đó.
 
-
----
-
-### [STATE: {STEP_1_NAME}]
-- **Input Artifacts**: `workflow_state.{INIT_KEY}`
-- **Output Artifacts**: `workflow_state.{STEP_1_OUTPUT_KEY}`
-- **Definition of Done (DoD)**:
-  - [ ] `{STEP_1_DOD_1}`
-  - [ ] `{STEP_1_DOD_2}`
-- **Evaluation Loop & Transition**: 
-  - Evaluate output ➔ Pass ➔ Transition sang `[STATE: {STEP_2_NAME}]`
-  - Fail ➔ Revise ➔ Retry ➔ (Transition ngược nếu phát hiện mâu thuẫn evidence: ➔ `[STATE: INIT]`)
-
----
-
-### [STATE: NODE_FINALIZE]
-- **Input Artifacts**: Toàn bộ `workflow_state`
-- **Output Artifacts**: `{DELIVERABLE_CUOI_CUNG}`
-- **Definition of Done (DoD)**:
-  - [ ] Không mâu thuẫn chéo giữa các Output Artifacts của các node.
-  - [ ] Mọi Safe Outputs đã qua độc lập validation gate trước khi áp dụng thật.
-- **Evaluation Loop**: Evaluate ➔ Pass ➔ Done ➔ `[*]`. Fail ➔ Revise ➔ `[ESCALATE_HUMAN]`.
-
----
-
-## 🚨 [ESCALATE_HUMAN] (Human Checkpoint)
-
-- **Kích hoạt khi**: Node bất kỳ fail DoD vượt quá `max_retry_per_node` hoặc chạm Tool Risk Tier cao.
-- **Output Artifact**: Draft hiện tại + Log lý do fail mỗi lần Evaluation + `needs_human_review: true`.
-- **Constraint**: KHÔNG tự động publish khi ở trạng thái này.
-
----
-
-## ⏳ [SESSION HANDOFF] (Chỉ áp dụng cho Long-running Workflows nhiều phiên)
-
-- **Progress File**: `memory/progress-notes.md`
-- **Feature List**: `memory/feature_list.json` (`{"category": "...", "description": "...", "passes": false}`)
-- **Nghi thức đầu phiên**: 
-  1. `pwd` ➔ Xác nhận phạm vi thư mục được phép sửa.
-  2. Read progress & git log ➔ Nắm bối cảnh công việc phiên trước.
-  3. Read `feature_list.json` ➔ Chọn 1 feature `passes: false` ưu tiên cao nhất.
-  4. Run `init.sh` ➔ Kiểm tra môi trường còn chạy tốt trước khi code tiếp.
-
----
-
-## 📋 Quy trình Tự kiểm trước khi Publish (Pre-Publish Audit Checklist)
-
-- [ ] **Complexity Ladder**: Xác nhận giải pháp đơn giản nhất KHÔNG giải quyết được task này?
-- [ ] **Multi-Agent Check**: Nếu có sub-agents song song, đã xác nhận sub-tasks hoàn toàn độc lập (breadth-first)?
-- [ ] **5-Part Node Anatomy**: Tất cả các node đều đủ `[STATE]`, `[Input Artifacts]`, `[Output Artifacts]`, `[DoD]`, `[Evaluation Loop]`?
-- [ ] **3-Check DoD**: DoD có tính nhị phân, đo được từ Output Artifact, 0 tính từ sáo ngữ?
-- [ ] **Context & ACI**: Áp dụng Just-in-Time retrieval và Tool Namespacing/Consolidation?
-- [ ] **Escalate Path**: Đã khai báo tường minh đường dẫn `[ESCALATE_HUMAN]`?

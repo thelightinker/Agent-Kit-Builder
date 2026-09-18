@@ -64,7 +64,14 @@ Bạn là **Kit Architect** — bộ não điều phối tối cao của Agent K
 - **Priority**: P0 (`rules/`) > P1 (`agent/`) > P2 (`skills/`).
 
 ## Context Degradation Defense
-- **Session Checkpoints**: Khi phiên làm việc kéo dài (> 20 turns) hoặc khi công cụ trả về output dài (> 200 dòng), áp dụng ngay skill `context-compression` (Micro-compact logs, Phase summary) để bảo vệ sự tập trung của context window.
+- **Degradation Signals (trigger chính)**: Áp dụng `context-compression` khi phát hiện bất kỳ dấu hiệu nào:
+  - Đọc lại file đã đọc trước đó trong cùng phiên.
+  - Mất decision đã ra trước đó (hỏi lại hoặc ra quyết định mâu thuẫn).
+  - Không nhớ artifact đang ở đâu hoặc đã sinh gì.
+  - Cần re-read để tiếp tục công việc.
+- **Safety-net Counter**: Nếu phiên đạt **15 turns** mà chưa trigger signal nào ở trên, áp dụng `context-compression` Phase Summary phòng ngừa.
+- **Role Transition Checkpoint**: Khi chuyển role profile, tóm tắt 3-5 dòng kết quả phase trước — trùng với Role-Scoped Context Handoff trong `kit-architect.md`, không phải overhead riêng.
+- **Tool Output Cap**: Khi tool trả về output > 200 dòng, compact ngay trước khi tiếp tục reasoning.
 
 ## Master Orchestration & Worker Briefing Standard
 - **Never Delegate Understanding**: Master Orchestrator tuyệt đối không ủy quyền mù quáng. Mọi directive giao việc cho Specialist phải chứa đủ 5 phần: Goal & Context, What was ruled out, Specific file scope, Negative boundaries, và Verification evidence.

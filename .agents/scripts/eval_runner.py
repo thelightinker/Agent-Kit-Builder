@@ -2,13 +2,15 @@
 """
 Agent Kit Automated Behavioral Eval Harness
 Parses eval suite JSON test cases, runs assertions against generated Agent Kit files,
-and outputs binary DoD score pass/fail reports.
+supports Regression Benchmark v1 testing, and outputs binary DoD score pass/fail reports.
 """
 
 import sys
 import os
 import re
 import json
+import argparse
+from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -109,14 +111,17 @@ def run_eval_suite(eval_file_path, target_dir="."):
     total = total_passed + total_failed
     score = (total_passed / total * 100.0) if total > 0 else 0.0
 
-    print("\n--- EVALUATION SUMMARY ---")
+    print("\n" + "=" * 60)
+    print("                 EVALUATION SUMMARY")
+    print("=" * 60)
     print(f"Total Test Cases: {total}")
     print(f"Passed: {total_passed}")
     print(f"Failed: {total_failed}")
     print(f"Score: {score:.1f}%")
+    print("=" * 60 + "\n")
 
     report = {
-        "kit_type": suite.get("kit_type", "unknown"),
+        "suite_name": suite.get("suite_name", "Eval Suite"),
         "total": total,
         "passed": total_passed,
         "failed": total_failed,
@@ -126,14 +131,27 @@ def run_eval_suite(eval_file_path, target_dir="."):
     return report
 
 def main():
-    import argparse
     parser = argparse.ArgumentParser(description="Agent Kit Eval Harness")
-    parser.add_argument("--eval-file", "--suite", dest="eval_file", required=True, help="Path to eval suite JSON file")
-    parser.add_argument("--target-dir", "--target-kit", dest="target_dir", default=".", help="Base directory of the target Agent Kit (e.g. ./output/<kit-name>)")
+    parser.add_argument("--eval-file", "--suite", dest="eval_file", default=None, help="Path to eval suite JSON file")
+    parser.add_argument("--target-dir", "--target-kit", dest="target_dir", default=".", help="Base directory of target Agent Kit")
     parser.add_argument("--output-report", help="Optional path to save JSON eval report")
-    
+    parser.add_argument("--regression", action="store_true", help="Run Regression Benchmark v1 suite against Builder")
+
     args = parser.parse_args()
-    report = run_eval_suite(args.eval_file, args.target_dir)
+
+    eval_file = args.eval_file
+    target_dir = args.target_dir
+
+    if args.regression:
+        script_dir = Path(__file__).resolve().parent
+        eval_file = str(script_dir.parent / "evals" / "regression_benchmark_v1.json")
+        target_dir = str(script_dir.parent)
+
+    if not eval_file:
+        print("[-] Error: Please specify --eval-file or --regression flag.")
+        sys.exit(1)
+
+    report = run_eval_suite(eval_file, target_dir)
     
     if args.output_report:
         with open(args.output_report, "w", encoding="utf-8") as f:

@@ -1,0 +1,18 @@
+{
+  "complexity_ceiling": "L1_ROUTED",
+  "context": "artifact_reference",
+  "generated_at": "2026-09-18T02:36:38.040717+00:00",
+  "mode": "direct",
+  "parallel": {
+    "reads": false,
+    "writes": false
+  },
+  "recovery": [
+    "repair"
+  ],
+  "retry": {
+    "max_attempts": 1,
+    "same_error_limit": 1
+  },
+  "schemaVersion": "1.0.0"
+}

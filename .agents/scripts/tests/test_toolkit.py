@@ -107,6 +107,161 @@ class TestExportKit(unittest.TestCase):
             self.assertTrue(Path(res["openai"]).exists())
 
 
+class TestUnifiedValidation(unittest.TestCase):
+    def test_validate_quick(self):
+        findings = validate_kit.validate_quick(TOOLKIT)
+        errors = [item for item in findings if item.severity == "error"]
+        self.assertEqual([], errors)
+
+    def test_sync_registry(self):
+        count, files = validate_kit.sync_registry(TOOLKIT)
+        self.assertGreaterEqual(count, 3)
+        self.assertIn("manifest.json", files)
+        self.assertIn("manifest.lock.json", files)
+        self.assertIn("DEPENDENCY_GRAPH.md", files)
+        self.assertIn("execution_policy.json", files)
+
+
+class TestMachineActionableContract(unittest.TestCase):
+    def test_finding_has_fix_strategy_fields(self):
+        f = validate_kit.Finding(
+            severity="error",
+            code="manifest.stale",
+            file="manifest.json",
+            line=1,
+            message="Registry differs from component frontmatter",
+            evidence="actual_hash != expected_hash",
+            fix_strategy="deterministic",
+            retryable=True,
+        )
+        self.assertEqual(f.fix_strategy, "deterministic")
+        self.assertTrue(f.retryable)
+        self.assertIn("evidence", f.__dict__)
+
+    def test_finding_json_serializable(self):
+        f = validate_kit.Finding(
+            severity="error",
+            code="manifest.stale",
+            file="manifest.json",
+            line=1,
+            message="test",
+            evidence="hash_mismatch",
+            fix_strategy="deterministic",
+            retryable=True,
+        )
+        payload = json.dumps(f.__dict__)
+        roundtrip = json.loads(payload)
+        self.assertEqual(roundtrip["fix_strategy"], "deterministic")
+
+
+class TestBehavioralCapabilities(unittest.TestCase):
+    def test_dynamic_routing_and_dag_safety(self):
+        benchmark_mod = load_module("agkit_benchmark", SCRIPTS / "benchmark_behavior.py")
+        for tc in benchmark_mod.TEST_VECTORS:
+            mode = benchmark_mod.classify_prompt(tc.user_prompt)
+            self.assertEqual(tc.expected_mode, mode, f"Failed routing for {tc.name}")
+        
+        dag = benchmark_mod.analyze_dag_conflict_safety()
+        self.assertFalse(dag["write_conflict_detected"])
+        self.assertEqual(4, dag["dag_stages"])
+
+    def test_backward_compatibility(self):
+        benchmark_mod = load_module("agkit_benchmark", SCRIPTS / "benchmark_behavior.py")
+        compat = benchmark_mod.verify_backward_compatibility()
+        for wf, info in compat.items():
+            self.assertTrue(info["present"], f"Missing workflow {wf}")
+            self.assertTrue(info["valid_requires"], f"Invalid requirements in {wf}")
+
+
+class TestDeterministicFixer(unittest.TestCase):
+    def test_fix_stale_manifest(self):
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_root = Path(tmpdir) / ".agents"
+            shutil.copytree(TOOLKIT, tmp_root)
+            manifest_path = tmp_root / "manifest.json"
+            manifest_path.write_text('{"broken": true}', "utf-8")
+            findings = validate_kit.validate(tmp_root, auto_heal=False)
+            det_findings = [f for f in findings if f.fix_strategy == "deterministic"]
+            self.assertTrue(len(det_findings) > 0)
+            det_fixer = load_module("agkit_det_fixer", SCRIPTS / "deterministic_fixer.py")
+            report = det_fixer.fix(tmp_root, det_findings)
+            self.assertTrue(len(report["fixed"]) > 0)
+            self.assertEqual(len(report["failed"]), 0)
+            re_findings = validate_kit.validate(tmp_root, auto_heal=False)
+            det_remaining = [f for f in re_findings if f.fix_strategy == "deterministic"]
+            self.assertEqual(len(det_remaining), 0)
+
+
+class TestConvergenceEngine(unittest.TestCase):
+    def test_converge_on_healthy_kit(self):
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        report = conv_mod.converge(TOOLKIT, max_iterations=3)
+        self.assertTrue(report["converged"])
+        self.assertEqual(report["iterations"], 0)
+        self.assertEqual(report["auto_fixed_count"], 0)
+        self.assertEqual(report["escalated_count"], 0)
+        self.assertFalse(report["oscillation_detected"])
+
+    def test_converge_detects_oscillation(self):
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        history = [{"manifest.stale"}, {"manifest.stale"}]
+        self.assertTrue(conv_mod._detect_oscillation(history))
+
+    def test_max_iterations_bounded(self):
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        report = conv_mod.converge(TOOLKIT, max_iterations=1)
+        self.assertLessEqual(report["iterations"], 1)
+
+
+class TestConvergenceBenchmark(unittest.TestCase):
+    def test_oscillation_detection_accuracy(self):
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        self.assertTrue(conv_mod._detect_oscillation([{"a"}, {"b"}, {"a"}]))
+        self.assertFalse(conv_mod._detect_oscillation([{"a"}, {"b"}, {"c"}]))
+        self.assertTrue(conv_mod._detect_oscillation([{"a", "b"}, {"a", "b"}]))
+        self.assertFalse(conv_mod._detect_oscillation([set()]))
+
+
+class TestChaosRecoveryScenarios(unittest.TestCase):
+    def test_chaos_multi_fault_recovery(self):
+        import tempfile, shutil
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_root = Path(tmpdir) / ".agents"
+            shutil.copytree(TOOLKIT, tmp_root)
+            
+            # Inject 5 faults
+            (tmp_root / "manifest.json").write_text('{"corrupted": true}', "utf-8")
+            if (tmp_root / "manifest.lock.json").exists():
+                (tmp_root / "manifest.lock.json").unlink()
+            if (tmp_root / "DEPENDENCY_GRAPH.md").exists():
+                (tmp_root / "DEPENDENCY_GRAPH.md").unlink()
+            if (tmp_root / "VERSION").exists():
+                (tmp_root / "VERSION").unlink()
+            
+            report = conv_mod.converge(tmp_root, max_iterations=3)
+            self.assertTrue(report["converged"])
+            self.assertLessEqual(report["iterations"], 2)
+            self.assertGreaterEqual(report["first_pass_errors"], 3)
+            self.assertGreaterEqual(report["auto_fixed_count"], 3)
+
+    def test_chaos_fatal_syntax_trap_escalates(self):
+        import tempfile, shutil
+        conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_root = Path(tmpdir) / ".agents"
+            shutil.copytree(TOOLKIT, tmp_root)
+            
+            # Inject fatal syntax error
+            (tmp_root / "scripts" / "bad_syntax.py").write_text("def broken(:\n  pass", "utf-8")
+            
+            report = conv_mod.converge(tmp_root, max_iterations=3)
+            self.assertFalse(report["converged"])
+            self.assertGreater(report["escalated_count"], 0)
+            self.assertEqual(1, report["iterations"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

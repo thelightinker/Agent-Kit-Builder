@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompiledStateSchema",
+  "description": "Schema definition of all valid State keys, types, content versions, and modifier permissions.",
+  "type": "object",
+  "required": ["version", "generated_at", "state_keys", "verdict_keys"],
+  "properties": {
+    "version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "state_keys": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "description", "written_by", "read_by"],
+        "properties": {
+          "type": { "type": "string" },
+          "description": { "type": "string" },
+          "written_by": { "type": "array", "items": { "type": "string" } },
+          "read_by": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "verdict_keys": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["evaluator", "tracks_content"],
+        "properties": {
+          "evaluator": { "type": "string" },
+          "tracks_content": { "type": "string" }
+        }
+      }
+    }
+  }
+}

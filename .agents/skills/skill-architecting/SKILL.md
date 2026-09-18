@@ -2,11 +2,11 @@
 name: skill-architecting
 description: >
   Thiết kế cấu trúc thư mục skill chuẩn Anthropic Skill Creator & Antigravity IDE,
-  cấu trúc Scoped Memory (shared, domains, runs) và ánh xạ kỹ năng theo cụm Specialist Agents.
+  cấu trúc Scoped Memory (shared, domains, runs), conditional loading và ánh xạ kỹ năng theo cụm Specialist Agents.
   Kích hoạt khi tạo skill mới hoặc chuẩn hóa kiến trúc kit.
 when_to_use: "Khi cần thiết kế cấu trúc thư mục skill theo chuẩn Skill Creator, memory schema hoặc mapping Specialist -> Skills."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 2.3.0
+version: 2.6.0
 ---
 
 # Skill Architecting
@@ -15,12 +15,21 @@ Kỹ năng thiết kế cấu trúc thư mục skill theo tiêu chuẩn **Anthro
 
 ---
 
+## 🚨 MANDATORY HARD GATE: KÍCH HOẠT SKILL CREATOR TRƯỚC TIÊN (ZERO-TOLERANCE)
+
+Trước khi khởi tạo hoặc chỉnh sửa bất kỳ file `skills/<name>/SKILL.md` nào:
+- **BẮT BUỘC** kích hoạt và đọc [skill-creator/SKILL.md](file:///C:/Users/nhdcb/.gemini/config/plugins/anthropic-skills/skills/skill-creator/SKILL.md) (global plugin — nếu path không tồn tại, tìm trong `plugins/anthropic-skills/skills/skill-creator/` của user config).
+- **TUYỆT ĐỐI KHÔNG** sinh file `SKILL.md` từ trí nhớ mà chưa nạp `skill-creator`.
+- Tuân thủ quy trình chuẩn: Capture Intent $\rightarrow$ Pushy Description $\rightarrow$ 3-Tier Progressive Disclosure $\rightarrow$ Imperative / Why-driven style $\rightarrow$ Concrete Input/Output Examples $\rightarrow$ Evals.
+
+---
+
 ## 📚 REFERENCE KNOWLEDGE ACTIVATION (NẠP ON-DEMAND)
 
-Khi cần tra cứu chuẩn kỹ thuật và cấu trúc nâng cao:
-- **Chuẩn Anthropic Skill Creator**: Đọc [skill-creator/SKILL.md](file:///C:/Users/nhdcb/.gemini/config/plugins/anthropic-skills/skills/skill-creator/SKILL.md) để áp dụng quy trình tạo skill, trigger optimization và anatomy chuẩn.
-- **Chuẩn Contract & Tool ACI Design**: Đọc [component-contracts.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/component-contracts.md).
-- **Cây quyết định Topology Workflow & Scale-Out Trigger**: Đọc [workflow-topologies.md](file:///c:/Users/nhdcb/OneDrive/Desktop/AI%20Project/AI%20Agent/Agent%20Kit/Agent%20Kit%20Creator/.agents/references/workflow-topologies.md).
+Khi cần tra cứu chuẩn kỹ thuật và cấu trúc mở rộng:
+- **Chuẩn Contract & Tool ACI Design**: Đọc [component-contracts.md](../../references/component-contracts.md).
+- **Cây quyết định Topology Workflow & Scale-Out Trigger**: Đọc [workflow-topologies.md](../../references/workflow-topologies.md).
+- **5-Part Node Anatomy & Artifacts Isolation**: Đọc [state-machine-nodes.md](../../references/state-machine-nodes.md) khi thiết kế Workflow State Machine.
 
 ---
 
@@ -35,12 +44,12 @@ skills/<skill-name>/
 │   └── [topic].md
 ├── examples/                 # Ví dụ mẫu Input -> Output (Few-shot patterns)
 │   └── [example].md
-├── scripts/                  # Code thực thi các tác vụ tất định (Deterministic tasks)
+├── scripts/                  # Code thực thi các tác vụ tất định (Deterministic tasks / Verification)
 └── assets/                   # Templates, schemas, static assets
 ```
 
 ### 3 Tầng Progressive Disclosure:
-1. **Metadata** (`name` + `description` trong YAML frontmatter): Luôn nạp vào context (~100 từ).
+1. **Metadata** (`name` + `description` + `when_to_use` trong YAML frontmatter): Luôn nạp vào context (~100 từ).
 2. **Body `SKILL.md`**: Nạp khi skill được kích hoạt (< 500 dòng).
 3. **Bundled Resources (`references/`, `scripts/`, `assets/`)**: Chỉ nạp on-demand khi có chỉ dẫn.
 
@@ -48,9 +57,9 @@ skills/<skill-name>/
 
 ## 2. QUY CHUẨN SOẠN THẢO SKILL THEO SKILL CREATOR
 
-1. **Pushy Trigger Description**:
+1. **Pushy Trigger Description & when_to_use**:
    - `description` trong YAML frontmatter là cơ chế kích hoạt chính. Phải viết "pushy" (nêu rõ cả năng lực lẫn các từ khóa/ngữ cảnh trigger) để chống hiện tượng LLM under-triggering.
-   - *Ví dụ:* `"Tối ưu hóa SEO On-Page. BẮT BUỘC sử dụng kỹ năng này khi người dùng nhắc đến audit SEO, meta tags, schema markup, hoặc muốn cải thiện thứ hạng tìm kiếm, ngay cả khi họ không nói rõ từ khóa 'SEO'."`
+   - Thêm trường `when_to_use` nêu rõ cả trường hợp NÊN DÙNG và trường hợp KHÔNG DÙNG (Exclusions) để tối ưu hóa nạp có điều kiện (Conditional Loading).
 2. **Writing Style (Phong cách Soạn thảo)**:
    - Dùng câu mệnh lệnh (Imperative).
    - Giải thích lý do **"Why"** đằng sau các chỉ dẫn thay vì dùng các từ cấm võ đoán ("MUST", "ALWAYS").
