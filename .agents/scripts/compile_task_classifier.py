@@ -112,14 +112,14 @@ def compile_task_classifier(root: Path) -> dict:
                     for intent in intents:
                         workflow_bound_intents[intent] = {
                             "capability_id": cap_id,
-                            "workflow_outcomes": list(matched_outcomes),
-                            "target_nodes": [node for out in matched_outcomes for node in workflow_nodes_map.get(out, [])],
+                            "workflow_outcomes": sorted(matched_outcomes),
+                            "target_nodes": sorted([node for out in matched_outcomes for node in workflow_nodes_map.get(out, [])]),
                         }
                 else:
                     for intent in intents:
                         ad_hoc_intents[intent] = {
                             "capability_id": cap_id,
-                            "postcondition_keys": list(post_keys),
+                            "postcondition_keys": sorted(post_keys),
                         }
 
     version_str = "1.0.0"
