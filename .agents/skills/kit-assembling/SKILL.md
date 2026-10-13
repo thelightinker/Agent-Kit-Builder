@@ -1,10 +1,6 @@
 ---
 name: kit-assembling
-description: >
-  Lắp ráp các cấu phần thành Agent Kit hoàn chỉnh trong thư mục cách ly
-  ./output/<kit-name>/, sinh manifest.json chuẩn SSOT (khai báo topology,
-  delegatesTo, ownedSkills, memoryScope), sinh hooks an toàn runtime (PreToolUse),
-  sinh hợp đồng antigravity.json 6 pha, sinh bộ Domain-Adaptive Checklist thực thi và đóng gói theo chuẩn Kit Type.
+description: "Lắp ráp các cấu phần thành Agent Kit hoàn chỉnh trong thư mục cách ly ./output/<kit-name>/, sinh manifest.json chuẩn SSOT (khai báo topology, delegatesTo, ownedSkills, memoryScope), sinh hooks an toàn runtime (PreToolUse), sinh hợp đồng antigravity.json 6 pha, sinh bộ Domain-Adaptive Checklist thực thi và đóng gói theo chuẩn Kit Type."
 when_to_use: "Khi hoàn tất các cấu phần và cần lắp ráp thành thư mục Agent Kit hoàn chỉnh."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.6.0

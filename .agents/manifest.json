@@ -45,11 +45,11 @@
       "version": "1.0.0"
     },
     "core-guardrails": {
-      "description": "Core guardrails cho Kit Architect & Agent Kit Creator: workspace isolation, deterministic structural gates, Verification Abstraction, Anti-Copy Gate, Worker Briefing và chuẩn Anthropic Skill Creator.",
+      "description": "Core guardrails: workspace isolation, targeted grounding, sequential execution, verification feasibility.",
       "path": "rules/core-guardrails.md",
       "priority": "P0",
       "trigger": "always_on",
-      "version": "2.6.0"
+      "version": "2.7.0"
     },
     "dynamic-routing": {
       "description": "Phân loại Mode (Fast/Targeted/Deep/Refactor/Audit/Compression) và Capability Bundle dưới sự điều phối của Kit Architect.",
@@ -172,6 +172,22 @@
       "scripts": [],
       "version": "2.6.0"
     },
+    "skill-creator": {
+      "allowedTools": [],
+      "path": "skills/skill-creator/SKILL.md",
+      "scripts": [
+        "skills/skill-creator/scripts/__init__.py",
+        "skills/skill-creator/scripts/aggregate_benchmark.py",
+        "skills/skill-creator/scripts/generate_report.py",
+        "skills/skill-creator/scripts/improve_description.py",
+        "skills/skill-creator/scripts/package_skill.py",
+        "skills/skill-creator/scripts/quick_validate.py",
+        "skills/skill-creator/scripts/run_eval.py",
+        "skills/skill-creator/scripts/run_loop.py",
+        "skills/skill-creator/scripts/utils.py"
+      ],
+      "version": ""
+    },
     "ui-ux-pro-max": {
       "allowedTools": [
         "Read",
@@ -221,21 +237,6 @@
           "architecture-mapping",
           "kit-evolving",
           "kit-verifying"
-        ]
-      },
-      "version": "1.0.0"
-    },
-    "copy-kit": {
-      "artifactOutputs": [
-        "copy_summary.md"
-      ],
-      "path": "workflows/copy-kit.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "kit-exporting"
         ]
       },
       "version": "1.0.0"

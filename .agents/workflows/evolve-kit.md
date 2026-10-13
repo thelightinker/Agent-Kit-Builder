@@ -31,6 +31,8 @@ max_retry_per_node: 2
 
 ## 🔄 2. STATE NODES & ACTION EXECUTION
 
+> **Execution Model**: `evolution_orchestrator.py` điều phối toàn bộ pipeline (ingest → freeze → validate → release) trong 1 lệnh. Các State Nodes bên dưới mô tả checkpoints và verification gates mà orchestrator đi qua.
+
 ### [STATE 1: INGEST_AND_LEDGER] (Nạp Batch & Khởi Tạo Sổ Cái)
 - **Role Profile:** `kit-architect` | **Skill:** `kit-evolving`
 - **[Input Artifacts]:** Batches trong `evolution/inbox/`.
@@ -40,7 +42,7 @@ max_retry_per_node: 2
   - [ ] Batch gốc được chuyển sang `evolution/completed/` để tránh xử lý trùng.
 - **[Evaluation Loop]:** Pass ➔ Chuyển sang State 2; Fail ➔ [ESCALATE_HUMAN].
 
-- **⚡ Action Prompts & Execution Steps**:
+- **⚡ Execution Entry Point** (orchestrate toàn bộ States 1→4):
   ```bash
   python .agents/scripts/evolution_orchestrator.py <kit-name> --bump minor
   ```

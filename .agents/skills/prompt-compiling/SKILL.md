@@ -1,10 +1,6 @@
 ---
 name: prompt-compiling
-description: >
-  Biên dịch System Prompt cho 3 dạng Archetypes (Standalone Agent, Master Orchestrator,
-  hoặc Domain Specialist Agent), thiết lập Binary Definition of Done (DoD),
-  Hard Constraints dạng phủ định, Worker Briefing Protocol, Deterministic Computation Guard
-  và Negative Completeness Matrix.
+description: "Biên dịch System Prompt cho 3 dạng Archetypes (Standalone Agent, Master Orchestrator, hoặc Domain Specialist Agent), thiết lập Binary Definition of Done (DoD), Hard Constraints dạng phủ định, Worker Briefing Protocol, Deterministic Computation Guard và Negative Completeness Matrix."
 when_to_use: "Khi cần biên dịch, tối ưu hoặc chuẩn hóa System Prompt cho bất kỳ Agent nào."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.5.0

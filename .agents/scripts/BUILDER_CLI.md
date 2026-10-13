@@ -37,13 +37,10 @@ python .agents/scripts/eval_runner.py evals/eval_suite_example.json .agents
 python .agents/scripts/eval_runner.py --regression
 ```
 
-### 4. Đóng gói & Sao chép Kit
+### 4. Đóng gói & Xuất bản Kit
 ```bash
 # Xuất bản kit sang plugin/cursor/claude
 python .agents/scripts/export_kit.py .agents ./dist --target all
-
-# Sao chép kit an toàn sang thư mục dự án đích
-python .agents/scripts/copy_kit.py ./output/<kit-name> --target <target-dir>
 ```
 
 ### 5. Evolution Suite & Feedback

@@ -23,7 +23,7 @@ Sử dụng để lưu trữ các Agent Kit mẫu đạt tiêu chuẩn xuất s�
 
 ### Bước 1: Tiếp nhận Nội dung & Kiểm tra Invariant
 - **Role Profile:** `@architect` | **Skill:** `kit-evolving`
-- **[Input Artifacts]:** Thư mục kit (`./output/<kit-name>/`) kèm `lifecycle.json` và `audit_findings.json`.
+- **[Input Artifacts]:** Thư mục kit (`<kit-dir>`, mặc định `./output/<kit-name>/` hoặc đường dẫn chỉ định) kèm `lifecycle.json` và `audit_findings.json`.
 - **[Output Artifacts]:** Quyết định tiếp nhận hoặc từ chối lưu memory.
 - **[DoD]:**
   - [ ] `lifecycle_state == "VALIDATED"`

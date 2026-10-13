@@ -1,10 +1,6 @@
 ---
 name: domain-profiling
-description: >
-  Phân tích domain nghiệp vụ cho Agent Kit: trích xuất Core Verbs,
-  tìm đòn bẩy 80/20 (Dynamic Enhancement Discovery), mô hình hóa rủi ro (Risk Profiling)
-  để ánh xạ sang 5 Verification Archetypes, thực hiện Right Altitude Test để chọn Topology trên Spectrum
-  và đề xuất cấu phần tối thiểu. Luôn kích hoạt khi bắt đầu tạo kit mới hoặc đánh giá lại domain.
+description: "Phân tích domain nghiệp vụ cho Agent Kit: trích xuất Core Verbs, tìm đòn bẩy 80/20 (Dynamic Enhancement Discovery), mô hình hóa rủi ro (Risk Profiling) để ánh xạ sang 5 Verification Archetypes, thực hiện Right Altitude Test để chọn Topology trên Spectrum và đề xuất cấu phần tối thiểu. Luôn kích hoạt khi bắt đầu tạo kit mới hoặc đánh giá lại domain."
 when_to_use: "Khi cần phân tích nghiệp vụ, hành động cốt lõi, mô hình rủi ro verification, đòn bẩy và topology cho Agent Kit mới hoặc refactor."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.3.0

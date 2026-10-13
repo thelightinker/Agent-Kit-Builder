@@ -10,7 +10,7 @@ trigger: chained_from_validation_or_manual
 permissions: read-write
 tools_allowed: [Read, Write, Edit, Glob, Grep, Bash]
 safe_outputs:
-  apply_delta_patch: Chỉ sửa đổi trong ./output/<kit-name>/
+  apply_delta_patch: Sửa đổi trong thư mục kit chỉ định (<kit-dir>, mặc định ./output/<kit-name>/)
 max_retry_per_node: 2
 ---
 
@@ -22,18 +22,17 @@ Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua 
 
 ---
 
-## 🚦 BƯỚC 0: ENTRY GUARD & SUPERPOWERS GATE
+## 🚦 BƯỚC 0: ENTRY GUARD & SCOPE DETERMINATION
 
-1. **Condition Guard & Pre-flight Feedback & Knowledge Audit:** 
-   - Kit ở trạng thái `lifecycle_state == "NEEDS_REFACTOR"` (hoặc yêu cầu refactor tính năng từ người dùng).
-   - Kiểm tra `audit_findings.json` từ `handoff.payload_file`.
-   - **Central Feedback Hub Audit**: Chạy `python .agents/scripts/feedback_hub.py --audit <kit-name>`:
-     - Nạp toàn bộ feedback chưa giải quyết (`new`, `investigating`, `failed`, `retry`) và các bản fix chưa verified (`fixed`) vào `gap_analysis.md`.
-     - Nạp các `regression_rule` đã `verified` từ kho tri thức của kit để làm rào chắn kiểm thử hồi quy.
-     - Thông báo trực tiếp cho sếp nếu phát hiện lỗi chưa đóng dứt điểm.
-2. **Brainstorming / Refactor Scope:**
-   - Nếu là refactor tính năng mới: Thống nhất Scope với User qua `superpowers:brainstorming`.
-   - Nếu là tự động sửa lỗi theo `audit_findings.json`: Bỏ qua Bước 0, tiến thẳng vào Bước 1.
+**Entry Path A — Chained from `/validate-kit` (Auto Repair):**
+- Kit ở trạng thái `lifecycle_state == "NEEDS_REFACTOR"`.
+- `audit_findings.json` đã có sẵn từ handoff payload → skip feedback hub audit, tiến thẳng vào Bước 1.
+
+**Entry Path B — Manual Refactor (Feature/Improvement):**
+- Người dùng yêu cầu refactor tính năng hoặc nâng cấp.
+- **Central Feedback Hub Audit**: Chạy `python .agents/scripts/feedback_hub.py --audit <kit-name>` để nạp feedback chưa giải quyết.
+- **Brainstorming**: Nếu scope chưa rõ hoặc thay đổi có ảnh hưởng kiến trúc → invoke `superpowers:brainstorming`.
+- Nếu scope đã rõ → tiến vào Bước 1.
 
 ---
 
@@ -41,7 +40,7 @@ Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua 
 
 ### Bước 1: Phân tích Sai lệch theo Bằng chứng (Targeted Gap Analysis)
 - **Skill:** `kit-evolving`
-- **[Input Artifacts]:** `audit_findings.json` từ handoff payload + Thư mục kit (`./output/<kit-name>/`).
+- **[Input Artifacts]:** `audit_findings.json` từ handoff payload + Thư mục kit (`<kit-dir>`, mặc định `./output/<kit-name>/` hoặc đường dẫn chỉ định).
 - **[Output Artifacts]:** `gap_analysis.md` (Mapping trực tiếp từ từng mã lỗi `error.code` sang chính xác file và dòng cần sửa).
 - **[DoD]:** 
   - [ ] Liệt kê 100% các lỗi từ `audit_findings.json`.
@@ -56,7 +55,7 @@ Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua 
   - Chỉ nạp đúng template của loại component đang được refactor (ví dụ: refactor workflow $\rightarrow$ đọc `templates/workflow-template.md`).
   - **Đặc biệt với Skill**: Nếu tạo mới hoặc sửa đổi `skills/*/SKILL.md`, BẮT BUỘC phải nạp / kích hoạt `skill-creator` (`C:\Users\nhdcb\.gemini\config\plugins\anthropic-skills\skills\skill-creator\SKILL.md`) kết hợp với `templates/skill-template.md`.
 - **[Input Artifacts]:** `gap_analysis.md`
-- **[Output Artifacts]:** Các file được sửa đổi trong `./output/<kit-name>/` và các decision artifacts được tái biên dịch (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`).
+- **[Output Artifacts]:** Các file được sửa đổi trong thư mục kit (`<kit-dir>`) và các decision artifacts được tái biên dịch (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`).
 - **[DoD]:**
   - [ ] Chỉ sửa đúng các khối lỗi (Delta Patch), giữ nguyên 100% các phần đang chạy tốt.
   - [ ] Thỏa mãn Evidence Gate của component được refactor.

@@ -1,9 +1,6 @@
 ---
 name: context-compression
-description: >
-  Kỹ thuật quản lý và nén ngữ cảnh (Context Compression) trong các phiên làm việc dài (20+ turns).
-  BẮT BUỘC kích hoạt khi nhận thấy context phình to, khi AI lặp lại kết quả hoặc khi chuyển pha làm việc
-  để chống thoái hóa ngữ cảnh (Context Degradation Defense).
+description: "Kỹ thuật quản lý và nén ngữ cảnh (Context Compression) trong các phiên làm việc dài (20+ turns). BẮT BUỘC kích hoạt khi nhận thấy context phình to, khi AI lặp lại kết quả hoặc khi chuyển pha làm việc để chống thoái hóa ngữ cảnh (Context Degradation Defense)."
 when_to_use: "Khi phiên làm việc vượt quá 20 lượt, khi kết quả tool dài trên 200 dòng, hoặc khi kết thúc một chặng công việc cần tóm tắt. KHÔNG dùng cho phiên hỏi đáp ngắn 1-2 lượt."
 allowed-tools: Read, Write, Grep
 version: 1.0.0

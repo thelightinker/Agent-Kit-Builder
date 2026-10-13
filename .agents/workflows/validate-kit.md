@@ -23,7 +23,7 @@ Sử dụng để kiểm tra, đánh giá và đóng dấu trạng thái chính 
 
 ### Bước 1: Khởi tạo Kiểm định & Tải State
 - **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
-- **[Input Artifacts]:** Thư mục kit (`./output/<kit-name>/`) kèm `lifecycle.json`.
+- **[Input Artifacts]:** Thư mục kit (`<kit-dir>`, mặc định `./output/<kit-name>/` hoặc đường dẫn chỉ định) kèm `lifecycle.json`.
 - **[Output Artifacts]:** Bối cảnh thẩm định sẵn sàng.
 - **[DoD]:**
   - [ ] `lifecycle_state == "READY_FOR_VALIDATION"`.

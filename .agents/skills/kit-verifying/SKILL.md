@@ -1,11 +1,6 @@
 ---
 name: kit-verifying
-description: >
-  Kiểm định chất lượng Agent Kit theo 3 lớp: L1 Deterministic Linting
-  (validate_kit.py, eval_runner.py), L2 Adaptive Scenario Testing (sinh test cases theo domain),
-  và L3 Adversarial Stress Testing; kiểm tra tính toàn vẹn của Suite Hierarchy (routing,
-  Worker Briefing compliance, orphan skills, boundary matrix), kiểm tra Verification Abstraction Layer,
-  Execution-First Verification và kiểm duyệt tiêu chuẩn Anthropic Skill Creator Quality Gate.
+description: "Kiểm định chất lượng Agent Kit theo 3 lớp: L1 Deterministic Linting (validate_kit.py, eval_runner.py), L2 Adaptive Scenario Testing (sinh test cases theo domain), và L3 Adversarial Stress Testing; kiểm tra tính toàn vẹn của Suite Hierarchy (routing, Worker Briefing compliance, orphan skills, boundary matrix), kiểm tra Verification Abstraction Layer, Execution-First Verification và kiểm duyệt tiêu chuẩn Anthropic Skill Creator Quality Gate."
 when_to_use: "Khi cần kiểm định chất lượng, chạy test suite, kiểm tra chuẩn Skill Creator hoặc chấm điểm Agent Kit mới/refactor."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.7.0

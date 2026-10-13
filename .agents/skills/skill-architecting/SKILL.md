@@ -1,9 +1,6 @@
 ---
 name: skill-architecting
-description: >
-  Thiết kế cấu trúc thư mục skill chuẩn Anthropic Skill Creator & Antigravity IDE,
-  cấu trúc Scoped Memory (shared, domains, runs), conditional loading và ánh xạ kỹ năng theo cụm Specialist Agents.
-  Kích hoạt khi tạo skill mới hoặc chuẩn hóa kiến trúc kit.
+description: "Thiết kế cấu trúc thư mục skill chuẩn Anthropic Skill Creator & Antigravity IDE, cấu trúc Scoped Memory (shared, domains, runs), conditional loading và ánh xạ kỹ năng theo cụm Specialist Agents. Kích hoạt khi tạo skill mới hoặc chuẩn hóa kiến trúc kit."
 when_to_use: "Khi cần thiết kế cấu trúc thư mục skill theo chuẩn Skill Creator, memory schema hoặc mapping Specialist -> Skills."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.6.0
@@ -81,7 +78,39 @@ skills/<skill-name>/
 
 ---
 
-## 4. KIẾN TRÚC SCOPED MEMORY
+## 4. RELATED SKILLS DISCOVERY (TÙY CHỌN)
+
+Sau khi ánh xạ đầy đủ Specialist → Skills, xét từng skill để phát hiện quan hệ bổ trợ với skill khác **trong cùng kit**. Đây chỉ là tham chiếu gợi ý cho người dùng kit — không phải dependency, không tự động nạp, không ảnh hưởng routing hay manifest.
+
+### Tiêu chí thêm Related Skills (phải thỏa ít nhất 1):
+
+1. **Output → Input**: Skill A sinh output mà Skill B tiêu thụ trực tiếp làm input.
+   *VD: `data-extraction` sinh dataset → `report-building` dùng dataset đó để tạo báo cáo.*
+2. **Bổ trợ chất lượng**: Chạy Skill B trước/sau Skill A giúp nâng chất lượng đáng kể.
+   *VD: `content-writing` + `seo-audit` — chạy audit sau khi viết để kiểm tra tối ưu.*
+3. **Cùng tình huống nghiệp vụ**: Người dùng trong tình huống thực tế sẽ dùng cả hai skill cho cùng một mục tiêu cụ thể.
+   *VD: `competitor-analysis` + `positioning-strategy` — phân tích đối thủ xong thì xây chiến lược.*
+
+### Tiêu chí KHÔNG thêm:
+- Cùng domain nhưng không có tình huống sử dụng bổ trợ cụ thể → **bỏ qua**.
+- Quan hệ quá gián tiếp hoặc phải giải thích nhiều → **bỏ qua**.
+- Không có skill nào liên quan → **xóa toàn bộ section `## Related Skills` khỏi SKILL.md**, kể cả heading.
+
+### Cách thêm vào SKILL.md:
+Nếu có skill liên quan, thêm section cuối SKILL.md (sau Quality Standards):
+
+```markdown
+## Related Skills
+
+| Skill | Khi nào dùng |
+|---|---|
+| `seo-audit` | Sau khi viết content, chạy SEO audit để kiểm tra tối ưu hóa |
+| `brand-voice` | Trước khi viết, nạp brand voice để giữ nhất quán giọng điệu |
+```
+
+---
+
+## 5. KIẾN TRÚC SCOPED MEMORY
 
 ```
 memory/

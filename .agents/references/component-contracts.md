@@ -73,8 +73,7 @@ version: 1.0.0
 ```yaml
 ---
 name: kebab-case-name
-description: >
-  Mô tả năng lực và bối cảnh trigger. Viết pushy và cụ thể.
+description: "Mô tả năng lực và bối cảnh trigger. Viết pushy và cụ thể."
 when_to_use: "Điều kiện khi nào cần nạp skill này."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 1.0.0

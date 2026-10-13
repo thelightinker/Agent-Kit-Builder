@@ -11,6 +11,7 @@ import argparse
 import ast
 import json
 import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -111,6 +112,8 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     # escalate_human (ambiguous / high-risk)
     "json.invalid": ("escalate_human", False),
     "python.syntax": ("escalate_human", False),
+    "script.smoke_failed": ("escalate_human", False),
+    "script.smoke_timeout": ("escalate_human", False),
     "frontmatter.invalid_yaml": ("escalate_human", False),
     "frontmatter.not_mapping": ("escalate_human", False),
     "frontmatter.duplicate_name": ("escalate_human", False),
@@ -451,13 +454,39 @@ def validate_memory(root: Path, findings: list[Finding]) -> None:
 
 
 def validate_python(root: Path, findings: list[Finding]) -> None:
-    for path in root.rglob("*.py"):
+    targets = set(root.rglob("*.py"))
+    if root.name == ".agents" and (root.parent / "scripts").is_dir():
+        targets.update((root.parent / "scripts").glob("*.py"))
+
+    for path in sorted(targets):
         if "__pycache__" in path.parts:
             continue
         try:
-            ast.parse(path.read_text("utf-8"), filename=str(path))
+            rel = path.relative_to(root)
+        except ValueError:
+            rel = path.relative_to(root.parent)
+        try:
+            text = path.read_text("utf-8", errors="replace")
+            ast.parse(text, filename=str(path))
         except (OSError, SyntaxError) as exc:
-            add(findings, "error", "python.syntax", path.relative_to(root), str(exc), int(getattr(exc, "lineno", 1) or 1))
+            add(findings, "error", "python.syntax", rel, str(exc), int(getattr(exc, "lineno", 1) or 1))
+            continue
+
+        # Executable Smoke Test: CLI scripts with argparse
+        if "argparse" in text and 'if __name__ == "__main__":' in text:
+            try:
+                res = subprocess.run(
+                    [sys.executable, str(path), "--help"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                )
+                if res.returncode != 0:
+                    add(findings, "error", "script.smoke_failed", rel, f"CLI smoke test (--help) returned non-zero code {res.returncode}")
+            except subprocess.TimeoutExpired:
+                add(findings, "error", "script.smoke_timeout", rel, "CLI smoke test timed out after 5s")
+            except Exception as exc:
+                add(findings, "error", "script.smoke_failed", rel, f"CLI smoke test failed to invoke: {exc}")
 
 
 def validate_architecture_counts(root: Path, findings: list[Finding]) -> None:

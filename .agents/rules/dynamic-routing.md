@@ -21,7 +21,6 @@ Phân loại yêu cầu thành mode + capability bundle. Mọi quy trình xây d
 | Lưu bài học/pattern | `MEMORY_TRACK` | `@kit-architect` (`kit-evolving`) | `/remember-kit` |
 | Tạo visual kit, HTML preview, dashboard, landing page, slide, UI/UX | `VISUAL_TRACK` | `@kit-architect` (`@designer` qua `ui-ux-pro-max` → `@auditor`) | `/create-visual` |
 | Ghi nhận & truy vết lỗi / ma sát thực chiến từ Kit & Builder | `FEEDBACK_TRACK` | `@kit-architect` (`kit-evolving` / `feedback_hub.py`) | `/evolve-kit` |
-| Sao chép kit sang thư mục dự án đích (Copy không di chuyển) | `COPY_TRACK` | `@kit-architect` (`kit-exporting` / `copy_kit.py`) | `/copy-kit` |
 | Phiên dài 20+ turns, context bão hòa, log tool dài | `COMPRESSION_TRACK` | `context-compression` (Micro-compact, Phase summary, Session checkpoint) | — |
 
 ### Quy tắc Điều phối Bất biến

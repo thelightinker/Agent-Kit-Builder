@@ -1,9 +1,6 @@
 ---
 name: kit-evolving
-description: >
-  Phân tích sai lệch (Gap Analysis), thực hiện Delta Patch khi refactor Agent Kit,
-  quản lý bộ nhớ dài hạn (memory/), phát hiện quy trình lặp lại để trích xuất skill (skillify),
-  tối giản hóa kiến trúc (anti-overengineering), vận hành Unified Feedback Waterfall và Self-Evolving Quality Loop.
+description: "Phân tích sai lệch (Gap Analysis), thực hiện Delta Patch khi refactor Agent Kit, quản lý bộ nhớ dài hạn (memory/), phát hiện quy trình lặp lại để trích xuất skill (skillify), tối giản hóa kiến trúc (anti-overengineering), vận hành Unified Feedback Waterfall và Self-Evolving Quality Loop."
 when_to_use: "Khi cần sửa đổi, nâng cấp (refactor) Agent Kit, tối giản hóa code, trích xuất skill mới từ workflow, kiểm tra feedback/evolution waterfall hoặc quản lý bộ nhớ MEMORY.md."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.5.0

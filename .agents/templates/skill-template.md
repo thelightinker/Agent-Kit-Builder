@@ -1,7 +1,6 @@
 ---
 name: {SKILL_NAME}
-description: >
-  {PUSHY_DESCRIPTION_EXPLAINING_WHAT_IT_DOES_AND_EXPLICIT_TRIGGER_CONTEXTS_TO_PREVENT_UNDER_TRIGGERING}
+description: "{PUSHY_DESCRIPTION_EXPLAINING_WHAT_IT_DOES_AND_EXPLICIT_TRIGGER_CONTEXTS_TO_PREVENT_UNDER_TRIGGERING}"
 when_to_use: "Khi {TRIGGER_CONDITION}"
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
 version: 1.0.0
@@ -51,3 +50,15 @@ When deeper domain knowledge is required, consult these bundled references:
 - [ ] Output satisfies all primary requirements.
 - [ ] No generic AI placeholders or unverified assertions.
 - [ ] Clear actionable summary provided to user.
+
+---
+
+<!-- OPTIONAL: Chỉ giữ section bên dưới khi skill này có quan hệ bổ trợ rõ ràng
+     với skill khác trong cùng kit. Nếu không có → XÓA TOÀN BỘ section này,
+     kể cả heading. KHÔNG để heading rỗng. -->
+
+## Related Skills
+
+| Skill | Khi nào dùng |
+|---|---|
+| `{RELATED_SKILL_NAME}` | {MÔ_TẢ_NGẮN_TÌNH_HUỐNG_SỬ_DỤNG_BỔ_TRỢ} |

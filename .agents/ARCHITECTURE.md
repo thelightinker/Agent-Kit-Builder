@@ -10,7 +10,7 @@ Agent Kit Creator là hệ thống chuyên gia tinh gọn gồm:
 
 - **1 Orchestrator Agent** (`kit-architect`) với 5 Dynamic Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`).
 - **10 Focused Skills** - Bộ kỹ năng chuyên sâu phục vụ phân tích domain, biên dịch prompt, cấu trúc skill, nén context phiên dài, lắp ráp, kiểm định, xuất bản và tiến hóa kit.
-- **8 Workflows** - Các quy trình slash command (`/create-kit`, `/refactor-kit`, `/validate-kit`, `/remember-kit`, `/architecture-evolution`, `/create-visual`, `/copy-kit`, `/evolve-kit`).
+- **7 Workflows** - Các quy trình slash command (`/create-kit`, `/refactor-kit`, `/validate-kit`, `/remember-kit`, `/architecture-evolution`, `/create-visual`, `/evolve-kit`).
 - **3 Core Rules** - Ràng buộc bất biến (`core-guardrails`), phân loại mode (`dynamic-routing`), và giao thức cộng tác & nạp quyền hạn (`collaboration-protocol`).
 
 ---
@@ -45,7 +45,7 @@ python .agents/scripts/validate_kit.py
 ├── schemas/                 # JSON schema contracts
 ├── agent/                   # 1 Orchestrator Agent (kit-architect.md)
 ├── skills/                  # 10 Focused Skills
-├── workflows/               # 8 Slash Command Workflows
+├── workflows/               # 7 Slash Command Workflows
 ├── rules/                   # 3 Core Rules
 ├── templates/               # Component, Contract & Workflow Templates
 ├── references/              # Deep Reference Docs & Domain Guides
@@ -82,7 +82,7 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 
 ---
 
-## 🔄 Workflows (8)
+## 🔄 Workflows (7)
 
 | Command | Description | Artifact Outputs |
 |---|---|---|
@@ -92,7 +92,6 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | `/create-visual` | Sản xuất UI/UX Visual Kit, Interactive Preview, Dashboard, Landing Page và Design System | `design-system`, `visual-kit-html`, `visual-qa-report` |
 | `/validate-kit` | Kiểm định Chất lượng Agent Kit (Audit 3 lớp & Rubric 5 sao) | `audit-report` |
 | `/remember-kit` | Lưu bài học kinh nghiệm và ví dụ mẫu vào bộ nhớ dài hạn | `memory-entry` |
-| `/copy-kit` | Sao chép (COPY) Agent Kit an toàn sang thư mục dự án đích | `copy_summary.md` |
 | `/evolve-kit` | Quy trình tiến hóa tự động 1 lệnh duy nhất tại Engine: Ingest Inbox -> Ledger SSOT -> Freeze Snapshot -> Validate L1-L3 -> Tier 2 Human Gate -> Release SemVer -> Sync Test Workspace | `evolution_report.md`, `ledger.json` |
 
 ---
@@ -109,14 +108,13 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | `scripts/dependency_graph.py` | Sinh sơ đồ phụ thuộc `DEPENDENCY_GRAPH.md` | Sau khi thay đổi phụ thuộc |
 | `scripts/eval_runner.py` | Kiểm thử hành vi và chấm điểm DoD tự động | Trong workflow `/validate-kit` / skill `kit-verifying` |
 | `scripts/export_kit.py` | Xuất bản Agent Kit sang Antigravity Plugin, Cursor, Claude Desktop, OpenAI Custom GPTs | Trong skill `kit-exporting` |
-| `scripts/copy_kit.py` | Sao chép (COPY) Agent Kit sang thư mục quản lý dự án AI Agent đích | Trong workflow `/copy-kit` / skill `kit-exporting` |
 | `scripts/feedback_hub.py` | Append-only event stream JSONL, fold events, query unresolved và regression knowledge | Trong `validate_kit.py --audit` & `kit-assembling` |
 | `scripts/evolution_engine.py` | Quản lý vòng đời batch tại Engine, thẩm định Net Gain và staging vNext | Trong workflow `/evolve-kit` |
 | `scripts/evolution_ledger.py` | SSOT ledger cho evolution batches, trạng thái 6 pha | Trong workflow `/evolve-kit` |
 | `scripts/evolution_orchestrator.py` | Điều phối toàn chu trình evolution 1-command | Trong workflow `/evolve-kit` |
 | `scripts/atomic_promoter.py` | Thực thi nâng cấp nguyên tử 2 pha kèm đối soát SHA-256 Checksum | Trong workflow `/evolve-kit` |
 | `scripts/snapshot_manager.py` | Đóng băng Full-Kit Snapshot kèm SHA-256 tree checksum | Trong workflow `/evolve-kit` |
-| `scripts/equip_evolution.py` | Tự động trang bị trọn bộ Evolution Suite cho bất kỳ kit nào (1-shot / --all) | Trong `copy_kit.py` & `/refactor-kit` |
+| `scripts/equip_evolution.py` | Tự động trang bị trọn bộ Evolution Suite cho bất kỳ kit nào (1-shot / --all) | Trong `/refactor-kit` |
 | `scripts/benchmark_behavior.py` | Đo lường Routing, JIT Context, DAG Parallelism và Convergence | Benchmark kiểm thử hành vi |
 | `scripts/compile_execution_policy.py` | Sinh `execution_policy.json` (ACO Lite orchestration intent) | Trong kit-assembling compile pipeline |
 | `scripts/component_registry.py` | Module xử lý SemVer và registry | Thư viện nội bộ |
@@ -129,7 +127,7 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | --- | --- |
 | **Total Agents** | 1 |
 | **Total Skills** | 10 |
-| **Total Workflows** | 8 |
+| **Total Workflows** | 7 |
 | **Total Skill Scripts** | 5 |
 | **Total Rules** | 3 |
 | **Top-level Utilities** | 14 user-facing + 2 internal engine modules |

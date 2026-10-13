@@ -42,13 +42,6 @@ python .agents/scripts/eval_runner.py --regression
 python .agents/scripts/export_kit.py .agents ./dist --target all
 ```
 
-### `copy_kit.py`
-Sao chép an toàn Agent Kit từ thư mục output sang thư mục quản lý dự án AI Agent đích mà không làm thay đổi file nguồn.
-
-```bash
-python .agents/scripts/copy_kit.py ./output/<kit-name>
-```
-
 ### `feedback_hub.py`
 Append-only event stream JSONL cho feedback thực chiến của Kit và Builder.
 

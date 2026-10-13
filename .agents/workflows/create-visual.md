@@ -29,7 +29,7 @@ recovery:
 
 1. **No Design Grounding $\rightarrow$ No HTML Generation**: Tuyệt đối không sinh mã HTML/CSS tự do từ trí nhớ. Mọi quyết định màu sắc, font chữ, bố cục và hiệu ứng BẮT BUỘC phải grounding qua công cụ tìm kiếm `ui-ux-pro-max/scripts/search.py`.
 2. **Zero AI Cliche Policy**: Cấm triệt để việc dùng emoji làm icon, cấm dùng màu tím/hồng default (AI gradient), cấm tương phản yếu (gray-on-gray) và cấm các nút bấm thiếu tương tác (hover/active/focus).
-3. **Coalesced State Principle**: Tinh gọn thành 3 State Nodes nghiệp vụ và 1 Deliverable Human Gate để đảm bảo tốc độ và sự liền mạch trong luồng suy luận.
+3. **Focused State Design**: 4 State Nodes nghiệp vụ và 1 Deliverable Human Gate để đảm bảo tốc độ và sự liền mạch trong luồng suy luận.
 4. **Self-Contained & Instant Preview**: Visual output mặc định là Single-File HTML hoặc cấu trúc module rõ ràng, sẵn sàng mở trực tiếp trên trình duyệt mà không yêu cầu build step phức tạp.
 
 ---
@@ -120,7 +120,7 @@ recovery:
 ### [STATE: VISUAL_IMPLEMENTATION]
 - **Responsible Agent / Role**: `kit-architect` (`@designer`) | Skill: `ui-ux-pro-max`
 - **Input**: `design-system/MASTER.md` + Cấu trúc trang yêu cầu.
-- **Output Artifacts**: File HTML trực quan (ví dụ: `./output/<kit-name>/visuals/index.html` hoặc `preview.html`).
+- **Output Artifacts**: File HTML trực quan (ví dụ: `<target-dir>/visuals/index.html` hoặc `preview.html` tại thư mục chỉ định, mặc định `./output/<kit-name>/visuals/`).
 
 - **⚡ Action Prompts & Execution Steps**:
   1. **Cấu trúc HTML Semantic**:

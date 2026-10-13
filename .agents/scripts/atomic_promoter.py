@@ -7,6 +7,7 @@ Guarantees zero-downtime and safe rollback to v1 on failure.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -15,10 +16,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from evolution_submitter import sha256_file
-
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
+
+def sha256_file(filepath: Path) -> str:
+    h = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        while chunk := f.read(8192):
+            h.update(chunk)
+    return h.hexdigest()
+
 
 def compute_tree_checksums(dir_path: Path) -> dict[str, str]:
     checksums = {}

@@ -215,6 +215,8 @@ def export_antigravity_plugin(kit_dir, agents, skills, rules, workflows, kit_pat
         shutil.copytree(kit_path / "agent", plugin_dir / "agents", dirs_exist_ok=True)
     if (kit_path / "rules").is_dir():
         shutil.copytree(kit_path / "rules", plugin_dir / "rules", dirs_exist_ok=True)
+    if (kit_path / "workflows").is_dir():
+        shutil.copytree(kit_path / "workflows", plugin_dir / "workflows", dirs_exist_ok=True)
 
     # Copy hooks if present
     hooks_out = plugin_dir / "hooks"

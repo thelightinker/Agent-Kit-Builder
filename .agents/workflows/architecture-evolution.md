@@ -28,7 +28,7 @@ recovery:
 ## 🏛️ 1. GOVERNANCE LAYER (HÀNG RÀO PHÁP LÝ & AN TOÀN)
 
 1. **Change Gate Protocol**: Khi bắt đầu, mở `active_change_gate: "architecture_evolution"` trong `lifecycle.json`. Khi kết thúc, bắt buộc đóng gate `active_change_gate: null`.
-2. **Map-First Enforcement**: Mọi hành động sửa đổi cấu phần kiến trúc đều phải bắt đầu từ việc đọc và phân tích `map.md`.
+2. **Map-First Enforcement**: Mọi hành động sửa đổi cấu phần kiến trúc đều phải bắt đầu từ việc đọc và phân tích `map.md`. Nếu `map.md` chưa tồn tại, invoke `architecture-mapping` skill để sinh map ban đầu trước khi tiếp tục.
 3. **Blast Radius Gate**: Bắt buộc lượng hóa phạm vi tác động (Direct, Indirect, Invariant Risks) trong `impact_assessment.md` trước khi can thiệp code.
 4. **Zero-Degradation Guarantee**: Sau khi nâng cấp, toàn bộ test suite hiện có phải đạt 100% PASS và không làm tổn hại các Invariants bất biến.
 5. **Mandatory Map Sync & Re-validation**: `map.md` phải được cập nhật phản ánh đúng trạng thái thực tế mới nhất, chuyển trạng thái `lifecycle_state: "READY_FOR_VALIDATION"` và bàn giao cho `/validate-kit`.
@@ -55,7 +55,7 @@ recovery:
 ### 2.2. Evidence-Gated Transition Matrix
 | Current State | Target State | Required Evidence / Artifact | Transition Assertion Guard | Allowed Epistemic Status | Remediation Path (On Fail) | Max Retries |
 |:---|:---|:---|:---|:---|:---|:---|
-| `INIT` | `READ_MAP` | `map.md` exists | `file_exists(map.md) == true` | `[CONFIRMED]` | Create base map.md | 1 |
+| `INIT` | `READ_MAP` | `map.md` exists | `file_exists(map.md) == true` | `[CONFIRMED]` | Invoke `architecture-mapping` skill để sinh map ban đầu | 1 |
 | `READ_MAP` | `LOCATE_LAYER` | Map Invariants read | `map_context_loaded == true` | `[CONFIRMED]` | Re-read map.md | 1 |
 | `LOCATE_LAYER` | `ASSESS_IMPACT` | Target Component Identified | `target_layer_defined == true` | `[CONFIRMED]` | Clarify target layer | 2 |
 | `ASSESS_IMPACT` | `[GATE: Proposal_Approval]` | `impact_assessment.md` | `file_exists(impact_assessment.md) == true` | `[CONFIRMED]` | Re-evaluate dependencies | 2 |
@@ -110,9 +110,11 @@ recovery:
 - **Decision Policy & Automated Gate**:
   ```yaml
   mode: evaluator-optimizer
-  objective: Lượng hóa Blast Radius và tạo upgrade_proposal.json đủ 5 câu hỏi trích xuất, bằng chứng thực nghiệm, Value Deltas và Cost Deltas
-  automated_gate: "python .agents/scripts/upgrade_gate_evaluator.py upgrade_proposal.json"
-  stop_when: upgrade_gate_evaluator_passes_keep_or_adapt
+  objective: Lượng hóa Blast Radius và tạo upgrade_proposal.json
+  scope_routing:
+    small_change: "Quick impact check in-chat (≤2 components affected) — skip upgrade_gate_evaluator.py"
+    large_change: "Full automated gate: python .agents/scripts/upgrade_gate_evaluator.py upgrade_proposal.json"
+  stop_when: impact_assessed_and_proposal_ready
   ```
 - **DoD**: 
   - [ ] `impact_assessment.md` nêu rõ Layer cần sửa, Blast Radius và Rủi ro.

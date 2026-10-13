@@ -10,7 +10,7 @@ trigger: manual
 permissions: read-write
 tools_allowed: [Read, Write, Edit, Glob, Grep, Bash]
 safe_outputs:
-  write_output_dir: Chỉ ghi file vào ./output/<kit-name>/
+  write_output_dir: Ghi file vào thư mục đích chỉ định (<target-dir>, mặc định ./output/<kit-name>/)
 max_retry_per_node: 2
 ---
 
@@ -20,15 +20,18 @@ Quy trình chuẩn mực để tạo một Agent Kit mới từ đầu, tích h�
 
 ---
 
-## 🚦 BƯỚC 0: SUPERPOWERS PROCESS & SKILL GATE (BẮT BUỘC)
+## 🚦 BƯỚC 0: SCOPE CLARIFICATION & DESIGN SPEC
 
-Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-name>/`:
+Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đích (`<target-dir>`, mặc định `./output/<kit-name>/`):
 
-1. **Invoke Brainstorming:** BẮT BUỘC invoke `superpowers:brainstorming`.
-2. **Khóa Design Spec:** Thống nhất với User về: Mục tiêu cốt lõi, Complexity Tier, 5 Core Verbs, 80/20 Leverage và Danh sách Cấu phần tối thiểu.
+1. **Brainstorming (Conditional):**
+   - Nếu scope chưa rõ, requirements mâu thuẫn, hoặc có nhiều hướng kiến trúc hợp lý → invoke `superpowers:brainstorming` để khám phá trước khi commit.
+   - Nếu requirements đã rõ ràng (user cung cấp đủ domain context, complexity tier, core verbs) → tiến thẳng vào Design Spec.
+   - `FAST_TRACK` / `TARGETED_TRACK`: Bỏ qua Bước 0 hoàn toàn.
+2. **Khóa Design Spec & Tri-Bucket Scope:** Thống nhất với User về: Mục tiêu cốt lõi, Complexity Tier, 5 Core Verbs, 80/20 Leverage, Danh sách Cấu phần tối thiểu.
+   - **Tri-Bucket Intake (nếu kế thừa hoặc tham chiếu):** Phân loại toàn bộ năng lực cũ/tham chiếu vào 3 rổ: `Preserve` (giữ/nâng cấp), `Merge/Abstract` (gom vào component sẵn có), `Cut/Non-Goal` (cắt bỏ có chủ đích, ghi rõ vào mục `Non-Goals`).
 3. **Approval Gate:** Nhận sự phê duyệt (`APPROVED`) từ User cho Design Spec trước khi tiến hành viết Plan.
    - 🚫 **HARD CONSTRAINT:** TUYỆT ĐỐI KHÔNG tự ý viết code, tạo file hay scaffold thư mục khi Design Spec chưa được User phê duyệt.
-   - ⚠️ **Quy tắc Bypass:** Cho phép bỏ qua Bước 0 khi yêu cầu là `FAST_TRACK` (Micro Kit 1-shot) hoặc `TARGETED_TRACK` (tạo/sửa 1 component đơn lẻ đã có domain context rõ ràng). Không tự ý bypass khi tạo Standard/Pro/Suite Kit.
 4. **Planning & Execution:** Sau khi Design Spec được duyệt ➔ Invoke `superpowers:writing-plans` để lập kế hoạch ➔ Thực thi qua `superpowers:executing-plans`.
 
 ---
@@ -44,19 +47,34 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-n
   - [ ] Liệt kê đủ 5-10 Core Verbs kèm 4 tiêu chí đánh giá.
   - [ ] Có ít nhất 1 đòn bẩy 80/20 đạt tỷ lệ ROI $\ge 1.25$.
   - [ ] Dự đoán $\ge 3$ Failure Modes đặc trưng domain.
-- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 2 | Fail ➔ Bổ sung phân tích.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 1.5 | Fail ➔ Bổ sung phân tích.
+
+---
+
+### Bước 1.5: Khớp Nối Kiến Trúc & Hợp Đồng Node (Topology & Node-Contract Reconciliation Gate)
+*(Chỉ thực hiện cho Professional / Suite Kits có > 1 Agent. Micro / Standard Kit bỏ qua bước này.)*
+- **Role Profile:** `@architect` | **Skill:** `architecture-mapping`
+- **[Input Artifacts]:** `domain_profile.md` + Topology & Workflow sơ bộ.
+- **[Output Artifacts]:** Ma trận phân định hợp đồng Node-Role-Skill (ghi trong plan hoặc design spec).
+- **[DoD - Reconciliation Assertions]:**
+  - [ ] **Zero Orphan Nodes:** Mọi Node trong mọi Workflow đều có đúng 1 Role chịu trách nhiệm và đúng 1 Skill tương ứng.
+  - [ ] **Zero Self-Audit:** Mọi Node thuộc tầng kiểm định/review bắt buộc do một Role độc lập với Role đã tạo tác đảm nhiệm ($\text{Auditor} \ne \text{Author}$). Cấm tuyệt đối một agent tự cấp quyền `PASS` cho chính mình.
+  - [ ] **Zero Split-Lifecycle Skills:** Không có Skill nào ôm 2 giai đoạn phân kỳ ngăn cách bởi Human Gate (ví dụ: cấm 1 skill vừa lập card metadata trước Gate vừa viết prose sau Gate).
+  - [ ] **Heuristic Ownership Alignment:** Mọi bảng quy tắc/heuristic/ngân sách thuộc về chính xác Role thực thi Node đó.
+- **[Evaluation Loop]:** Pass ➔ Chuyển Bước 2 | Fail ➔ Điều chỉnh phân bổ Topology.
 
 ---
 
 ### Bước 2: Biên dịch System Prompt (Prompt Compiling)
 - **Role Profile:** `@compiler` | **Skill:** `prompt-compiling`
 - **[Mandatory Grounding Template]:** Đọc `.agents/templates/orchestrator-template.md` (nếu là Master Orchestrator) HOẶC `.agents/templates/agent-template.md` (nếu là Single/Specialist Agent).
-- **[Input Artifacts]:** `domain_profile.md`
+- **[Input Artifacts]:** `domain_profile.md`, Ma trận phân bổ Hợp đồng Node.
 - **[Output Artifacts]:** System Prompt của Agent (`agent/<name>.md` hoặc `<name>.md`).
 - **[Evidence Gate DoD]:**
   - [ ] Có phần TÓM TẮT CHO NGƯỜI DÙNG ở đầu (0 thuật ngữ AI, 3-5 dòng).
   - [ ] Chứa đủ 4 khối chuẩn từ template: Vai trò, Quy trình, Hard Constraints dạng phủ định, Format đầu ra.
   - [ ] Binary DoD: 100% nhị phân, đo lường được, 0 tính từ cảm tính.
+  - [ ] **Anti-Pseudo-Metric Mandate:** Tuyệt đối cấm đưa ra các chỉ số số học thập phân (như `sentence-CV < 0.3`, `hedge-ratio > 0.04`) trong prompt nếu không có script thực thi đi kèm để đo đạc khách quan. Tiêu chí định lượng phải có script; tiêu chí định tính phải viết dạng checklist/rubric cụ thể.
 - **[Evaluation Loop]:** Pass ➔ Chuyển Bước 3 | Fail ➔ Tinh chỉnh prompt.
 
 ---
@@ -78,6 +96,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-n
 - **[Evidence Gate DoD]:**
   - [ ] Đã nạp và tuân thủ 100% quy chuẩn của `skill-creator` (Pushy Trigger Description chống under-triggering, 3-tier progressive disclosure, why-driven imperative instructions, concrete examples, chiều dài $\le 500$ dòng).
   - [ ] Mọi Workflow đều chứa đủ 5-Part Node Anatomy (`[STATE]`, Input, Output, DoD, Evaluation Loop) và `[ESCALATE_HUMAN]`.
+  - [ ] **Chu trình Cách Ly Tuần Tự (SEQ-001 đến SEQ-008):** Mỗi node workflow chỉ có đúng 1 active agent, có ranh giới `[CONTEXT_RESET]` khi chuyển vai trò, và cấm khai báo mảng `requires_agents` đa tác tử ở frontmatter của từng node.
   - [ ] Memory có đủ 4 required topics và index $\le 200$ dòng.
 - **[Evaluation Loop]:** Pass ➔ Chuyển Bước 4.
 
@@ -87,15 +106,15 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-n
 - **Skill:** `kit-assembling`
 - **[Mandatory Grounding Template]:** Đọc `.agents/templates/manifest-template.json`.
 - **[Input Artifacts]:** Toàn bộ components đã tạo.
-- **[Output Artifacts]:** `./output/<kit-name>/` hoàn chỉnh kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, `lifecycle.json`, và phân hệ Dynamic Evolution Suite.
+- **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, `lifecycle.json`, và phân hệ Dynamic Evolution Suite.
 - **[Compiler & Lifecycle Execution Pipeline]:**
-  1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py`.
-  2. Tự động chạy `python .agents/scripts/equip_evolution.py ./output/<kit-name>/`.
+  1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py` trên `<target-dir>`.
+  2. Tự động chạy `python .agents/scripts/equip_evolution.py <target-dir>`.
   3. Khởi tạo `lifecycle.json` với `schema_version: "1.0.0"`, `kit_name: "<kit-name>"`, `lifecycle_state: "DRAFT"`.
   4. Sau khi các artifacts compiled và `manifest.json` được tạo hoàn tất, chuyển trạng thái sang `lifecycle_state: "READY_FOR_VALIDATION"`.
   5. Khởi tạo khối `handoff` chuyển giao quyền kiểm định sang `validate-kit`.
 - **[DoD]:**
-  - [ ] Toàn bộ file nằm trong `./output/<kit-name>/`.
+  - [ ] Toàn bộ file nằm trong thư mục đích (`<target-dir>`). CẤM ghi đè `.agents/` của Creator Engine.
   - [ ] Bộ 5 compiled decision artifacts (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`) được tạo và validate sạch.
   - [ ] Dry-run simulation PASS 100% (0 unreachable nodes, 0 deadlock states).
   - [ ] `manifest.json` và `manifest.lock.json` đồng bộ 100% danh mục files và SemVer `1.0.0`.
@@ -106,11 +125,12 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong `./output/<kit-n
 
 ### Bước 5: Chuyển Giao Kiểm định Chất lượng (Handoff to /validate-kit)
 - **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
-- **[Input Artifacts]:** `./output/<kit-name>/` kèm `lifecycle.json`.
+- **[Input Artifacts]:** Thư mục kit đích (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `lifecycle.json`.
 - **[Output Artifacts]:** `audit_findings.json`, `validation_report.md`.
-- **[Execution]:** Kích hoạt trực tiếp `/validate-kit` để chạy kiểm tra 3 lớp (L1 Linter $\rightarrow$ L2 Kịch bản $\rightarrow$ L3 Adversarial) và xuất `audit_findings.json`.
+- **[Execution]:** Kích hoạt trực tiếp `/validate-kit <target-dir>` để chạy kiểm tra 3 lớp (L1 Linter $\rightarrow$ L2 Kịch bản $\rightarrow$ L3 Adversarial) và xuất `audit_findings.json`.
 - **[DoD]:**
-  - [ ] `validate_kit.py --findings-json ./output/<kit-name>/audit_findings.json` trả về `0 error(s)`.
+  - [ ] `validate_kit.py <target-dir> --findings-json <target-dir>/audit_findings.json` trả về `0 error(s)`.
+  - [ ] **Executable Script Smoke Test:** 100% các script Python đi kèm kit (nếu có) phải vượt qua bài kiểm tra cú pháp AST và chạy thử `--help` trả về exit code `0` không có exception.
   - [ ] Điểm Rubric $\ge 4/5$ ⭐ $\rightarrow$ Cập nhật `lifecycle_state: "VALIDATED"`.
   - [ ] Nếu có lỗi $\rightarrow$ Tự động chuyển giao sang `/refactor-kit` (tối đa 3 vòng repair cycle).
 - **[Evaluation Loop]:** Pass ➔ Hoàn tất quy trình | Fail ➔ Chuyển giao sang `/refactor-kit` (nếu vượt quá 3 vòng ➔ `[ESCALATE_HUMAN]`).
