@@ -194,17 +194,23 @@ def verify_backward_compatibility():
 # ----------------------------------------------------------------------
 # 5. CONVERGENCE ENGINE BENCHMARK & CHAOS INJECTION SUITE
 # ----------------------------------------------------------------------
-def benchmark_convergence():
+def benchmark_convergence() -> list[tuple[str, bool]]:
     """Measure convergence engine metrics on healthy path and chaos injection sandboxes."""
     import tempfile, shutil
     from convergence_engine import converge, _detect_oscillation
 
     print("\n--- 4. CONVERGENCE & CHAOS RECOVERY BENCHMARK ---")
+    results: list[tuple[str, bool]] = []
 
     # Test 1: Healthy kit — baseline
-    report_healthy = converge(ROOT, max_iterations=3)
-    first_pass = "✓" if report_healthy["converged"] and report_healthy["iterations"] == 0 else "✗"
-    print(f"[{first_pass}] Healthy Kit Baseline: converged={report_healthy['converged']}, iterations={report_healthy['iterations']}")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_root = Path(tmpdir) / ".agents"
+        shutil.copytree(ROOT, tmp_root)
+        report_healthy = converge(tmp_root, max_iterations=3)
+        healthy_pass = bool(report_healthy["converged"] and report_healthy["iterations"] == 0)
+        first_pass = "✓" if healthy_pass else "✗"
+        print(f"[{first_pass}] Healthy Kit Baseline: converged={report_healthy['converged']}, iterations={report_healthy['iterations']}")
+        results.append(("Healthy Kit Baseline", healthy_pass))
 
     # Test 2: Chaos 1 — Single-Hop 5-Fault Injection (Manifest, Lock, Graph, Counts, Version)
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -226,7 +232,7 @@ def benchmark_convergence():
             arch_path.write_text(arch_text, "utf-8")
         
         report_chaos1 = converge(tmp_root, max_iterations=3)
-        c1_pass = (
+        c1_pass = bool(
             report_chaos1["converged"]
             and report_chaos1["iterations"] <= 2
             and report_chaos1["first_pass_errors"] >= 4
@@ -234,6 +240,7 @@ def benchmark_convergence():
         )
         c1_icon = "✓" if c1_pass else "✗"
         print(f"[{c1_icon}] Chaos 1 (5 Multi-Faults): first_pass_errors={report_chaos1['first_pass_errors']}, auto_fixed={report_chaos1['auto_fixed_count']}, iterations={report_chaos1['iterations']}, converged={report_chaos1['converged']}")
+        results.append(("Chaos 1", c1_pass))
 
     # Test 3: Chaos 2 — Cascading Multi-Hop Recovery (Deterministic Fix -> LLM Queue -> Converged)
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -258,9 +265,10 @@ def benchmark_convergence():
         )
         # Iteration 2: Re-converge
         report_step2 = converge(tmp_root, max_iterations=2)
-        c2_pass = step1_has_llm_queue and report_step2["converged"] and report_step2["iterations"] <= 2
+        c2_pass = bool(step1_has_llm_queue and report_step2["converged"] and report_step2["iterations"] <= 2)
         c2_icon = "✓" if c2_pass else "✗"
         print(f"[{c2_icon}] Chaos 2 (Cascading 2-Hop): step1_llm_queue={len(report_step1['llm_repair_queue'])}, step2_converged={report_step2['converged']}, total_iterations={report_step2['iterations']}")
+        results.append(("Chaos 2", c2_pass))
 
     # Test 4: Chaos 3 — Fatal Non-Deterministic Trap (Escalates safely, halts at iteration 1)
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -272,9 +280,10 @@ def benchmark_convergence():
         bad_script.write_text("def broken_syntax(:\n  pass", "utf-8")
         
         report_fatal = converge(tmp_root, max_iterations=3)
-        fatal_pass = (not report_fatal["converged"]) and report_fatal["escalated_count"] > 0 and report_fatal["iterations"] == 1
+        fatal_pass = bool((not report_fatal["converged"]) and report_fatal["escalated_count"] > 0 and report_fatal["iterations"] == 1)
         fatal_icon = "✓" if fatal_pass else "✗"
         print(f"[{fatal_icon}] Chaos 3 (Fatal Syntax Trap): escalated={report_fatal['escalated_count']}, halted_iterations={report_fatal['iterations']}, safe_stop={fatal_pass}")
+        results.append(("Chaos 3", fatal_pass))
 
     # Test 5: Oscillation detection accuracy
     osc_cases = [
@@ -286,12 +295,56 @@ def benchmark_convergence():
     osc_pass = all(_detect_oscillation(h) == expected for h, expected in osc_cases)
     osc_icon = "✓" if osc_pass else "✗"
     print(f"[{osc_icon}] Oscillation Detection: {len(osc_cases)}/{len(osc_cases)} cases correct")
+    results.append(("Oscillation Detection", osc_pass))
+
+    return results
+
+
+def _verdict_lines(
+    routing_ok: bool,
+    jit_min_pct: float,
+    jit_max_pct: float,
+    dag: dict,
+    compat: dict,
+    convergence: list[tuple[str, bool]],
+) -> list[tuple[bool, str]]:
+    lines: list[tuple[bool, str]] = []
+    
+    # 1. Routing
+    r_icon = "✓" if routing_ok else "✗"
+    lines.append((routing_ok, f"{r_icon} Dynamic Routing: {'5/5' if routing_ok else 'FAILED'} Test Vectors accurately routed with step pruning"))
+
+    # 2. JIT Context
+    jit_ok = jit_min_pct >= 0 and jit_max_pct >= 0
+    j_icon = "✓" if jit_ok else "✗"
+    lines.append((jit_ok, f"{j_icon} JIT Context: {jit_min_pct:.1f}% - {jit_max_pct:.1f}% token reduction across Micro & Targeted tasks"))
+
+    # 3. DAG Parallelism
+    dag_ok = not dag.get("write_conflict_detected", True)
+    d_icon = "✓" if dag_ok else "✗"
+    lines.append((dag_ok, f"{d_icon} DAG Parallelism: 0 write conflict, {dag.get('stage_reduction_ratio', 'N/A')} stage latency reduction"))
+
+    # 4. Backward Compatibility
+    compat_passed = sum(1 for info in compat.values() if info.get("present") and info.get("valid_requires"))
+    compat_total = len(compat)
+    compat_ok = compat_passed == compat_total and compat_total > 0
+    c_icon = "✓" if compat_ok else "✗"
+    lines.append((compat_ok, f"{c_icon} Backward Compatibility: {compat_passed}/{compat_total} legacy workflows 100% operational"))
+
+    # 5. Convergence & Chaos Recovery
+    conv_passed = sum(1 for _, ok in convergence if ok)
+    conv_total = len(convergence)
+    conv_ok = conv_passed == conv_total and conv_total > 0
+    v_icon = "✓" if conv_ok else "✗"
+    lines.append((conv_ok, f"{v_icon} Convergence & Chaos Recovery: {conv_passed}/{conv_total} Chaos Failure Injection scenarios passed"))
+
+    return lines
 
 
 # ----------------------------------------------------------------------
 # MAIN BENCHMARK EXECUTION
 # ----------------------------------------------------------------------
-def run_benchmark():
+def run_benchmark() -> int:
     print("================================================================================")
     print("       AGENTKIT BUILDER BEHAVIORAL BENCHMARK (80/20 CAPABILITIES)              ")
     print("================================================================================\n")
@@ -304,6 +357,7 @@ def run_benchmark():
     print("-" * 105)
 
     all_routing_passed = True
+    savings: list[float] = []
     for tc in TEST_VECTORS:
         mode = classify_prompt(tc.user_prompt)
         is_mode_match = mode == tc.expected_mode
@@ -313,6 +367,7 @@ def run_benchmark():
         jit_bytes = measure_context_bytes(tc.required_templates, tc.required_references)
         jit_tokens = jit_bytes // 4
         saving_pct = ((total_baseline_context - jit_bytes) / total_baseline_context) * 100
+        savings.append(saving_pct)
 
         steps_display = f"{tc.old_pipeline_steps} -> {tc.expected_steps}"
         context_display = f"{jit_bytes:,} B (~{jit_tokens:,} T)"
@@ -320,6 +375,9 @@ def run_benchmark():
 
         status_icon = "✓" if is_mode_match else "✗"
         print(f"{status_icon} {tc.name:<36} | {mode:<15} | {steps_display:<16} | {context_display:<24} | {saving_display}")
+
+    jit_min_pct = min(savings) if savings else 0.0
+    jit_max_pct = max(savings) if savings else 0.0
 
     print("\n--- 2. CONFLICT-AWARE DAG PARALLELISM BENCHMARK ---")
     dag = analyze_dag_conflict_safety()
@@ -334,20 +392,21 @@ def run_benchmark():
         status = "✓ PASS" if info["present"] and info["valid_requires"] else "✗ FAIL"
         print(f"[{status}] Legacy Slash Command: {wf} (Contract valid)")
 
-    benchmark_convergence()
+    conv_results = benchmark_convergence()
 
     print("\n================================================================================")
     print("                               BENCHMARK VERDICT                                ")
     print("================================================================================\n")
-    print("✓ Dynamic Routing: 5/5 Test Vectors accurately routed with step pruning")
-    print(f"✓ JIT Context: 82.4% - 88.6% token reduction across Micro & Targeted tasks")
-    print(f"✓ DAG Parallelism: 0 write conflict, {dag['stage_reduction_ratio']} stage latency reduction")
-    print("✓ Backward Compatibility: 4/4 legacy workflows 100% operational")
-    print(f"✓ Convergence & Chaos Recovery: 4/4 Chaos Failure Injection scenarios passed")
+    verdict_lines = _verdict_lines(all_routing_passed, jit_min_pct, jit_max_pct, dag, compat, conv_results)
+    for _, text in verdict_lines:
+        print(text)
     print("================================================================================\n")
+
+    return 0 if all(ok for ok, _ in verdict_lines) else 1
 
 
 if __name__ == "__main__":
-    run_benchmark()
+    raise SystemExit(run_benchmark())
+
 
 
