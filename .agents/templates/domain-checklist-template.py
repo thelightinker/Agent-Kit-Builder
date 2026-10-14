@@ -67,20 +67,8 @@ class VerificationEngine:
         except Exception as e:
             self.log_result("P2", f"Arithmetic script execution", False, str(e))
 
-    # Archetype 4: Visual QA & Design Token Compliance
-    def check_visual_tokens(self, design_spec="DESIGN.md"):
-        print(f"\n🎨 Checking Visual QA & Token Compliance ({design_spec})...")
-        fpath = self.root / design_spec
-        if not fpath.exists():
-            self.log_result("P3", f"Design tokens: {design_spec}", False, "DESIGN.md SSOT missing")
-            return
-        
-        content = fpath.read_text("utf-8", errors="replace")
-        has_colors = "colors:" in content
-        has_typography = "typography:" in content
-        self.log_result("P3", "Design tokens syntax", has_colors and has_typography, "Missing colors or typography YAML blocks")
-
     # Archetype 5: System Command / Test Runner
+
     def check_system_command(self, priority, name, cmd_args):
         print(f"\n⚙️ Running System Verification: {name}...")
         try:

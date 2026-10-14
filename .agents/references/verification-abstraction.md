@@ -72,11 +72,6 @@ Trước khi thiết kế checklist cho bất kỳ Agent Kit nào, xác định 
 - **Domain áp dụng:** DevOps, Database Migration, Refactor Codebase, System Administration.
 - **Evidence:** Exit code 0 + Healthcheck pass; hoặc Rollback log khôi phục snapshot thành công.
 
-### 🔹 Archetype 5: Visual & UI QA Evidence
-- **Bản chất:** Kiểm chứng giao diện bằng token compliance (`DESIGN.md`), tỉ lệ tương phản WCAG AA ($\ge 4.5:1$), và chụp ảnh headless browser kiểm tra layout vỡ.
-- **Domain áp dụng:** Frontend Design, Dashboard Visual Kit, Landing Pages, Presentation Slides.
-- **Evidence:** `DESIGN.md` token match + Headless screenshot capture.
-
 ---
 
 ## 4. MA TRẬN ÁNH XẠ DOMAIN $\rightarrow$ ARCHETYPES
@@ -86,6 +81,6 @@ Trước khi thiết kế checklist cho bất kỳ Agent Kit nào, xác định 
 | **Content / Copywriting** | Presence + Negative Completeness (CTA, Tone) | Readability score, Banned Words list (anti-AI buzzwords), Word count |
 | **Growth / E-commerce** | Presence + Deterministic Computation | Python metric verification script, Funnel math checker |
 | **Legal / Compliance** | Presence + Negative Completeness Matrix | 2-way clause coverage checker, Risk severity tagger |
-| **UI / UX / Frontend** | Presence + Visual QA + Token Gate | `DESIGN.md` linter, WCAG contrast validator, Playwright screenshot |
 | **DevOps / System** | Presence + Transactional Mutation Safety | Healthcheck runner, Safety pre-hook, Rollback trigger |
+
 | **Software Engineering** | Presence + Deterministic Tests + Mutation | Linter, Static type checker, Unit test runner, Security hook |

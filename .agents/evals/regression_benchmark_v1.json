@@ -34,22 +34,8 @@
       ]
     },
     {
-      "id": "REG-03-UIUX",
-      "name": "UI/UX Visual Kit Domain - Token SSOT & Contrast Guard",
-      "domain": "ui-ux",
-      "risk_profile": ["Visual Regression", "Color Inconsistency", "WCAG Failure"],
-      "expected_archetypes": ["Presence", "Visual QA Evidence", "Token Compliance"],
-      "target_file": "templates/design-spec-template.md",
-      "assertions": [
-        {
-          "type": "contains_keywords",
-          "keywords": ["colors:", "typography:", "rounded:", "spacing:"],
-          "description": "Design spec template enforces complete YAML design tokens"
-        }
-      ]
-    },
-    {
       "id": "REG-04-LEGAL",
+
       "name": "Legal Review Domain - Negative Completeness Matrix (Omission Detection)",
       "domain": "legal-compliance",
       "risk_profile": ["Missing Mandatory Clause", "Hidden Liability", "Omission Error"],

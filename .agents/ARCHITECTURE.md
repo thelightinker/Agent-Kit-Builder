@@ -9,8 +9,9 @@
 Agent Kit Creator là hệ thống chuyên gia tinh gọn gồm:
 
 - **1 Orchestrator Agent** (`kit-architect`) với 5 Dynamic Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`).
-- **9 Focused Skills** - Bộ kỹ năng chuyên sâu phục vụ phân tích domain, biên dịch prompt, cấu trúc skill, nén context phiên dài, lắp ráp, kiểm định, xuất bản và tiến hóa kit.
-- **5 Workflows** - Các quy trình slash command (`/create-kit`, `/refactor-kit`, `/validate-kit`, `/remember-kit`, `/create-visual`).
+- **8 Focused Skills** - Bộ kỹ năng chuyên sâu phục vụ phân tích domain, biên dịch prompt, cấu trúc skill, nén context phiên dài, lắp ráp, kiểm định, xuất bản và tiến hóa kit.
+- **4 Workflows** - Các quy trình slash command (`/create-kit`, `/refactor-kit`, `/validate-kit`, `/remember-kit`).
+
 
 - **3 Core Rules** - Ràng buộc bất biến (`core-guardrails`), phân loại mode (`dynamic-routing`), và giao thức cộng tác & nạp quyền hạn (`collaboration-protocol`).
 
@@ -60,11 +61,11 @@ python .agents/scripts/validate_kit.py
 
 | Agent | Focus | Skills Used |
 |---|---|---|
-| `kit-architect` | Orchestrator duy nhất điều phối toàn bộ pipeline với 5 Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`) | context-compression, domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying, kit-exporting, kit-evolving, ui-ux-pro-max |
+| `kit-architect` | Orchestrator duy nhất điều phối toàn bộ pipeline với 5 Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`) | context-compression, domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying, kit-exporting, kit-evolving |
 
 ---
 
-## 🧩 Skills (9)
+## 🧩 Skills (8)
 
 Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 
@@ -78,19 +79,18 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | `kit-verifying` | Kiểm định 3 lớp, Verification by Execution, Worker Briefing checks & Rubric 5 sao |
 | `kit-exporting` | Đóng gói Antigravity Plugin bundle, Cursor, Claude Desktop, OpenAI Custom GPTs |
 | `kit-evolving` | Phân tích Gap Analysis, Delta Patch, Auto-Skillify heuristics, Anti-Overengineering |
-| `ui-ux-pro-max` | Trí tuệ thiết kế UI/UX toàn diện: DESIGN.md YAML tokens SSOT, 192 palettes, WCAG AA, HTML visual kits |
 
 ---
 
-## 🔄 Workflows (5)
+## 🔄 Workflows (4)
 
 | Command | Description | Artifact Outputs |
 |---|---|---|
 | `/create-kit` | Quy trình tạo Agent Kit mới từ đầu (Deep Track) | `agent-kit-spec` |
 | `/refactor-kit` | Cải tiến & Nâng cấp Agent Kit đã có sẵn (Refactor Track) | `refactored-kit-spec` |
-| `/create-visual` | Sản xuất UI/UX Visual Kit, Interactive Preview, Dashboard, Landing Page và Design System | `design-system`, `visual-kit-html`, `visual-qa-report` |
 | `/validate-kit` | Kiểm định Chất lượng Agent Kit (Audit 3 lớp & Rubric 5 sao) | `audit-report` |
 | `/remember-kit` | Lưu bài học kinh nghiệm và ví dụ mẫu vào bộ nhớ dài hạn | `memory-entry` |
+
 
 ---
 
@@ -122,9 +122,9 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | Metric | Value |
 | --- | --- |
 | **Total Agents** | 1 |
-| **Total Skills** | 10 |
-| **Total Workflows** | 5 |
-| **Total Skill Scripts** | 14 |
+| **Total Skills** | 9 |
+| **Total Workflows** | 4 |
+| **Total Skill Scripts** | 9 |
 | **Total Rules** | 3 |
 | **Top-level Utilities** | 14 user-facing + 2 internal engine modules |
 | **Coverage** | Domain analysis, prompt compilation, skill architecture, context compression, visual design intelligence, assembly, 3-layer verification, export, evolution, closed-loop convergence, unified lifecycle |
@@ -138,8 +138,8 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | Nhu cầu | Agent / Role | Workflows / Skills |
 |---|---|---|
 | Tạo kit mới | `kit-architect` (`@analyst`, `@compiler`, `@architect`) | `/create-kit`, `domain-profiling`, `prompt-compiling`, `kit-assembling` |
-| Tạo Visual Kit / UI / Dashboard | `kit-architect` (`@designer`) | `/create-visual`, `ui-ux-pro-max` |
 | Nâng cấp kit | `kit-architect` (`@compiler`, `@architect`) | `/refactor-kit`, `kit-evolving` |
+
 | Kiểm định chất lượng | `kit-architect` (`@auditor`) | `/validate-kit`, `kit-verifying` |
 | Xuất bản nền tảng | `kit-architect` | `kit-exporting` (`export_kit.py`) |
 | Lưu bài học / pattern | `kit-architect` | `/remember-kit`, `kit-evolving` |

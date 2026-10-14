@@ -98,3 +98,38 @@ class TestLifecycleEngine(unittest.TestCase):
         self.engine.record_validation_verdict(self.kit_path, pass_status=False, score=2, findings_file="audit_findings.json")
         data = self.engine.load_lifecycle(self.kit_path)
         self.assertEqual(data["lifecycle_state"], "NEEDS_HUMAN_INTERVENTION")
+
+
+class TestLifecycleBackCompat(unittest.TestCase):
+    def setUp(self):
+        self.schema_path = Path(__file__).resolve().parents[2] / "schemas" / "lifecycle.schema.json"
+        self.schema = json.loads(self.schema_path.read_text(encoding="utf-8"))
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.kit_path = Path(self.temp_dir.name) / "test-kit"
+        self.kit_path.mkdir(parents=True, exist_ok=True)
+        self.engine = LifecycleEngine()
+
+    def tearDown(self):
+        self.temp_dir.cleanup()
+
+    def test_old_lifecycle_with_visual_qa_still_validates(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("jsonschema not installed")
+        data = self.engine.init_lifecycle(self.kit_path, "test-kit", "1.0.0", "create-kit")
+        data["verdicts"]["visual_qa"] = {
+            "evidence_file": "visual_qa_report.json",
+            "last_checked_at": "2026-10-14T10:00:00Z",
+        }
+        jsonschema.validate(instance=data, schema=self.schema)
+
+    def test_new_lifecycle_without_visual_qa_validates(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("jsonschema not installed")
+        data = self.engine.init_lifecycle(self.kit_path, "test-kit", "1.0.0", "create-kit")
+        self.assertNotIn("visual_qa", data["verdicts"])
+        jsonschema.validate(instance=data, schema=self.schema)
+

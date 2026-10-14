@@ -39,14 +39,14 @@ Xác định 5-10 hành động xảy ra thường xuyên nhất trong domain. M
 
 ## 2. RISK PROFILING & VERIFICATION ARCHETYPE MAPPING
 
-Đánh giá 4 chiều rủi ro để ánh xạ trực tiếp sang các **Verification Archetypes**:
+Đánh giá 3 chiều rủi ro để ánh xạ trực tiếp sang các **Verification Archetypes**:
 
 | Chiều Rủi Ro | Dấu Hiệu Nhận Biết | Verification Archetype Kích Hoạt |
 |:---|:---|:---|
 | **Omission Risk** | Domain pháp lý, audit, bảo mật, compliance cần quét danh mục bắt buộc. | ➔ **Negative Completeness Matrix** (Kiểm tra cái gì bị thiếu) |
 | **Arithmetic Risk** | Domain tài chính, e-commerce growth, data analysis có phép tính $\ge 3$ biến. | ➔ **Deterministic Computation Guard** (Ép chạy script tính toán) |
 | **Mutation Risk** | Domain devops, refactor, migration có thao tác ghi đè/xóa/sửa đổi file & DB. | ➔ **Transactional Mutation Pattern** (Snapshot $\rightarrow$ Mutate $\rightarrow$ Rollback) |
-| **Visual Risk** | Domain frontend, UI/UX, dashboard, landing page có giao diện hiển thị. | ➔ **Visual QA Evidence** (`DESIGN.md` tokens + Screenshot) |
+
 
 ---
 

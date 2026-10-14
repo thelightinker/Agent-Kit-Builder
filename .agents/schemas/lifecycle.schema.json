@@ -46,14 +46,15 @@
       "properties": {
         "created_at": { "type": "string", "format": "date-time" },
         "updated_at": { "type": "string", "format": "date-time" },
-        "created_by": { "type": "string", "enum": ["create-kit", "create-visual", "manual_scaffold"] },
+        "created_by": { "type": "string", "enum": ["create-kit", "manual_scaffold"] },
         "repair_cycle_count": { "type": "integer", "minimum": 0 },
         "max_repair_cycles": { "type": "integer", "default": 3 }
       }
     },
     "verdicts": {
       "type": "object",
-      "required": ["validation", "visual_qa", "memory_promotion"],
+      "required": ["validation", "memory_promotion"],
+
       "properties": {
         "validation": {
           "type": "object",

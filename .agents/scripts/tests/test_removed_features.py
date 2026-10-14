@@ -61,9 +61,27 @@ EVOLUTION_NAMES = [
 ]
 
 
+VISUAL_NAMES = [
+    "create-visual",
+    "ui-ux-pro-max",
+    "visual-component-template",
+    "design-system-template",
+    "design-spec-template",
+    "VISUAL_TRACK",
+    "check_visual_tokens",
+    "record_visual_verdict",
+]
+
+
 class TestEvolutionRemoved(unittest.TestCase):
     def test_no_references_to_removed_evolution_names(self):
         self.assertEqual(scan_for_names(REPO_ROOT, EVOLUTION_NAMES), {})
+
+
+class TestVisualRemoved(unittest.TestCase):
+    def test_no_references_to_removed_visual_names(self):
+        self.assertEqual(scan_for_names(REPO_ROOT, VISUAL_NAMES), {})
+
 
 
 if __name__ == "__main__":

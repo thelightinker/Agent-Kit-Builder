@@ -39,21 +39,3 @@ class TestLifecycleCreation(unittest.TestCase):
         self.assertEqual(state["handoff"]["target_workflow"], "validate-kit")
         self.assertEqual(state["handoff"]["contract_version"], "1.0.0")
 
-    def test_create_visual_handoff_contract(self):
-        self.engine.init_lifecycle(self.kit_path, "test-visual-kit", "1.0.0", "create-visual")
-        report = self.kit_path / "visual_qa_report.json"
-        report.write_text(json.dumps({"wcag_contrast_pass": True}), encoding="utf-8")
-        
-        self.engine.record_visual_verdict(self.kit_path, "visual_qa_report.json")
-        self.engine.transition_state(
-            self.kit_path,
-            target_state="READY_FOR_VALIDATION",
-            workflow_name="create-visual",
-            evidence_refs=["visual_qa_report.json"],
-        )
-        
-        state = self.engine.load_lifecycle(self.kit_path)
-        self.assertEqual(state["lifecycle_state"], "READY_FOR_VALIDATION")
-        self.assertEqual(state["handoff"]["source_workflow"], "create-visual")
-        self.assertEqual(state["handoff"]["target_workflow"], "validate-kit")
-        self.assertEqual(state["verdicts"]["visual_qa"]["evidence_file"], "visual_qa_report.json")

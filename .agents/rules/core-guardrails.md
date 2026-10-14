@@ -23,9 +23,8 @@ description: "Core guardrails: workspace isolation, targeted grounding, sequenti
 5. **Executable Script Smoke Test:** 100% script Python đi kèm kit phải pass AST parse và chạy thử CLI `--help` qua subprocess trả về exit code 0. Zero third-party dependency leak nếu tuyên bố stdlib.
 
 ## 3. Grounding & Rào Chắn Cấu Trúc (1:1 Mapping)
-- **Targeted Grounding (1:1):** Workflow $\rightarrow$ `workflow-template.md` | Orchestrator $\rightarrow$ `orchestrator-template.md` | Specialist $\rightarrow$ `agent-template.md` | Skill $\rightarrow$ `skill-creator` + `skill-template.md` | Rule $\rightarrow$ `rule-template.md` | Memory $\rightarrow$ `memory-template.md` | Manifest $\rightarrow$ `manifest-template.json` | UI $\rightarrow$ `ui-ux-pro-max` + `design-spec-template.md`. Anti-spam: không đọc lại nếu đã có trong context.
+- **Targeted Grounding (1:1):** Workflow $\rightarrow$ `workflow-template.md` | Orchestrator $\rightarrow$ `orchestrator-template.md` | Specialist $\rightarrow$ `agent-template.md` | Skill $\rightarrow$ `skill-creator` + `skill-template.md` | Rule $\rightarrow$ `rule-template.md` | Memory $\rightarrow$ `memory-template.md` | Manifest $\rightarrow$ `manifest-template.json`. Anti-spam: không đọc lại nếu đã có trong context.
 - **Skill Generation Gate:** Bắt buộc nạp `skill-creator` trước khi tạo/sửa `SKILL.md`. Description pushy có `when_to_use`, anatomy 3 tầng, hướng dẫn lối mệnh lệnh (Imperative + "Why" + I/O examples). Guideline: giữ body tinh gọn, đẩy tra cứu sâu sang `references/`.
 - **Worker Briefing Contract:** Không ủy quyền mù quáng ("Never Delegate Understanding"). Đủ 5 phần: Goal & Context, Ruled Out, File Scope, Negative Boundaries, Verification Evidence.
-- **Visual & UX Gate:** Bắt buộc sinh `DESIGN.md` token SSOT trước khi code UI. Contrast $\ge 4.5:1$, touch $\ge 44\text{px}$, SVG icons (cấm emoji), Purple Ban (cấm gradient tím).
 - **Central Feedback Hub:** Append-only event stream vào `Feedback/kit_feedback.jsonl`. Trạng thái `fixed` chỉ đóng khi đã `verified`.
-- **Output:** Khớp ngôn ngữ user. Code/comments: English. Tóm tắt 3-5 dòng đời thường đầu output. Link file dạng `file:///...`.
+- **Output:** Khớp ngôn ngữ user. Code/comments: English. Tóm tắt 3-5 dòng đời thường đầu output. Link file dạng `file:///...`.

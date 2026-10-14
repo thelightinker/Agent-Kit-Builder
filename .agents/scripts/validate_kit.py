@@ -944,9 +944,10 @@ def validate_portability(root: Path, findings: list[Finding]) -> None:
         if p.suffix not in extensions:
             continue
         rel = p.relative_to(root).as_posix()
-        # skip scripts/tests/ and skills/ui-ux-pro-max/
-        if rel.startswith("scripts/tests/") or rel.startswith("skills/ui-ux-pro-max/"):
+        # skip scripts/tests/
+        if rel.startswith("scripts/tests/"):
             continue
+
         try:
             content = p.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
@@ -981,8 +982,9 @@ def validate_dependencies(root: Path, findings: list[Finding]) -> None:
         if p.suffix not in extensions:
             continue
         rel = p.relative_to(root).as_posix()
-        if rel == "DEPENDENCIES.md" or rel.startswith("scripts/tests/") or rel.startswith("skills/ui-ux-pro-max/"):
+        if rel == "DEPENDENCIES.md" or rel.startswith("scripts/tests/"):
             continue
+
         try:
             content = p.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):

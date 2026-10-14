@@ -13,8 +13,7 @@
           "kit-exporting": "^2.1.0",
           "kit-verifying": "^2.7.0",
           "prompt-compiling": "^2.5.0",
-          "skill-architecting": "^2.6.0",
-          "ui-ux-pro-max": "^1.1.0"
+          "skill-architecting": "^2.6.0"
         }
       },
       "tools": [
@@ -181,25 +180,6 @@
         "skills/skill-creator/scripts/utils.py"
       ],
       "version": "1.0.0"
-    },
-    "ui-ux-pro-max": {
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash"
-      ],
-      "path": "skills/ui-ux-pro-max/SKILL.md",
-      "scripts": [
-        "skills/ui-ux-pro-max/scripts/core.py",
-        "skills/ui-ux-pro-max/scripts/design_system.py",
-        "skills/ui-ux-pro-max/scripts/reasoning_contract.py",
-        "skills/ui-ux-pro-max/scripts/search.py",
-        "skills/ui-ux-pro-max/scripts/validate_data.py"
-      ],
-      "version": "1.1.0"
     }
   },
   "support": {
@@ -236,24 +216,6 @@
         ]
       },
       "version": "2.5.0"
-    },
-    "create-visual": {
-      "artifactOutputs": [
-        "design-system",
-        "visual-kit-html",
-        "visual-qa-report"
-      ],
-      "path": "workflows/create-visual.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "ui-ux-pro-max",
-          "kit-verifying"
-        ]
-      },
-      "version": "1.0.0"
     },
     "refactor-kit": {
       "artifactOutputs": [

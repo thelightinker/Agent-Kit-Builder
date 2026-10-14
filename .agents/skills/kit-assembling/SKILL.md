@@ -59,9 +59,8 @@ output/<suite-name>/
 │   └── antigravity-doctor.mjs # Health diagnostics
 ├── scripts/
 │   ├── checklist.py           # Domain-Adaptive Checklist Runner (từ domain-checklist-template.py)
-│   └── validation_runner.py   # Shared execution runner
-├── DESIGN.md                  # YAML Design Tokens SSOT (nếu có UI)
 ├── antigravity.json           # Antigravity 6-Phase Contract
+
 ├── execution_policy.json      # ACO Lite Orchestration Intent
 └── manifest.json              # Khai báo SSOT phân cấp
 ```
@@ -74,8 +73,8 @@ Khi sinh `scripts/checklist.py` (sử dụng `templates/domain-checklist-templat
 - **Content / Copywriting**: Tích hợp kiểm tra Readability, độ dài từ, và phát hiện từ cấm AI (banned words).
 - **Growth / Finance / Data**: Tích hợp gọi script Python tính toán tất định (Deterministic Computation Guard).
 - **Legal / Compliance / Audit**: Tích hợp Negative Completeness Matrix (kiểm tra điều khoản bắt buộc bị thiếu).
-- **UI / UX / Frontend**: Tích hợp `DESIGN.md` token syntax check và Web/Headless render validation.
 - **DevOps / Engineering**: Tích hợp Linter, Unit tests, Healthcheck và Transactional Rollback trigger.
+
 
 ---
 

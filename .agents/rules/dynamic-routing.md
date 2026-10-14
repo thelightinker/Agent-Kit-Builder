@@ -18,7 +18,6 @@ Phân loại yêu cầu thành mode + capability bundle. Mọi quy trình xây d
 | Sửa/nâng cấp kit có sẵn | `REFACTOR_TRACK` | `@kit-architect` (`@architect` / `@compiler` kèm `skill-creator` nếu sửa skill → `@auditor`) | `/refactor-kit` |
 | Audit/chấm điểm kit | `AUDIT_TRACK` | `@kit-architect` (`@auditor` + `kit-verifying`) | `/validate-kit` |
 | Lưu bài học/pattern | `MEMORY_TRACK` | `@kit-architect` (`kit-evolving`) | `/remember-kit` |
-| Tạo visual kit, HTML preview, dashboard, landing page, slide, UI/UX | `VISUAL_TRACK` | `@kit-architect` (`@designer` qua `ui-ux-pro-max` → `@auditor`) | `/create-visual` |
 | Phiên dài 20+ turns, context bão hòa, log tool dài | `COMPRESSION_TRACK` | `context-compression` (Micro-compact, Phase summary, Session checkpoint) | — |
 
 
@@ -33,8 +32,8 @@ Phân loại yêu cầu thành mode + capability bundle. Mọi quy trình xây d
 |:---|:---|
 | Clarify/brainstorm yêu cầu mơ hồ | `superpowers:brainstorming` |
 | Tạo mới hoặc sửa đổi Skill bất kỳ | `skill-creator` (BẮT BUỘC nạp trước khi sinh file `SKILL.md`) |
-| Thiết kế UI/UX, Design System, HTML Visual Kit, Dashboard, Slides | `ui-ux-pro-max` (`.agents/skills/ui-ux-pro-max/scripts/search.py`) |
 | Nén context phiên dài / tóm tắt chặng | `context-compression` |
+
 | Tạo/sửa rules, workflows, skills của workspace | `agy-customizations` |
 | Tối giản hóa / audit over-engineering | `ponytail` |
 | Export kit sang Antigravity Plugin / Cursor / Claude / OpenAI | `kit-exporting` |

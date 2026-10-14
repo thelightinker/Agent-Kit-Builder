@@ -39,7 +39,6 @@ def now_iso() -> str:
 # Workflow -> Allowed Target States mapping
 AUTHORITY_MATRIX: Dict[str, List[str]] = {
     "create-kit": ["DRAFT", "READY_FOR_VALIDATION"],
-    "create-visual": ["DRAFT", "READY_FOR_VALIDATION"],
     "validate-kit": ["VALIDATED", "NEEDS_REFACTOR", "NEEDS_HUMAN_INTERVENTION"],
     "refactor-kit": ["READY_FOR_VALIDATION"],
     "remember-kit": ["EXEMPLAR_ARCHIVED"],
@@ -94,10 +93,6 @@ class LifecycleEngine:
                     "score": 0,
                     "findings_file": None,
                     "last_validated_at": None,
-                },
-                "visual_qa": {
-                    "evidence_file": None,
-                    "last_checked_at": None,
                 },
                 "memory_promotion": {
                     "promoted": False,
@@ -240,22 +235,6 @@ class LifecycleEngine:
             "notes": notes,
         }
 
-        self.save_lifecycle(kit_path, data)
-        return data
-
-    def record_visual_verdict(
-        self,
-        kit_path: Path,
-        evidence_file: str = "visual_qa_report.json",
-    ) -> Dict[str, Any]:
-        """Records visual evidence from /create-visual."""
-        data = self.load_lifecycle(kit_path)
-        timestamp = now_iso()
-        data["verdicts"]["visual_qa"] = {
-            "evidence_file": evidence_file,
-            "last_checked_at": timestamp,
-        }
-        data["lineage"]["updated_at"] = timestamp
         self.save_lifecycle(kit_path, data)
         return data
 

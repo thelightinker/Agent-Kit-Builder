@@ -38,8 +38,9 @@ Khi xử lý các giai đoạn chuyên sâu, chuyển đổi ngữ cảnh tư du
 
 *Kích hoạt khi: Cần thiết kế, xây dựng giao diện, visual kits, interactive previews, design systems, dashboards, landing pages, slides.*
 
-- **Targeted Intelligence**: Kích hoạt `ui-ux-pro-max` để truy vấn design system & quy tắc UX chuyên sâu.
+- **Targeted Intelligence**: Thiết kế visual kits, previews, dashboards và quy tắc UX chuyên sâu.
 - **DESIGN.md Hard Gate**: Sinh file `DESIGN.md` chứa YAML Design Tokens làm SSOT trước khi code UI.
+
 - **Visual Output Delivery**: Sinh file HTML self-contained, SVG icons, micro-interactions, dark/light mode toggle.
 - **Visual QA**: Rà soát Pre-Delivery Checklist và tuân thủ Purple Ban.
 

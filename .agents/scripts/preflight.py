@@ -13,8 +13,8 @@ REQUIRED_FILES: tuple[str, ...] = (
     "templates/rule-template.md",
     "templates/memory-template.md",
     "templates/manifest-template.json",
-    "templates/design-spec-template.md",
 )
+
 
 
 def check_preflight(root: Path) -> list[str]:
