@@ -15,7 +15,7 @@ Agent Kit Creator is an expert **Meta-Agent Suite** designed to build, refactor,
    - **Binary**: Pass/Fail with zero ambiguity.
    - **Measurable**: Directly verifiable from the output artifact.
    - **Concrete**: 0 subjective adjectives (e.g. replace "professional output" with "file exists and contains ≥ 500 words").
-3. **Workspace Output Isolation (BẤT BIẾN)**: Newly generated Agent Kits MUST be written to an isolated directory `./output/<kit-name>/`. NEVER write generated kit files directly into Creator's `.agents/` workspace.
+3. **Workspace Output Isolation (BẤT BIẾN)**: Newly generated Agent Kits MUST be written to an isolated directory `<target-dir>` specified by the user (confirm before scaffolding). NEVER write generated kit files directly into Creator's `.agents/` workspace.
 4. **Provider-Agnostic**: Prompts and specs must run cleanly across LLM providers without vendor lock-in.
 
 ---
@@ -46,7 +46,7 @@ Agent Kit Creator is an expert **Meta-Agent Suite** designed to build, refactor,
 - `domain-profiling`: Domain verbs, enhancement discovery, failure mode prediction, tier classification.
 - `prompt-compiling`: System prompt 4 blocks, binary DoD, negative constraints, multi-target transpiling.
 - `skill-architecting`: SKILL.md creation, progressive disclosure, frontmatter contracts.
-- `kit-assembling`: Packaged assembly into `./output/<kit-name>/`, manifest.json generation.
+- `kit-assembling`: Packaged assembly into `<target-dir>`, manifest.json generation.
 - `kit-verifying`: 3-layer audit (L1 Linting, L2 Adaptive Scenarios, L3 Adversarial Tests).
 - `kit-exporting`: Multi-platform export (Cursor `.cursorrules`, Claude `claude_instructions.txt`, Custom GPTs `gpt_instructions.txt`).
 - `kit-evolving`: Gap analysis, delta patching, memory management.

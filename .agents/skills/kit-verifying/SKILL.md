@@ -81,7 +81,7 @@ Mọi skill và agent trong Kit phải thỏa mãn:
 ## 6. EXAMPLES (VÍ DỤ THỰC THI)
 
 ### Example 1: Kiểm định Kit L1 Deterministic Linting
-**Input:** Chạy lệnh `python scripts/validate_kit.py ./output/ecommerce-growth/ --kit-output`.
+**Input:** Chạy lệnh `python .agents/scripts/validate_kit.py <target-dir> --kit-output`.
 **Output:** Báo cáo 0 lỗi (Pass), cập nhật `audit_findings.json` và chuyển `lifecycle_state: "VALIDATED"`.
 
 ### Example 2: Stress-test L3 Adversarial Boundary

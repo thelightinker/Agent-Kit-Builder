@@ -9,7 +9,7 @@ description: "Core guardrails: workspace isolation, targeted grounding, sequenti
 # Core Guardrails
 
 ## 1. Không Gian & Thẩm Quyền (BẤT BIẾN)
-- **Workspace Isolation:** Ghi kit theo thư mục chỉ định (mặc định `./output/`). CẤM ghi vào `.agents/` của Creator.
+- **Workspace Isolation:** Ghi kit theo thư mục chỉ định `<target-dir>` (BẮT BUỘC nhận từ user hoặc hỏi xác nhận trước khi ghi, không tự gán default cố định). CẤM ghi vào `.agents/` của Creator.
 - **Orchestration Mandate:** Mọi hoạt động do `@kit-architect` điều phối qua 5 Profiles: `@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`.
 - **Risk Tiers:** Tier 0 (Read/Inspect = zero gate) | Tier 1 (Scaffold/Gen = Evidence Gate) | Tier 2 (Sửa `.agents/` = Human Gate `gateStatus: approved_golden`).
 - **Upgrade SSOT & Net System Gain:** Chỉ nâng cấp khi $\text{Net Gain} = \text{Value} - \text{Complexity} > 0$. Cấm copy pattern riêng lẻ.

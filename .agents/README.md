@@ -5,7 +5,7 @@ Agent Kit Creator là bộ công cụ chuyên dụng để tư vấn, thiết k�
 ## Quick start
 
 1. Nắm 3 Core Rules:
-   - `.agents/rules/core-guardrails.md`: Workspace isolation (`./output/<kit-name>/`), binary DoD, progressive disclosure.
+   - `.agents/rules/core-guardrails.md`: Workspace isolation (`<target-dir>`), binary DoD, progressive disclosure.
    - `.agents/rules/dynamic-routing.md`: Mode classification (`FAST_TRACK`, `TARGETED_TRACK`, `DEEP_TRACK`, `REFACTOR_TRACK`, `AUDIT_TRACK`, `MEMORY_TRACK`, `COMPRESSION_TRACK`).
 
    - `.agents/rules/collaboration-protocol.md`: Grounding Gate, HUD Protocol, High-Automation Flow.
@@ -30,7 +30,7 @@ python .agents/scripts/validate_kit.py
 
 
 - **Core Rules (3)**: `core-guardrails` (P0 invariants), `dynamic-routing` (mode selector), `collaboration-protocol` (grounding & HUD).
-- **Workspace Isolation (BẤT BIẾN)**: Mọi kit đầu ra bắt buộc lưu tại `./output/<kit-name>/`.
+- **Workspace Isolation (BẤT BIẾN)**: Mọi kit đầu ra bắt buộc lưu tại thư mục đích `<target-dir>` do user chỉ định (hỏi trước khi tạo, cấm ghi vào `.agents/`).
 - **Decision vs Execution**: Role `@auditor` quyết định phạm vi kiểm thử; Python scripts thực thi kiểm định tất định.
 
 ## Context Footprint (Read-set Footprint)

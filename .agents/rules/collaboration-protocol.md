@@ -42,7 +42,7 @@ description: "Giao thức cộng tác & điều phối hệ thống: Mandatory G
      `🤖 @architect • ⚡ skill-architecting, skill-creator • 📄 templates/skill-template.md • 🎯 Thiết kế domain skill cho kit`
    - **3 Quy tắc HUD bất biến**:
      - **No HUD Without Grounding**: Dòng HUD là chứng chỉ giám sát thực tế (observability trace). Cấm khai báo tên Role/Skill trên HUD nếu chưa đọc file tương ứng trong phiên.
-     - **No HUD in Final Artifacts**: Tuyệt đối không chèn dòng HUD vào bên trong các file thành phẩm (code, markdown, json trong `./output/` hay `.agents/`).
+     - **No HUD in Final Artifacts**: Tuyệt đối không chèn dòng HUD vào bên trong các file thành phẩm (code, markdown, json trong thư mục kit đích hay `.agents/`).
      - **Clean Casual Banter**: Khi giao tiếp ngoài luồng, trả lời câu hỏi trực tiếp hoặc banter ngắn gọn với sếp, không render dòng HUD để giữ giao tiếp tự nhiên.
 
 3. **The 3-Layer Cognitive Context Model & Logical Clearance (Mô Hình Ngữ Cảnh 3 Lớp)**:

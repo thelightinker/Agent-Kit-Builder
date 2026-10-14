@@ -10,7 +10,7 @@ trigger: manual
 permissions: read-write
 tools_allowed: [Read, Write, Edit, Glob, Grep, Bash]
 safe_outputs:
-  write_output_dir: Ghi file vào thư mục đích chỉ định (<target-dir>, mặc định ./output/<kit-name>/)
+  write_output_dir: Ghi file vào thư mục đích chỉ định (<target-dir>, do user chỉ định hoặc hỏi trước khi ghi, không có default cố định)
 max_retry_per_node: 2
 ---
 
@@ -29,9 +29,11 @@ Nếu thiếu file hoặc template, hệ thống sẽ dừng và báo lỗi. N�
 
 ## 🚦 BƯỚC 0: SCOPE CLARIFICATION & DESIGN SPEC
 
-Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đích (`<target-dir>`, mặc định `./output/<kit-name>/`):
+Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đích (`<target-dir>`, do user chỉ định hoặc hỏi trước khi tạo; không có default cố định):
 
-0. **Context Readset theo Mode (JIT Loading):** Xác định mode (`micro`, `standard`, `mini_suite`, `full_suite`) rồi chỉ nạp các file trong `.agents/readsets.json[mode]`; không nạp file ngoài danh sách trừ khi một bước sau yêu cầu rõ.
+0. **Context Readset theo Mode (JIT Loading) & Target Directory Intake:**
+   - Xác định mode (`micro`, `standard`, `mini_suite`, `full_suite`) rồi chỉ nạp các file trong `.agents/readsets.json[mode]`; không nạp file ngoài danh sách trừ khi một bước sau yêu cầu rõ.
+   - **Target Directory Intake (BẮT BIẾN):** Xác nhận đường dẫn `<target-dir>` từ user (hoặc hỏi trực tiếp nếu user chưa cung cấp). CẤM tự ý gán mặc định `./output/<kit-name>/` và CẤM ghi vào `.agents/` của Creator.
 
 1. **Brainstorming (Conditional):**
    - Nếu scope chưa rõ, requirements mâu thuẫn, hoặc có nhiều hướng kiến trúc hợp lý → invoke `superpowers:brainstorming` để khám phá trước khi commit (phương án dự phòng khi vắng mặt: hỏi trực tiếp sếp tối đa 3 câu về mục tiêu, tier, core verbs rồi chờ `APPROVED`).
@@ -116,7 +118,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **Skill:** `kit-assembling`
 - **[Mandatory Grounding Template]:** Đọc `.agents/templates/manifest-template.json`.
 - **[Input Artifacts]:** Toàn bộ components đã tạo.
-- **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, và `lifecycle.json`.
+- **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, và `lifecycle.json`.
 - **[Compiler & Lifecycle Execution Pipeline]:**
   0. Chạy render frontmatter tất định cho agent: `python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out <target-dir>/agent` (thoát khác 0 thì dừng ngay).
   1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py` trên `<target-dir>`.
@@ -136,7 +138,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 
 ### Bước 5: Chuyển Giao Kiểm định Chất lượng (Handoff to /validate-kit)
 - **Role Profile:** `@auditor` | **Skill:** `kit-verifying`
-- **[Input Artifacts]:** Thư mục kit đích (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `lifecycle.json`.
+- **[Input Artifacts]:** Thư mục kit đích (`<target-dir>`) kèm `lifecycle.json`.
 - **[Output Artifacts]:** `audit_findings.json`, `validation_report.md`.
 - **[Execution]:** Kích hoạt trực tiếp `/validate-kit <target-dir>` để chạy kiểm tra 3 lớp (L1 Linter $\rightarrow$ L2 Kịch bản $\rightarrow$ L3 Adversarial) và xuất `audit_findings.json`.
 - **[DoD]:**

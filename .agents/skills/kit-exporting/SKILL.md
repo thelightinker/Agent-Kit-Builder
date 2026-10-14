@@ -29,19 +29,19 @@ Sử dụng script `export_kit.py` tích hợp sẵn:
 
 ```bash
 # Export sang tất cả nền tảng (kèm Antigravity Plugin)
-python .agents/scripts/export_kit.py ./output/<kit-name> ./dist/<kit-name> --target all
+python .agents/scripts/export_kit.py <kit-dir> ./dist/<kit-name> --target all
 
 # Đóng gói Antigravity Plugin bundle
-python .agents/scripts/export_kit.py ./output/<kit-name> ./dist/<kit-name> --target plugin
+python .agents/scripts/export_kit.py <kit-dir> ./dist/<kit-name> --target plugin
 
 # Export riêng cho Cursor
-python .agents/scripts/export_kit.py ./output/<kit-name> ./dist/<kit-name> --target cursor
+python .agents/scripts/export_kit.py <kit-dir> ./dist/<kit-name> --target cursor
 
 # Export riêng cho Claude
-python .agents/scripts/export_kit.py ./output/<kit-name> ./dist/<kit-name> --target claude
+python .agents/scripts/export_kit.py <kit-dir> ./dist/<kit-name> --target claude
 
 # Export riêng cho OpenAI
-python .agents/scripts/export_kit.py ./output/<kit-name> ./dist/<kit-name> --target openai
+python .agents/scripts/export_kit.py <kit-dir> ./dist/<kit-name> --target openai
 ```
 
 ---

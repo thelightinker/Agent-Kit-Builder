@@ -1,6 +1,6 @@
 ---
 name: kit-assembling
-description: "Lắp ráp các cấu phần thành Agent Kit hoàn chỉnh trong thư mục cách ly ./output/<kit-name>/, sinh manifest.json chuẩn SSOT (khai báo topology, delegatesTo, ownedSkills, memoryScope), sinh hooks an toàn runtime (PreToolUse), sinh hợp đồng antigravity.json 6 pha, sinh bộ Domain-Adaptive Checklist thực thi và đóng gói theo chuẩn Kit Type."
+description: "Lắp ráp các cấu phần thành Agent Kit hoàn chỉnh trong thư mục cách ly <target-dir> do user chỉ định, sinh manifest.json chuẩn SSOT (khai báo topology, delegatesTo, ownedSkills, memoryScope), sinh hooks an toàn runtime (PreToolUse), sinh hợp đồng antigravity.json 6 pha, sinh bộ Domain-Adaptive Checklist thực thi và đóng gói theo chuẩn Kit Type."
 when_to_use: "Khi hoàn tất các cấu phần và cần lắp ráp thành thư mục Agent Kit hoàn chỉnh."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 version: 2.6.0
@@ -14,8 +14,8 @@ Kỹ năng tổng hợp, tổ chức thư mục và đóng gói Agent Kit hoàn 
 
 ## 1. WORKSPACE ISOLATION (BẤT BIẾN)
 
-- Mọi file của Agent Kit mới **BẮT BỘC** được tạo tại:
-  `./output/<kit-name>/` (ví dụ: `./output/marketing-growth-suite/`)
+- Mọi file của Agent Kit mới **BẮT BỘC** được tạo tại thư mục đích `<target-dir>` do user chỉ định (ví dụ: `./marketing-growth-suite/` hoặc `./kits/marketing-growth-suite/`).
+- **TUYỆT ĐỐI KHÔNG** tự gán mặc định `./output/<kit-name>/` khi user chưa chỉ định.
 - **TUYỆT ĐỐI KHÔNG** ghi đè hoặc tạo trực tiếp vào `.agents/` của Agent Kit Creator.
 
 ---
@@ -24,7 +24,7 @@ Kỹ năng tổng hợp, tổ chức thư mục và đóng gói Agent Kit hoàn 
 
 ### A. Single Agent Kit (Micro / Standard)
 ```
-output/<kit-name>/
+<target-dir>/
 ├── agent/
 │   └── [kit-name].md         # System prompt chính
 ├── skills/
@@ -40,7 +40,7 @@ output/<kit-name>/
 
 ### B. Multi-Agent Suite Kit (Mini-Suite / Full Suite)
 ```
-output/<suite-name>/
+<target-dir>/
 ├── agent/
 │   ├── [orchestrator-name].md # Master Orchestrator (với Worker Briefing & Anti-Delegation)
 │   ├── [specialist-a].md      # Real Specialist Agent A
@@ -130,14 +130,14 @@ Khai báo đầy đủ trường `topology`, `role`, `delegatesTo`, `ownedSkills
 
 ## 6. COMPILE DECISION SYSTEM & INTEGRITY LOCK PIPELINE
 
-Sau khi sinh toàn bộ cấu phần trong `./output/<kit-name>/`, kit-assembling **BẮT BUỘC** thực thi pipeline biên dịch hệ thống ra quyết định và khóa toàn vẹn:
-0. `python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out ./output/<kit-name>/agent` ➔ Render frontmatter tất định cho agent (dừng ngay nếu thoát khác 0)
-1. `python .agents/scripts/compile_routing_index.py ./output/<kit-name>/` ➔ Sinh `routing_index.json`
-2. `python .agents/scripts/compile_invariants.py ./output/<kit-name>/` ➔ Sinh `invariant_rules.json`
-3. `python .agents/scripts/compile_state_schema.py ./output/<kit-name>/` ➔ Sinh `state_schema.json`
-4. `python .agents/scripts/compile_execution_policy.py ./output/<kit-name>/` ➔ Sinh `execution_policy.json`
-5. `python .agents/scripts/compile_task_classifier.py ./output/<kit-name>/` ➔ Sinh `task_classifier_index.json`
-6. `python .agents/scripts/compile_evidence_schemas.py ./output/<kit-name>/` ➔ Sinh `evidence_schemas.json`
-7. `python .agents/scripts/dry_run_simulation.py ./output/<kit-name>/` ➔ Chạy giả lập reachability, cycle, coverage
-8. `python .agents/scripts/generate_manifest.py ./output/<kit-name>/` & `dependency_graph.py` ➔ Khóa `manifest.lock.json`
-9. `python .agents/scripts/check_hook.py ./output/<kit-name>/` ➔ Kiểm tra hợp đồng hành vi của safety hook (phải 0 lỗi)
+Sau khi sinh toàn bộ cấu phần trong `<target-dir>`, kit-assembling **BẮT BUỘC** thực thi pipeline biên dịch hệ thống ra quyết định và khóa toàn vẹn:
+0. `python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out <target-dir>/agent` ➔ Render frontmatter tất định cho agent (dừng ngay nếu thoát khác 0)
+1. `python .agents/scripts/compile_routing_index.py <target-dir>` ➔ Sinh `routing_index.json`
+2. `python .agents/scripts/compile_invariants.py <target-dir>` ➔ Sinh `invariant_rules.json`
+3. `python .agents/scripts/compile_state_schema.py <target-dir>` ➔ Sinh `state_schema.json`
+4. `python .agents/scripts/compile_execution_policy.py <target-dir>` ➔ Sinh `execution_policy.json`
+5. `python .agents/scripts/compile_task_classifier.py <target-dir>` ➔ Sinh `task_classifier_index.json`
+6. `python .agents/scripts/compile_evidence_schemas.py <target-dir>` ➔ Sinh `evidence_schemas.json`
+7. `python .agents/scripts/dry_run_simulation.py <target-dir>` ➔ Chạy giả lập reachability, cycle, coverage
+8. `python .agents/scripts/generate_manifest.py <target-dir>` & `dependency_graph.py` ➔ Khóa `manifest.lock.json`
+9. `python .agents/scripts/check_hook.py <target-dir>` ➔ Kiểm tra hợp đồng hành vi của safety hook (phải 0 lỗi)

@@ -75,7 +75,7 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | `prompt-compiling` | Biên dịch System Prompt 4 khối, Worker Briefing, binary DoD, negative constraints |
 | `skill-architecting` | Thiết kế cấu trúc thư mục skill, conditional loading when_to_use, progressive disclosure |
 | `context-compression` | Quản lý và nén ngữ cảnh 3 cấp độ (Micro-compact, Phase summary, Session checkpoint) |
-| `kit-assembling` | Đóng gói Agent Kit vào `./output/<kit-name>/`, sinh antigravity.json, checklist, manifest.json |
+| `kit-assembling` | Đóng gói Agent Kit vào `<target-dir>`, sinh antigravity.json, checklist, manifest.json |
 | `kit-verifying` | Kiểm định 3 lớp, Verification by Execution, Worker Briefing checks & Rubric 5 sao |
 | `kit-exporting` | Đóng gói Antigravity Plugin bundle, Cursor, Claude Desktop, OpenAI Custom GPTs |
 | `kit-evolving` | Phân tích Gap Analysis, Delta Patch, Auto-Skillify heuristics, Anti-Overengineering |

@@ -10,7 +10,7 @@ trigger: chained_from_validation_or_manual
 permissions: read-write
 tools_allowed: [Read, Write, Edit, Glob, Grep, Bash]
 safe_outputs:
-  apply_delta_patch: Sửa đổi trong thư mục kit chỉ định (<kit-dir>, mặc định ./output/<kit-name>/)
+  apply_delta_patch: Sửa đổi trong thư mục kit chỉ định (<kit-dir>)
 max_retry_per_node: 2
 ---
 
@@ -40,7 +40,7 @@ Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua 
 
 ### Bước 1: Phân tích Sai lệch theo Bằng chứng (Targeted Gap Analysis)
 - **Skill:** `kit-evolving`
-- **[Input Artifacts]:** `audit_findings.json` từ handoff payload + Thư mục kit (`<kit-dir>`, mặc định `./output/<kit-name>/` hoặc đường dẫn chỉ định).
+- **[Input Artifacts]:** `audit_findings.json` từ handoff payload + Thư mục kit (`<kit-dir>` do user chỉ định hoặc hỏi nếu chưa rõ).
 - **[Output Artifacts]:** `gap_analysis.md` (Mapping trực tiếp từ từng mã lỗi `error.code` sang chính xác file và dòng cần sửa).
 - **[DoD]:** 
   - [ ] Liệt kê 100% các lỗi từ `audit_findings.json`.
