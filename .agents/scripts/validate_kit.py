@@ -492,7 +492,7 @@ def validate_python(root: Path, findings: list[Finding]) -> None:
             env["PYTHONPATH"] = str(smoke_cwd) + os.pathsep + env.get("PYTHONPATH", "")
             try:
                 res = subprocess.run(
-                    [sys.executable, str(path), "--help"],
+                    [sys.executable, str(path.resolve()), "--help"],
                     capture_output=True,
                     text=True,
                     timeout=5,

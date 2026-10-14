@@ -1,13 +1,28 @@
 ---
 name: {WORKFLOW_NAME}
 description: {DESCRIPTION_MAX_250_CHARS}
-version: 4.1.0
-requires_agents: {AGENT_NAME}
+version: 1.0.0
 requires_skills: [{SKILL_1}, {SKILL_2}]
 artifact_outputs: [{ARTIFACT_1}, {ARTIFACT_2}]
 topology: {TOPOLOGY} # [chaining | routing | sequential | parallelization | orchestrator-workers | evaluator-optimizer]
 trigger: {TRIGGER_TYPE} # [manual | chained | schedule | event]
 max_retry_per_node: 2
+global_invariants:
+  - id: inv.{WORKFLOW_NAME}.no_corruption
+    description: Cannot overwrite valid outputs without verification
+    check: check_no_corruption
+nodes:
+  step_1:
+    role: {AGENT_ROLE}
+    skill: {SKILL_1}
+    required_outcome: outcome.{WORKFLOW_NAME}.step1
+    transitions:
+      - to: step_2
+  step_2:
+    role: {AUDITOR_ROLE}
+    skill: {SKILL_2}
+    required_outcome: outcome.{WORKFLOW_NAME}.final
+    transitions: []
 ---
 
 # Workflow: /{WORKFLOW_NAME} ({WORKFLOW_TITLE})
@@ -27,7 +42,7 @@ max_retry_per_node: 2
 ## 2. STATE MACHINE NODES
 
 ### Bước 1: {NODE_1_TITLE}
-- **Role Profile:** `@{role}` | **Skill:** `{skill-name}`
+- **Role:** `{agent-role}` | **Skill:** `{skill-name}`
 - **[Input Artifacts]:** {Mô tả input cần thiết}.
 - **[Output Artifacts]:** {Mô tả output sinh ra}.
 - **[DoD]:**
@@ -38,7 +53,7 @@ max_retry_per_node: 2
 ---
 
 ### Bước 2: {NODE_2_TITLE}
-- **Role Profile:** `@{role}` (khác Role Bước 1 nếu là Audit)
+- **Role:** `{agent-role}` (khác Role Bước 1 nếu là Audit)
 - **Skill:** `{skill-name}`
 - **[Input Artifacts]:** Output từ Bước 1.
 - **[Output Artifacts]:** {Deliverable}.
@@ -63,4 +78,3 @@ max_retry_per_node: 2
 2. **Mutate**: Thực hiện thay đổi trong scoped boundary.
 3. **Verify**: Chạy validation ngay.
 4. **Commit / Rollback**: PASS → xác nhận. FAIL → hoàn nguyên.
-

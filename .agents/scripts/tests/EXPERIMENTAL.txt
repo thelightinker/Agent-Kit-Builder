@@ -1,0 +1,4 @@
+test_closed_loop_evolution
+test_e2e_evolution_lifecycle
+test_evolution_engine
+test_evolution_orchestrator

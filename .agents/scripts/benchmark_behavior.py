@@ -260,7 +260,7 @@ def benchmark_convergence() -> list[tuple[str, bool]]:
 
         # Simulate LLM repair applied to the file
         (new_skill / "SKILL.md").write_text(
-            "---\nname: temp-chaos-skill\ndescription: Temporary skill\nwhen_to_use: chaos testing\nallowed-tools: Read\nversion: 1.0.0\n---\n# Fixed Skill\nBody",
+            "---\nname: temp-chaos-skill\ndescription: Temporary skill\nwhen_to_use: chaos testing\nallowed-tools: Read\nversion: 1.0.0\n---\n# Fixed Skill\nBody\n\n### Examples\n```markdown\ninput -> output\n```",
             "utf-8",
         )
         # Iteration 2: Re-converge

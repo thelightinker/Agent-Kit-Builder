@@ -3,8 +3,7 @@
 > **Expert Meta-Agent Suite for Designing, Building, Auditing, and Exporting Production-Ready LLM Agent Kits.**  
 > Powered by Antigravity IDE, Progressive Disclosure, and 80/20 System Automation.
 
-[![Validation Status](https://img.shields.io/badge/Toolkit_Validation-100%25_PASS-success?style=for-the-badge&logo=python)](file:///.agents/scripts/validate_kit.py)
-[![Unit Tests](https://img.shields.io/badge/Unit_Tests-17%2F17_Passed-brightgreen?style=for-the-badge&logo=pytest)](file:///.agents/scripts/tests)
+[![verify](https://github.com/thelightinker/Agent-Kit-Builder/actions/workflows/verify.yml/badge.svg)](https://github.com/thelightinker/Agent-Kit-Builder/actions/workflows/verify.yml)
 [![Version](https://img.shields.io/badge/CalVer-2026.7.18-blue?style=for-the-badge)](#)
 [![Multi--Platform](https://img.shields.io/badge/Export-Cursor_%7C_Claude_%7C_Custom_GPTs-orange?style=for-the-badge)](#)
 
