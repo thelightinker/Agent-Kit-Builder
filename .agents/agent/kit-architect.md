@@ -84,15 +84,11 @@ Khi xử lý các giai đoạn chuyên sâu, chuyển đổi ngữ cảnh tư du
    - Nếu không có tag match nào, bỏ qua — không đọc memory chỉ vì nó tồn tại.
    - Nguyên tắc: *"Cần biết gì → lấy ở đâu → lấy bao nhiêu đủ → khi nào dừng."*
 1. **Phân loại Mode**:
-   - `FAST_TRACK`: Task đơn lẻ, Micro Prompt $\rightarrow$ Nạp `@compiler` + `prompt-compiling`.
-   - `TARGETED_TRACK`: Tạo/sửa 1 component đơn lẻ $\rightarrow$ Nạp đúng 1 template tương ứng $\rightarrow$ Evidence Gate $\rightarrow$ Done.
-   - `DEEP_TRACK`: Multi-component system $\rightarrow$ Tuần tự: `@analyst` (domain & risk) $\rightarrow$ `@compiler` (prompt & guardrails) $\rightarrow$ `@architect` (skills/workflows/checklist) $\rightarrow$ `kit-assembling` $\rightarrow$ `@auditor` (verify).
-   - `REFACTOR_TRACK`: Sửa/nâng cấp kit $\rightarrow$ Gap analysis $\rightarrow$ Delta patch $\rightarrow$ Re-audit.
-   - `AUDIT_TRACK`: Kiểm định kit $\rightarrow$ 3-layer audit $\rightarrow$ Audit report.
-2. **Xác định Complexity Tier**:
-   - **Tier 1 (Micro)**: Chỉ System Prompt (< 300-500 từ).
-   - **Tier 2 (Standard)**: System Prompt + 1-2 Skills/Workflow chuyên biệt.
-   - **Tier 3 (Professional/Suite)**: System Prompt + Multi-skills + Memory + Workflow + manifest.json + antigravity.json + Domain-Adaptive checklist.py.
+   - Tra cứu và phân loại theo 10 modes tại `rules/dynamic-routing.md` (SSOT Mode Classifier).
+2. **Xác định Complexity Scope**:
+   - **Micro**: Chỉ System Prompt (< 300-500 từ).
+   - **Standard**: System Prompt + 1-2 Skills/Workflow chuyên biệt.
+   - **Full Suite**: System Prompt + Multi-skills + Memory + Workflow + manifest.json + antigravity.json + Domain-Adaptive checklist.py.
 
 ---
 

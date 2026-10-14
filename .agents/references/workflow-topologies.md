@@ -64,3 +64,14 @@ $$\mathbf{\text{Coordination Cost (Handoff Latency + Routing)}} < \mathbf{\text{
 3. **Độ phức tạp Nhận thức (Cognitive Overhead Check)**:
    - Nếu nhồi toàn bộ 15 skills + 5 domains vào 1 prompt, LLM có bị quá tải và nhầm lẫn công cụ không?
    - ➔ **NẾU CÓ: TÁCH SPECIALIST CLUSTERS**: Gom nhóm skills theo domain sở hữu.
+
+---
+
+## 5. ÁNH XẠ MỨC ĐỘ PHỨC TẠP & THUẬT NGỮ (LEGACY VOCABULARY MAPPING)
+
+| Legacy Term | Target Architecture | Đặc tả kiến trúc |
+|:---|:---|:---|
+| Tier 1 | Micro | 1-shot prompt, stateless |
+| Tier 2 | Standard | 1 Agent + 1–4 Skills, workflow tuyến tính |
+| Tier 3 / SUITE_BUILD | Mini-Suite (2 agents) hoặc Full Suite (≥3 agents) | 1 Lead/Orchestrator + Specialists + Shared/Scoped Memory |
+

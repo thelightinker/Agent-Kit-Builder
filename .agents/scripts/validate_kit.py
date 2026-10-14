@@ -71,6 +71,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "compiler.missing_artifacts": ("deterministic", True),
     "compiler.execution_policy_missing": ("deterministic", True),
     "compiler.execution_policy_stale": ("deterministic", True),
+    "docs.generated_stale": ("deterministic", True),
     # llm_patch (JIT context needed)
     "compiler.execution_policy_invalid_mode": ("llm_patch", True),
     "compiler.execution_policy_schema_invalid": ("llm_patch", True),
@@ -396,6 +397,21 @@ def validate_generated_docs(root: Path, findings: list[Finding]) -> None:
         return
     if path.read_text("utf-8") != expected:
         add(findings, "error", "graph.stale", Path("DEPENDENCY_GRAPH.md"), "Dependency graph is stale")
+
+    # Check generated SSOT doc blocks
+    try:
+        import render_docs
+        stale_docs = render_docs.apply_generated_blocks(root, check=True)
+        if stale_docs:
+            add(
+                findings,
+                "error",
+                "docs.generated_stale",
+                Path("ARCHITECTURE.md"),
+                f"Generated doc blocks are stale in: {', '.join(stale_docs)}. Run render_docs.py to update.",
+            )
+    except Exception:
+        pass
 
 
 def validate_markdown_links(root: Path, findings: list[Finding]) -> None:
@@ -857,6 +873,16 @@ def check_execution_policy(root: Path, findings: list[Finding]) -> None:
 
 def sync_registry(root: Path) -> tuple[int, list[str]]:
     """Synchronize manifest.json, manifest.lock.json, DEPENDENCY_GRAPH.md, and compiled decision artifacts."""
+    synced: list[str] = []
+
+    try:
+        import render_docs
+        mod_docs = render_docs.apply_generated_blocks(root, check=False)
+        if mod_docs:
+            synced.extend(mod_docs)
+    except Exception:
+        pass
+
     manifest = build_manifest(root)
     manifest_text = canonical_json(manifest)
     lock = build_lock(root, manifest)
@@ -866,7 +892,7 @@ def sync_registry(root: Path) -> tuple[int, list[str]]:
     dep_text = render_dependency_graph(root)
     (root / "DEPENDENCY_GRAPH.md").write_text(dep_text, "utf-8")
     
-    synced = ["manifest.json", "manifest.lock.json", "DEPENDENCY_GRAPH.md"]
+    synced.extend(["manifest.json", "manifest.lock.json", "DEPENDENCY_GRAPH.md"])
     
     try:
         if (root / "agent").is_dir() and any((root / "agent").glob("*.md")):

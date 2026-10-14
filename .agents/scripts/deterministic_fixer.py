@@ -99,4 +99,22 @@ def fix(root: Path, findings: list) -> dict:
         except Exception as exc:
             _log(report, "version.invalid_calver", "VERSION", f"fix failed: {exc}", False)
 
+    # --- Generated doc blocks: synchronize using render_docs ---
+    doc_trigger_codes = {
+        "docs.generated_stale",
+        "architecture.count_mismatch",
+        "architecture.count_missing",
+        "version.missing",
+        "version.invalid_calver",
+    }
+    if codes_present & doc_trigger_codes:
+        try:
+            import render_docs
+            modified = render_docs.apply_generated_blocks(root, check=False)
+            if "docs.generated_stale" in codes_present:
+                _log(report, "docs.generated_stale", "ARCHITECTURE.md", f"generated blocks refreshed: {modified}", True)
+        except Exception as exc:
+            if "docs.generated_stale" in codes_present:
+                _log(report, "docs.generated_stale", "ARCHITECTURE.md", f"fix failed: {exc}", False)
+
     return report.to_dict()

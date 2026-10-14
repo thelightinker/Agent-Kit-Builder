@@ -4,7 +4,7 @@
 > Powered by Antigravity IDE, Progressive Disclosure, and 80/20 System Automation.
 
 [![verify](https://github.com/thelightinker/Agent-Kit-Builder/actions/workflows/verify.yml/badge.svg)](https://github.com/thelightinker/Agent-Kit-Builder/actions/workflows/verify.yml)
-[![Version](https://img.shields.io/badge/CalVer-2026.7.18-blue?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/CalVer-<!-- GENERATED:version -->2026.8.22<!-- /GENERATED:version -->-blue?style=for-the-badge)](#)
 [![Multi--Platform](https://img.shields.io/badge/Export-Cursor_%7C_Claude_%7C_Custom_GPTs-orange?style=for-the-badge)](#)
 
 ---
@@ -72,7 +72,7 @@ graph TD
 ├── README.md                # Quick start và hướng dẫn vận hành
 ├── ARCHITECTURE.md          # Thống kê danh mục và tổng quan kiến trúc
 ├── CHANGELOG.md             # Lịch sử phiên bản
-├── VERSION                  # CalVer (2026.8.24)
+├── VERSION                  # CalVer (<!-- GENERATED:version -->2026.8.22<!-- /GENERATED:version -->)
 ├── manifest.json            # Bộ đăng ký phiên bản cấu phần (SemVer)
 ├── manifest.lock.json       # Mã khóa toàn vẹn SHA-256
 ├── DEPENDENCY_GRAPH.md      # Sơ đồ phụ thuộc tự động sinh
@@ -158,4 +158,4 @@ allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
 ## 📄 License & Standards
 
 Được phát triển và tối ưu cho **Antigravity IDE** & **LLM Agent Systems**.  
-Mọi cấu phần tuân thủ chuẩn **CalVer 2026.7.18** và **SemVer 1.0.0** độc lập nền tảng.
+Mọi cấu phần tuân thủ chuẩn **CalVer <!-- GENERATED:version -->2026.8.22<!-- /GENERATED:version -->** và **SemVer 1.0.0** độc lập nền tảng.

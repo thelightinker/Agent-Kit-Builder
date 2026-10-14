@@ -1,7 +1,7 @@
 {
   "$schema": "schemas/manifest-lock.schema.json",
   "components": {
-    "ARCHITECTURE.md": "e529edc1e8df50d9a1cd28626257d2bd638ae5273a951e67f8a4a62481e43859",
+    "ARCHITECTURE.md": "73c1536803ec4d354d6bd031f4c392b668b687f3d1f8f7f78ea4eece67736165",
     "VERSION": "4f42d78ddc4cb2c78ff9b04dff321cbdbfd2fb9398b5d2645824d5df9f5b6460",
     "agent/golden-writer.md": "913d68159dfc5573d68644630ca20abff2a6e010137d8b995edba70fc9638684",
     "memory/MEMORY.md": "70ebfbcbd1d9d3b640c664b0894d2436cbc0b0d83a7a9aa8210de6d39c753ea8",

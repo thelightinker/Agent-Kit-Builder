@@ -137,8 +137,12 @@ def main(argv: list[str] | None = None) -> int:
             r = run_step("preflight", [sys.executable, str(SCRIPTS_DIR / "preflight.py"), str(TOOLKIT_DIR)], cwd=REPO_ROOT)
             results.append(r)
         elif step == "validate":
-            r = run_step("validate", [sys.executable, str(SCRIPTS_DIR / "validate_kit.py"), str(TOOLKIT_DIR), "--no-auto-heal"], cwd=REPO_ROOT)
-            results.append(r)
+            r_docs = run_step("render_docs", [sys.executable, str(SCRIPTS_DIR / "render_docs.py"), "--check"], cwd=REPO_ROOT)
+            if r_docs.returncode != 0:
+                results.append(r_docs)
+            else:
+                r = run_step("validate", [sys.executable, str(SCRIPTS_DIR / "validate_kit.py"), str(TOOLKIT_DIR), "--no-auto-heal"], cwd=REPO_ROOT)
+                results.append(r)
         elif step == "tests":
             r = run_step("tests", [sys.executable, str(Path(__file__).resolve()), "--run-tests-internal"], cwd=REPO_ROOT)
             results.append(r)

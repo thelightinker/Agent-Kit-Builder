@@ -1,6 +1,6 @@
 # AG Kit Architecture — Agent Kit Creator
 
-> Comprehensive AI Agent Kit Creation, Refactoring, & Validation Suite — 2026.8.24 (v2.1.0 Evolvable Architecture)
+> Comprehensive AI Agent Kit Creation, Refactoring, & Validation Suite — <!-- GENERATED:version -->2026.8.22<!-- /GENERATED:version --> (v2.1.0 Evolvable Architecture)
 
 ---
 
@@ -15,7 +15,7 @@ Agent Kit Creator là hệ thống chuyên gia tinh gọn gồm:
 
 ---
 
-## 🔐 Managed Component Registry (2026.8.24)
+## 🔐 Managed Component Registry (<!-- GENERATED:version -->2026.8.22<!-- /GENERATED:version -->)
 
 Hệ thống quản lý phiên bản:
 - Toolkit releases giữ **CalVer** trong `VERSION` (`YYYY.M.D`).
@@ -123,6 +123,7 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 
 ## 📊 Statistics
 
+<!-- GENERATED:inventory -->
 | Metric | Value |
 | --- | --- |
 | **Total Agents** | 1 |
@@ -133,6 +134,7 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | **Top-level Utilities** | 14 user-facing + 2 internal engine modules |
 | **Coverage** | Domain analysis, prompt compilation, skill architecture, context compression, visual design intelligence, assembly, 3-layer verification, export, evolution, closed-loop convergence, unified lifecycle |
 | **Token Efficiency** | Always-on rules <= 3KB (giảm >=75% context overhead) |
+<!-- /GENERATED:inventory -->
 
 ---
 

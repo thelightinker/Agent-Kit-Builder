@@ -1,4 +1,4 @@
-# Failure Modes — AgentKit Builder v3.0
+# Failure Modes — AgentKit Builder
 
 Các lỗi phổ biến khi build hoặc vận hành Agent Kit, phân theo mức nghiêm trọng.
 Builder dùng tài liệu này để phòng ngừa và phát hiện lỗi.

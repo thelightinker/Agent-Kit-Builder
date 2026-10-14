@@ -1,7 +1,7 @@
 {
   "complexity_ceiling": "L1_ROUTED",
   "context": "artifact_reference",
-  "generated_at": "2026-10-14T05:25:13.904439+00:00",
+  "generated_at": "2026-10-14T05:50:28.175385+00:00",
   "mode": "direct",
   "parallel": {
     "reads": false,
