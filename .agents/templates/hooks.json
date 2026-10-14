@@ -1,0 +1,14 @@
+{
+  "hooks": [
+    {
+      "name": "agent-kit-safety-gate",
+      "event": "PreToolUse",
+      "matcher": "run_command|write_to_file|replace_file_content|multi_replace_file_content",
+      "handler": {
+        "type": "command",
+        "command": "node .agents/hooks/validate-tool-call.mjs",
+        "timeout": 10
+      }
+    }
+  ]
+}

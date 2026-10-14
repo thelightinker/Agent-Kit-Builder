@@ -81,7 +81,7 @@ Khi sinh `scripts/checklist.py` (sử dụng `templates/domain-checklist-templat
 ## 4. RUNTIME SAFETY & PLATFORM CONTRACT GENERATION
 
 Mọi kit sinh ra được tự động tích hợp:
-1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse (`hooks/validate-tool-call.mjs`).
+1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse (`hooks/validate-tool-call.mjs`). Template: `templates/validate-tool-call.mjs`, `templates/hooks.json`; hợp đồng: `references/antigravity-hooks-contract.md`.
 2. **Antigravity 6-Phase Contract (`antigravity.json`)**: Khai báo đầy đủ các pha discovery, mcp, hooks, orchestration, plugin, validation (Template: `templates/antigravity-template.json`).
 3. **Specialist Boundary Enforcement (Dành cho Suite)**: Chặn đứng hành vi ghi đè file ngoài domain sở hữu của từng Specialist.
 4. **Central Feedback & Learning Connectivity**: Mọi Kit sinh ra được cấu hình kết nối trực tiếp với Central Feedback Hub tại `Downloads/Shared Workspace/Feedback/kit_feedback.jsonl` qua `feedback_hub.py` để ghi nhận lỗi runtime (`source: "system"`) và phản hồi người dùng (`source: "user"`), loại bỏ hoàn toàn các thư mục evolution cục bộ cồng kềnh.
