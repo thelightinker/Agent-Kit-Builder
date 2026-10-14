@@ -113,10 +113,10 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **Skill:** `kit-assembling`
 - **[Mandatory Grounding Template]:** Đọc `.agents/templates/manifest-template.json`.
 - **[Input Artifacts]:** Toàn bộ components đã tạo.
-- **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, `lifecycle.json`, và phân hệ Dynamic Evolution Suite.
+- **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, và `lifecycle.json`.
 - **[Compiler & Lifecycle Execution Pipeline]:**
   1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py` trên `<target-dir>`.
-  2. Tự động chạy `python .agents/scripts/equip_evolution.py <target-dir>`.
+  2. `[EXPERIMENTAL]` (chỉ khi người dùng yêu cầu `--with-evolution`): `python .agents/scripts/equip_evolution.py <target-dir>`.
   3. Khởi tạo `lifecycle.json` với `schema_version: "1.0.0"`, `kit_name: "<kit-name>"`, `lifecycle_state: "DRAFT"`.
   4. Sau khi các artifacts compiled và `manifest.json` được tạo hoàn tất, chuyển trạng thái sang `lifecycle_state: "READY_FOR_VALIDATION"`.
   5. Khởi tạo khối `handoff` chuyển giao quyền kiểm định sang `validate-kit`.

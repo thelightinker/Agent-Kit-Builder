@@ -1,0 +1,25 @@
+{
+  "ad_hoc_intents": {},
+  "generated_at": "2026-10-14T04:56:49.622567+00:00",
+  "version": "2026.10.14",
+  "workflow_bound_intents": {
+    "create outline": {
+      "capability_id": "golden.outline.draft",
+      "target_nodes": [
+        "draft-outline:draft_node"
+      ],
+      "workflow_outcomes": [
+        "outcome.outline.drafted"
+      ]
+    },
+    "draft outline": {
+      "capability_id": "golden.outline.draft",
+      "target_nodes": [
+        "draft-outline:draft_node"
+      ],
+      "workflow_outcomes": [
+        "outcome.outline.drafted"
+      ]
+    }
+  }
+}

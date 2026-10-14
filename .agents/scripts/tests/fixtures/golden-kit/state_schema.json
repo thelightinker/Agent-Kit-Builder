@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-10-14T04:56:49.622567+00:00",
+  "state_keys": {
+    "outcome.outline.drafted": {
+      "description": "Outcome state for node draft_node",
+      "read_by": [
+        "workflow:draft-outline"
+      ],
+      "type": "boolean",
+      "written_by": [
+        "golden-writer"
+      ]
+    },
+    "state.brief.ready": {
+      "description": "Precondition key read by golden-writer",
+      "read_by": [
+        "golden-writer"
+      ],
+      "type": "any",
+      "written_by": []
+    }
+  },
+  "verdict_keys": {
+    "brief_clarity": {
+      "evaluator": "judge",
+      "tracks_content": "content.brief_clarity"
+    }
+  },
+  "version": "2026.10.14"
+}

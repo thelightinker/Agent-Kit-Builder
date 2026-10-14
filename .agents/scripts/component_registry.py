@@ -222,7 +222,7 @@ def component_files(root: Path) -> list[Path]:
         if not base.is_dir():
             continue
         for path in base.rglob("*"):
-            if not path.is_file() or "__pycache__" in path.parts or path.suffix == ".pyc":
+            if not path.is_file() or "__pycache__" in path.parts or ".pytest_cache" in path.parts or path.suffix == ".pyc":
                 continue
             files.append(path)
     return sorted({path.resolve() for path in files})

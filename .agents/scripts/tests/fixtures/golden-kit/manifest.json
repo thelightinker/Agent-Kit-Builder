@@ -1,0 +1,76 @@
+{
+  "$schema": "schemas/manifest.schema.json",
+  "agents": {
+    "golden-writer": {
+      "model": "sonnet",
+      "path": "agent/golden-writer.md",
+      "requires": {
+        "skills": {
+          "outline-drafting": "^1.0.0"
+        }
+      },
+      "tools": [
+        "Read",
+        "Write"
+      ],
+      "version": "1.0.0"
+    }
+  },
+  "contracts": {
+    "componentApi": "1.0.0",
+    "memorySchema": "1.0.0",
+    "rulesApi": "1.0.0",
+    "workflowApi": "1.0.0"
+  },
+  "kitVersion": "2026.10.14",
+  "rules": {
+    "rule-basic": {
+      "description": "Core rule for golden kit",
+      "path": "rules/rule-basic.md",
+      "priority": "P1",
+      "trigger": "always_on",
+      "version": "1.0.0"
+    }
+  },
+  "schemaVersion": "1.0.0",
+  "skills": {
+    "outline-drafting": {
+      "allowedTools": [
+        "Read",
+        "Write"
+      ],
+      "path": "skills/outline-drafting/SKILL.md",
+      "scripts": [],
+      "version": "1.0.0"
+    }
+  },
+  "support": {
+    "official": [
+      "Gemini CLI",
+      "Google Antigravity"
+    ],
+    "portableFormat": true
+  },
+  "topology": {
+    "orchestrator": null,
+    "spectrumPosition": "standard",
+    "type": "standard"
+  },
+  "workflows": {
+    "draft-outline": {
+      "artifactOutputs": [
+        "outline.md"
+      ],
+      "path": "workflows/draft-outline.md",
+      "requires": {
+        "agents": [
+          "golden-writer"
+        ],
+        "skills": [
+          "outline-drafting"
+        ]
+      },
+      "version": "1.0.0"
+    }
+  }
+}

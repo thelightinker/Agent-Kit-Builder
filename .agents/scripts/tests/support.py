@@ -15,8 +15,6 @@ def _ignore_toolkit_patterns(path: str, names: list[str]) -> set[str]:
     for name in names:
         if name in ("__pycache__", ".pytest_cache") or name.endswith(".pyc"):
             ignored.add(name)
-        elif name == "data" and norm_path.endswith("skills/ui-ux-pro-max"):
-            ignored.add(name)
     return ignored
 
 
