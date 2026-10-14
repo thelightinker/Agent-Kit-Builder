@@ -1,9 +1,9 @@
 {
   "$schema": "schemas/manifest-lock.schema.json",
   "components": {
-    "ARCHITECTURE.md": "73c1536803ec4d354d6bd031f4c392b668b687f3d1f8f7f78ea4eece67736165",
+    "ARCHITECTURE.md": "e529edc1e8df50d9a1cd28626257d2bd638ae5273a951e67f8a4a62481e43859",
     "VERSION": "4f42d78ddc4cb2c78ff9b04dff321cbdbfd2fb9398b5d2645824d5df9f5b6460",
-    "agent/golden-writer.md": "913d68159dfc5573d68644630ca20abff2a6e010137d8b995edba70fc9638684",
+    "agent/golden-writer.md": "561ac90bfcea3ba5739cfcc48f634b65ef745eddcfbc0ceb49f03069b6bc0113",
     "memory/MEMORY.md": "70ebfbcbd1d9d3b640c664b0894d2436cbc0b0d83a7a9aa8210de6d39c753ea8",
     "memory/feedback-history.md": "8aa0d7059d10827b61adc8fb8e487fb27ba53be3242b0f7f64804c92c2127207",
     "memory/project-conventions.md": "c69c65e2e77df130227c128a5a984868bd651b320ab66440b6766f89b84ed911",
@@ -11,7 +11,7 @@
     "memory/user-preferences.md": "a560b13f7a63d1c5f7e9b806ad140a8512c140f03fda3bc67668b22f489e3989",
     "rules/rule-basic.md": "8fba3e00fe4dfa41927ad8ce643a54931f4bff8a11b907919df9a06802a38d8f",
     "skills/outline-drafting/SKILL.md": "59177f8b8a8d0a056b3b4c152acd054ee2e78e09d4228582e870a1024bcf1a37",
-    "workflows/draft-outline.md": "3df354102d4471c16d779e49723947e6388f1ac95be0a079ba4b3b63e1d92b32"
+    "workflows/draft-outline.md": "aa3dee8a70be76f8d52fa923976c2dd2abbf77cf3d24ae51cc121b622e3eb4d5"
   },
   "kitVersion": "2026.10.14",
   "manifestSha256": "ca6e887715d1f3d5f64cdcd7be74cdb2e957a0579d08043855737192dd0363f4",
