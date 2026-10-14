@@ -41,7 +41,7 @@
       "description": "Giao thức cộng tác & điều phối hệ thống: Mandatory Grounding Gate, Truthful Status HUD Protocol, 3-Layer Cognitive Context, High-Automation Auto-Transition và Anti-Approval Fatigue.",
       "path": "rules/collaboration-protocol.md",
       "priority": "P0",
-      "trigger": "always_on",
+      "trigger": "model_decision",
       "version": "1.0.0"
     },
     "core-guardrails": {

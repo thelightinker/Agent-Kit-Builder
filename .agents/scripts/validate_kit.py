@@ -112,6 +112,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "routing.empty_capabilities": ("llm_patch", True),
     "routing.agent_missing_skill_matrix": ("llm_patch", True),
     "routing.orchestrator_missing_routing_table": ("llm_patch", True),
+    "context.budget_exceeded": ("llm_patch", True),
     # escalate_human (ambiguous / high-risk)
     "json.invalid": ("escalate_human", False),
     "python.syntax": ("escalate_human", False),
@@ -976,6 +977,36 @@ def validate_dependencies(root: Path, findings: list[Finding]) -> None:
                     )
 
 
+def validate_context_budget(root: Path, findings: list[Finding]) -> None:
+    """Validate always-on rules and orchestrator prompts against context byte budgets."""
+    try:
+        from context_budget import measure, RULES_BUDGET_BYTES, ORCHESTRATOR_BUDGET_BYTES
+    except ImportError:
+        import sys
+        scripts_dir = root / "scripts" if (root / "scripts").is_dir() else Path(__file__).resolve().parent
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from context_budget import measure, RULES_BUDGET_BYTES, ORCHESTRATOR_BUDGET_BYTES
+
+    m = measure(root)
+    if m["rules_bytes"] > RULES_BUDGET_BYTES:
+        add(
+            findings,
+            "error",
+            "context.budget_exceeded",
+            Path("rules"),
+            f"Always-on rules budget exceeded: {m['rules_bytes']} bytes > {RULES_BUDGET_BYTES} bytes limit",
+        )
+    if m["orchestrator_bytes"] > ORCHESTRATOR_BUDGET_BYTES:
+        add(
+            findings,
+            "error",
+            "context.budget_exceeded",
+            Path("agent"),
+            f"Orchestrator prompt budget exceeded: {m['orchestrator_bytes']} bytes > {ORCHESTRATOR_BUDGET_BYTES} bytes limit",
+        )
+
+
 def validate_quick(root: Path) -> list[Finding]:
     """Fast frontmatter and JSON syntax validation for Tier 1 rapid checks."""
     findings: list[Finding] = []
@@ -1005,6 +1036,7 @@ def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     validate_compiler_artifacts(root, findings)
     validate_portability(root, findings)
     validate_dependencies(root, findings)
+    validate_context_budget(root, findings)
     return findings
 
 

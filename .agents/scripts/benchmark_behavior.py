@@ -350,7 +350,14 @@ def run_benchmark() -> int:
     print("================================================================================\n")
 
     total_baseline_context = measure_total_all_context_bytes()
-    print(f"[*] Baseline Unconstrained Context Load (All Rules + Templates + Refs): {total_baseline_context:,} bytes (~{total_baseline_context//4:,} tokens)\n")
+    print(f"[*] Baseline Unconstrained Context Load (All Rules + Templates + Refs): {total_baseline_context:,} bytes (~{total_baseline_context//4:,} tokens)")
+    try:
+        from context_budget import measure
+        always_on_data = measure(ROOT)
+        always_on_bytes = always_on_data["rules_bytes"] + always_on_data["orchestrator_bytes"]
+        print(f"[*] Always-on baseline: {always_on_bytes:,} bytes (rules: {always_on_data['rules_bytes']:,} B, orchestrator: {always_on_data['orchestrator_bytes']:,} B)\n")
+    except Exception:
+        print()
 
     print("--- 1. DYNAMIC ROUTING & JIT CONTEXT EFFICIENCY BENCHMARK ---")
     print(f"{'Task Name':<38} | {'Mode':<15} | {'Steps (Old/New)':<16} | {'Context Bytes (Tokens)':<24} | {'JIT Saving'}")

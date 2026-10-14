@@ -2,7 +2,7 @@
 name: collaboration-protocol
 version: 1.0.0
 priority: P0
-trigger: always_on
+trigger: model_decision
 description: "Giao thức cộng tác & điều phối hệ thống: Mandatory Grounding Gate, Truthful Status HUD Protocol, 3-Layer Cognitive Context, High-Automation Auto-Transition và Anti-Approval Fatigue."
 ---
 
@@ -13,7 +13,7 @@ description: "Giao thức cộng tác & điều phối hệ thống: Mandatory G
 ---
 
 ## 📌 Phân loại Trigger (Rule Trigger Type)
-- **`always_on`**: Luôn luôn tự động chạy trong mọi lượt chat, mọi lệnh slash command và mọi quy trình điều phối của Kit Architect & Dynamic Role Profiles.
+- **`model_decision`**: Kích hoạt khi cần tra cứu sâu về Truthful Status HUD Protocol, 3-Layer Context Model hoặc quy tắc phân luồng Multi-Agent Worker Briefing.
 
 ---
 
