@@ -30,8 +30,19 @@ dependency_graph = sys.modules["dependency_graph"]
 
 
 class ToolkitRegressionTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import tempfile
+        from support import copy_toolkit
+        cls._tmp = tempfile.TemporaryDirectory()
+        cls.kit_copy = copy_toolkit(Path(cls._tmp.name))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
     def test_toolkit_self_validation_passes(self):
-        findings = validate_kit.validate(TOOLKIT)
+        findings = validate_kit.validate(self.kit_copy)
         errors = [item for item in findings if item.severity == "error"]
         self.assertEqual([], errors)
 
@@ -108,13 +119,24 @@ class TestExportKit(unittest.TestCase):
 
 
 class TestUnifiedValidation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import tempfile
+        from support import copy_toolkit
+        cls._tmp = tempfile.TemporaryDirectory()
+        cls.kit_copy = copy_toolkit(Path(cls._tmp.name))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
     def test_validate_quick(self):
-        findings = validate_kit.validate_quick(TOOLKIT)
+        findings = validate_kit.validate_quick(self.kit_copy)
         errors = [item for item in findings if item.severity == "error"]
         self.assertEqual([], errors)
 
     def test_sync_registry(self):
-        count, files = validate_kit.sync_registry(TOOLKIT)
+        count, files = validate_kit.sync_registry(self.kit_copy)
         self.assertGreaterEqual(count, 3)
         self.assertIn("manifest.json", files)
         self.assertIn("manifest.lock.json", files)
@@ -194,9 +216,20 @@ class TestDeterministicFixer(unittest.TestCase):
 
 
 class TestConvergenceEngine(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import tempfile
+        from support import copy_toolkit
+        cls._tmp = tempfile.TemporaryDirectory()
+        cls.kit_copy = copy_toolkit(Path(cls._tmp.name))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
     def test_converge_on_healthy_kit(self):
         conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
-        report = conv_mod.converge(TOOLKIT, max_iterations=3)
+        report = conv_mod.converge(self.kit_copy, max_iterations=3)
         self.assertTrue(report["converged"])
         self.assertEqual(report["iterations"], 0)
         self.assertEqual(report["auto_fixed_count"], 0)
@@ -210,7 +243,7 @@ class TestConvergenceEngine(unittest.TestCase):
 
     def test_max_iterations_bounded(self):
         conv_mod = load_module("agkit_conv", SCRIPTS / "convergence_engine.py")
-        report = conv_mod.converge(TOOLKIT, max_iterations=1)
+        report = conv_mod.converge(self.kit_copy, max_iterations=1)
         self.assertLessEqual(report["iterations"], 1)
 
 
