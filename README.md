@@ -22,7 +22,7 @@ Hệ thống tuân thủ nghiêm ngặt nguyên tắc **Progressive Disclosure**
 
 1. 🔄 **Auto-Healing Lockfile & Manifest Sync**: Script `validate_kit.py` tự động phát hiện và đồng bộ hóa `manifest.lock.json` khi có sự thay đổi cấu phần, loại bỏ 100% lỗi mâu thuẫn mã băm SHA-256.
 2. 📑 **Selective Progressive Disclosure & Context Budgeting**: Nạp trước YAML Frontmatter (< 50 tokens), chỉ gọi full body `SKILL.md` khi tác vụ được kích hoạt, tối ưu tới 60% Token Window.
-3. 🧪 **Behavioral Eval Matrix cho Output Kits**: Script `eval_runner.py` tự động chạy bộ test suite và đánh giá 3 Hard Fail Gates (Zero-Fabrication, Task Completion, Token ROI) trên các kit đầu ra.
+3. 🧪 **Structural Eval Matrix cho Output Kits**: Script `eval_runner.py` tự động chạy bộ test suite và đánh giá 3 Hard Fail Gates (Zero-Fabrication, Task Completion, Token ROI) trên các kit đầu ra.
 4. ⚡ **1-Click Multi-Platform Workspace Sync**: Script `export_kit.py --sync <target_dir>` tự động xuất bản và đặt file cấu hình `.cursorrules`, `.claude/instructions.txt`, và Custom GPTs trực tiếp vào workspace mục tiêu.
 5. 🧠 **Automated Memory Distillation Engine**: Script `distill_memory.py` tự động trích xuất bài học kinh nghiệm, anti-patterns và ví dụ 5 sao append vào `.agents/memory/MEMORY.md`.
 

@@ -1,0 +1,58 @@
+{
+  "suite_name": "Golden Kit Structural Eval Suite",
+  "description": "Validates structural completeness and failure mode guardrails on core toolkit components",
+  "test_cases": [
+    {
+      "id": "struct-001-negative-boundaries",
+      "name": "Verify Negative Boundaries and Constraints Guardrail",
+      "failure_mode": "missing_negative_boundaries",
+      "target_file": "rules/core-guardrails.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "description": "Core guardrails must enforce strict prohibitions and boundaries",
+          "keywords": ["CẤM"]
+        }
+      ]
+    },
+    {
+      "id": "struct-002-capabilities",
+      "name": "Verify Agent Role and Capability Declarations",
+      "failure_mode": "missing_capabilities",
+      "target_file": "agent/kit-architect.md",
+      "assertions": [
+        {
+          "type": "regex_match",
+          "description": "Agent must have explicit role and capability architecture",
+          "pattern": "(?i)(orchestrat|vai\\s*trò|role)"
+        }
+      ]
+    },
+    {
+      "id": "struct-003-when-to-use",
+      "name": "Verify Skill Trigger Context (when_to_use)",
+      "failure_mode": "missing_when_to_use",
+      "target_file": "skills/kit-assembling/SKILL.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "description": "Skill frontmatter must include explicit when_to_use trigger",
+          "keywords": ["when_to_use"]
+        }
+      ]
+    },
+    {
+      "id": "struct-004-state-machine",
+      "name": "Verify Workflow State Machine Transitions and DoD",
+      "failure_mode": "broken_state_machine",
+      "target_file": "workflows/create-kit.md",
+      "assertions": [
+        {
+          "type": "contains_keywords",
+          "description": "Workflow must have structured steps and Definition of Done",
+          "keywords": ["Bước 1", "Bước 2", "DoD"]
+        }
+      ]
+    }
+  ]
+}

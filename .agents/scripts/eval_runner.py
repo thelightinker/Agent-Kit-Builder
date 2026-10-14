@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Agent Kit Automated Behavioral Eval Harness
+Agent Kit Automated Structural Eval Harness
 Parses eval suite JSON test cases, runs assertions against generated Agent Kit files,
 supports Regression Benchmark v1 testing, and outputs binary DoD score pass/fail reports.
 """
@@ -67,13 +67,14 @@ def run_eval_suite(eval_file_path, target_dir="."):
     for tc in test_cases:
         tc_id = tc.get("id", "eval-unknown")
         tc_name = tc.get("name", "Unnamed Test Case")
+        failure_mode = tc.get("failure_mode", "")
         rel_path = tc.get("target_file", "")
         full_path = os.path.join(target_dir, rel_path)
         
         print(f"--- Running [{tc_id}] {tc_name} ---")
         if not os.path.exists(full_path):
             print(f"[-] Target file missing: {rel_path}")
-            results.append({"id": tc_id, "name": tc_name, "status": "FAIL", "reason": f"File missing: {rel_path}"})
+            results.append({"id": tc_id, "name": tc_name, "failure_mode": failure_mode, "status": "FAIL", "reason": f"File missing: {rel_path}"})
             total_failed += 1
             continue
             
@@ -82,7 +83,7 @@ def run_eval_suite(eval_file_path, target_dir="."):
                 content = f.read()
         except Exception as e:
             print(f"[-] Cannot read file: {e}")
-            results.append({"id": tc_id, "name": tc_name, "status": "FAIL", "reason": str(e)})
+            results.append({"id": tc_id, "name": tc_name, "failure_mode": failure_mode, "status": "FAIL", "reason": str(e)})
             total_failed += 1
             continue
 
@@ -99,14 +100,14 @@ def run_eval_suite(eval_file_path, target_dir="."):
         if tc_passed:
             print(f"[+] [{tc_id}] PASSED ({len(assertions)} assertions)")
             total_passed += 1
-            results.append({"id": tc_id, "name": tc_name, "status": "PASS", "logs": tc_logs})
+            results.append({"id": tc_id, "name": tc_name, "failure_mode": failure_mode, "status": "PASS", "logs": tc_logs})
         else:
             print(f"[-] [{tc_id}] FAILED")
             for log in tc_logs:
                 if "FAIL:" in log:
                     print(f"    - {log}")
             total_failed += 1
-            results.append({"id": tc_id, "name": tc_name, "status": "FAIL", "logs": tc_logs})
+            results.append({"id": tc_id, "name": tc_name, "failure_mode": failure_mode, "status": "FAIL", "logs": tc_logs})
 
     total = total_passed + total_failed
     score = (total_passed / total * 100.0) if total > 0 else 0.0
