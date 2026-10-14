@@ -99,6 +99,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "workflow.no_outputs": ("llm_patch", True),
     "markdown.missing_link": ("llm_patch", True),
     "path.absolute_user_path": ("llm_patch", True),
+    "dependency.undeclared": ("llm_patch", True),
     "capability.invalid_namespace": ("llm_patch", True),
     "capability.uncovered_outcome": ("llm_patch", True),
     "graph.unreachable_node": ("llm_patch", True),
@@ -922,6 +923,43 @@ def validate_portability(root: Path, findings: list[Finding]) -> None:
                 )
 
 
+EXTERNAL_DEP_TOKEN = re.compile(r"superpowers:[a-z-]+|agy-customizations|ponytail")
+
+
+def validate_dependencies(root: Path, findings: list[Finding]) -> None:
+    """Verify that every external plugin/tool token is explicitly declared in DEPENDENCIES.md."""
+    dep_file = root / "DEPENDENCIES.md"
+    dep_text = dep_file.read_text(encoding="utf-8") if dep_file.is_file() else ""
+
+    extensions = {".md", ".json", ".py", ".mjs"}
+    for p in root.rglob("*"):
+        if not p.is_file():
+            continue
+        if p.suffix not in extensions:
+            continue
+        rel = p.relative_to(root).as_posix()
+        if rel == "DEPENDENCIES.md" or rel.startswith("scripts/tests/") or rel.startswith("skills/ui-ux-pro-max/"):
+            continue
+        try:
+            content = p.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+
+        for line_num, line in enumerate(content.splitlines(), start=1):
+            matches = EXTERNAL_DEP_TOKEN.findall(line)
+            for token in matches:
+                if token not in dep_text:
+                    add(
+                        findings,
+                        "error",
+                        "dependency.undeclared",
+                        Path(rel),
+                        f"Undeclared external dependency token: {token}",
+                        line=line_num,
+                        evidence=line.strip()[:100],
+                    )
+
+
 def validate_quick(root: Path) -> list[Finding]:
     """Fast frontmatter and JSON syntax validation for Tier 1 rapid checks."""
     findings: list[Finding] = []
@@ -950,6 +988,7 @@ def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     validate_template_compliance(root, findings)
     validate_compiler_artifacts(root, findings)
     validate_portability(root, findings)
+    validate_dependencies(root, findings)
     return findings
 
 

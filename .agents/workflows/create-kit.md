@@ -18,6 +18,13 @@ max_retry_per_node: 2
 
 Quy trình chuẩn mực để tạo một Agent Kit mới từ đầu, tích hợp **Targeted Grounding Gate (Dependency Mapping + Evidence Gate)** kết hợp Superpowers.
 
+## 🛫 BƯỚC -1: PREFLIGHT CHECK
+Chạy kiểm tra điều kiện tiên quyết trước khi bắt đầu tạo kit:
+```bash
+python .agents/scripts/preflight.py .agents
+```
+Nếu thiếu file hoặc template, hệ thống sẽ dừng và báo lỗi. Nếu thiếu các plugin ngoài (như `superpowers:*`), áp dụng phương án dự phòng đã quy định tại `.agents/DEPENDENCIES.md`.
+
 ---
 
 ## 🚦 BƯỚC 0: SCOPE CLARIFICATION & DESIGN SPEC
@@ -25,7 +32,7 @@ Quy trình chuẩn mực để tạo một Agent Kit mới từ đầu, tích h�
 Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đích (`<target-dir>`, mặc định `./output/<kit-name>/`):
 
 1. **Brainstorming (Conditional):**
-   - Nếu scope chưa rõ, requirements mâu thuẫn, hoặc có nhiều hướng kiến trúc hợp lý → invoke `superpowers:brainstorming` để khám phá trước khi commit.
+   - Nếu scope chưa rõ, requirements mâu thuẫn, hoặc có nhiều hướng kiến trúc hợp lý → invoke `superpowers:brainstorming` để khám phá trước khi commit (phương án dự phòng khi vắng mặt: hỏi trực tiếp sếp tối đa 3 câu về mục tiêu, tier, core verbs rồi chờ `APPROVED`).
    - Nếu requirements đã rõ ràng (user cung cấp đủ domain context, complexity tier, core verbs) → tiến thẳng vào Design Spec.
    - `FAST_TRACK` / `TARGETED_TRACK`: Bỏ qua Bước 0 hoàn toàn.
 2. **Khóa Design Spec & Tri-Bucket Scope:** Thống nhất với User về: Mục tiêu cốt lõi, Complexity Tier, 5 Core Verbs, 80/20 Leverage, Danh sách Cấu phần tối thiểu.
