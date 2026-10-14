@@ -79,3 +79,12 @@ Hooks execute as external processes (e.g. `node .agents/hooks/validate-tool-call
 
 - **Fail-Closed Guarantee**: Any malformed input, missing fields, unhandled exceptions, or timeout MUST evaluate to `decision: "deny"` with a reason prefixed by `fail-closed:`.
 - **Runtime Working Directory**: Cần xác nhận khi chạy thật: thư mục làm việc của lệnh hook (cwd) thường là workspace root. Commands in handler should use paths relative to workspace root (e.g. `node .agents/hooks/validate-tool-call.mjs`).
+
+---
+
+## 5. Verification Evidence & Behavioral Testing
+
+- **Behavioral Suite**: Verified through `test_validate_tool_call_hook.py` (13/13 PASS), `test_check_hook.py` (4/4 PASS), and `test_antigravity_doctor_hooks.py` (3/3 PASS).
+- **Runtime Path Resolution**: Command `node .agents/hooks/validate-tool-call.mjs` executes relative to workspace root when installed in `.agents/hooks.json`.
+- **Target Protection**: Verified rejection of edits targeting `<workspace>/.agents/hooks.json` and `<workspace>/.agents/hooks/` across all write tools.
+

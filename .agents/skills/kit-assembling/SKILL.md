@@ -53,9 +53,9 @@ output/<suite-name>/
 │   ├── MEMORY.md
 │   ├── shared/
 │   └── domains/
+├── hooks.json                 # Native Antigravity Hooks config (từ templates/hooks.json)
 ├── hooks/
-│   ├── hooks.json
-│   ├── validate-tool-call.mjs # Boundary & Safety enforcement
+│   ├── validate-tool-call.mjs # Boundary & Safety enforcement (copy nguyên vẹn từ templates/)
 │   └── antigravity-doctor.mjs # Health diagnostics
 ├── scripts/
 │   ├── checklist.py           # Domain-Adaptive Checklist Runner (từ domain-checklist-template.py)
@@ -81,7 +81,7 @@ Khi sinh `scripts/checklist.py` (sử dụng `templates/domain-checklist-templat
 ## 4. RUNTIME SAFETY & PLATFORM CONTRACT GENERATION
 
 Mọi kit sinh ra được tự động tích hợp:
-1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse (`hooks/validate-tool-call.mjs`). Template: `templates/validate-tool-call.mjs`, `templates/hooks.json`; hợp đồng: `references/antigravity-hooks-contract.md`.
+1. **OS Destruction Protection**: Chặn đứng `rm -rf /`, `mkfs`, `format` ở tầng PreToolUse. Gồm file `hooks.json` ở gốc kit và `hooks/validate-tool-call.mjs` (copy trực tiếp từ `templates/hooks.json` và `templates/validate-tool-call.mjs`, cấm để LLM viết lại thân hook). Hợp đồng: `references/antigravity-hooks-contract.md`.
 2. **Antigravity 6-Phase Contract (`antigravity.json`)**: Khai báo đầy đủ các pha discovery, mcp, hooks, orchestration, plugin, validation (Template: `templates/antigravity-template.json`).
 3. **Specialist Boundary Enforcement (Dành cho Suite)**: Chặn đứng hành vi ghi đè file ngoài domain sở hữu của từng Specialist.
 4. **Central Feedback & Learning Connectivity**: Mọi Kit sinh ra được cấu hình kết nối trực tiếp với Central Feedback Hub tại `Downloads/Shared Workspace/Feedback/kit_feedback.jsonl` qua `feedback_hub.py` để ghi nhận lỗi runtime (`source: "system"`) và phản hồi người dùng (`source: "user"`), loại bỏ hoàn toàn các thư mục evolution cục bộ cồng kềnh.
@@ -139,3 +139,4 @@ Sau khi sinh toàn bộ cấu phần trong `./output/<kit-name>/`, kit-assemblin
 6. `python .agents/scripts/compile_evidence_schemas.py ./output/<kit-name>/` ➔ Sinh `evidence_schemas.json`
 7. `python .agents/scripts/dry_run_simulation.py ./output/<kit-name>/` ➔ Chạy giả lập reachability, cycle, coverage
 8. `python .agents/scripts/generate_manifest.py ./output/<kit-name>/` & `dependency_graph.py` ➔ Khóa `manifest.lock.json`
+9. `python .agents/scripts/check_hook.py ./output/<kit-name>/` ➔ Kiểm tra hợp đồng hành vi của safety hook (phải 0 lỗi)

@@ -60,7 +60,7 @@ Mọi skill và agent trong Kit phải thỏa mãn:
 3. **Reference Integrity Gate**: Mọi link trỏ đến `references/` hoặc `scripts/` phải tồn tại thực tế trên filesystem.
 4. **Worker Briefing Compliance**: Master Orchestrator không chứa các câu ủy quyền mù quáng, mà phải có cấu trúc Worker Briefing đầy đủ 5 phần.
 5. **No Orphan Skills**: Mọi skill trong `skills/` phải thuộc `ownedSkills` của một Specialist hoặc Orchestrator.
-6. **Runtime Safety Hook**: Tồn tại file `hooks/validate-tool-call.mjs` có khả năng chặn lệnh nguy hiểm.
+6. **Runtime Safety Hook**: Chạy `python .agents/scripts/check_hook.py <target-dir>`; kết quả rỗng mới đạt.
 7. **Execution Policy Contract**: Tồn tại file `execution_policy.json`, valid theo `schemas/execution-policy.schema.json`, và `mode` khớp với topology thực tế (single agent → `direct`, multi-agent → `stage_machine` hoặc `fork_join`).
 8. **Orchestration Protocol Presence**: Nếu Kit là Multi-Agent Suite, Master Orchestrator prompt **BẮT BUỘC** chứa section `## Orchestration Protocol` hoặc `## 🎯 ORCHESTRATION PROTOCOL`.
 

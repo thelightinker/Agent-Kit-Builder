@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import url from 'node:url';
 
 function parseArgs(argv) {
   const options = {root: process.cwd(), json: false, strict: false};
@@ -92,10 +93,22 @@ function checkDiscovery(root, report) {
   }
 }
 
+function hasAgents(root) {
+  for (const dirName of ['agent', 'agents', path.join('.agents', 'agent'), path.join('.agents', 'agents')]) {
+    const dir = path.join(root, dirName);
+    if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) {
+      const files = fs.readdirSync(dir);
+      if (files.some(f => f.endsWith('.md'))) return true;
+    }
+  }
+  return false;
+}
+
 function checkHooks(root, report) {
   const file = path.join(root, '.agents', 'hooks.json');
   if (!fs.existsSync(file)) {
-    add(report, 'warning', 'hooks', 'hooks.missing', '.agents/hooks.json', 'Native Antigravity hooks configuration is missing.');
+    const severity = hasAgents(root) ? 'error' : 'warning';
+    add(report, severity, 'hooks', 'hooks.missing', '.agents/hooks.json', 'Native Antigravity hooks configuration is missing.');
     return;
   }
   let config;
@@ -105,7 +118,46 @@ function checkHooks(root, report) {
     add(report, 'error', 'hooks', 'hooks.invalid_json', '.agents/hooks.json', error.message);
     return;
   }
-  if (typeof config.enabled !== 'boolean') add(report, 'error', 'hooks', 'hooks.enabled', '.agents/hooks.json', 'enabled must be boolean.');
+
+  if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+    add(report, 'error', 'hooks', 'hooks.invalid_entry', '.agents/hooks.json', 'Root must be an object.');
+    return;
+  }
+
+  const entries = Object.entries(config);
+  for (const [key, value] of entries) {
+    if (key === 'hooks' && Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item !== 'object' || item === null) {
+          add(report, 'error', 'hooks', 'hooks.invalid_entry', '.agents/hooks.json', 'Hook item must be an object.');
+          continue;
+        }
+        if (item.enabled !== undefined && typeof item.enabled !== 'boolean') {
+          add(report, 'error', 'hooks', 'hooks.enabled', '.agents/hooks.json', 'enabled must be boolean.');
+        }
+      }
+      continue;
+    }
+
+    if (typeof value !== 'object' || value === null) {
+      add(report, 'error', 'hooks', 'hooks.invalid_entry', '.agents/hooks.json', `Hook entry '${key}' must be an object.`);
+      continue;
+    }
+
+    if (value.enabled !== undefined && typeof value.enabled !== 'boolean') {
+      add(report, 'error', 'hooks', 'hooks.enabled', '.agents/hooks.json', `Hook '${key}' enabled must be boolean.`);
+    }
+
+    if (value.event === 'PreToolUse' || key === 'PreToolUse') {
+      if (Array.isArray(value.hooks)) {
+        for (const h of value.hooks) {
+          if (!h || typeof h.command !== 'string') {
+            add(report, 'error', 'hooks', 'hooks.command', '.agents/hooks.json', `Hook in '${key}' must have command string.`);
+          }
+        }
+      }
+    }
+  }
 }
 
 export function diagnose(root) {
@@ -131,7 +183,12 @@ export function diagnose(root) {
   return report;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isMain = process.argv[1] && (
+  import.meta.url === url.pathToFileURL(process.argv[1]).href ||
+  import.meta.url === `file://${process.argv[1]}`
+);
+
+if (isMain) {
   try {
     const options = parseArgs(process.argv.slice(2));
     const report = diagnose(options.root);
