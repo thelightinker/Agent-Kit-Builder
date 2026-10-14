@@ -131,6 +131,7 @@ Khai báo đầy đủ trường `topology`, `role`, `delegatesTo`, `ownedSkills
 ## 6. COMPILE DECISION SYSTEM & INTEGRITY LOCK PIPELINE
 
 Sau khi sinh toàn bộ cấu phần trong `./output/<kit-name>/`, kit-assembling **BẮT BUỘC** thực thi pipeline biên dịch hệ thống ra quyết định và khóa toàn vẹn:
+0. `python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out ./output/<kit-name>/agent` ➔ Render frontmatter tất định cho agent (dừng ngay nếu thoát khác 0)
 1. `python .agents/scripts/compile_routing_index.py ./output/<kit-name>/` ➔ Sinh `routing_index.json`
 2. `python .agents/scripts/compile_invariants.py ./output/<kit-name>/` ➔ Sinh `invariant_rules.json`
 3. `python .agents/scripts/compile_state_schema.py ./output/<kit-name>/` ➔ Sinh `state_schema.json`

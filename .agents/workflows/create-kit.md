@@ -79,7 +79,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **Role Profile:** `@compiler` | **Skill:** `prompt-compiling`
 - **[Mandatory Grounding Template]:** Đọc `.agents/templates/orchestrator-template.md` (nếu là Master Orchestrator) HOẶC `.agents/templates/agent-template.md` (nếu là Single/Specialist Agent).
 - **[Input Artifacts]:** `domain_profile.md`, Ma trận phân bổ Hợp đồng Node.
-- **[Output Artifacts]:** System Prompt của Agent (`agent/<name>.md` hoặc `<name>.md`).
+- **[Output Artifacts]:** `kit_spec.json` + file thân agent `bodies/<name>.md` (render tự động, cấm viết tay frontmatter chuỗi).
 - **[Evidence Gate DoD]:**
   - [ ] Có phần TÓM TẮT CHO NGƯỜI DÙNG ở đầu (0 thuật ngữ AI, 3-5 dòng).
   - [ ] Chứa đủ 4 khối chuẩn từ template: Vai trò, Quy trình, Hard Constraints dạng phủ định, Format đầu ra.
@@ -118,6 +118,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **[Input Artifacts]:** Toàn bộ components đã tạo.
 - **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, và `lifecycle.json`.
 - **[Compiler & Lifecycle Execution Pipeline]:**
+  0. Chạy render frontmatter tất định cho agent: `python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out <target-dir>/agent` (thoát khác 0 thì dừng ngay).
   1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py` trên `<target-dir>`.
   2. Khởi tạo `lifecycle.json` với `schema_version: "1.0.0"`, `kit_name: "<kit-name>"`, `lifecycle_state: "DRAFT"`.
   3. Sau khi các artifacts compiled và `manifest.json` được tạo hoàn tất, chuyển trạng thái sang `lifecycle_state: "READY_FOR_VALIDATION"`.

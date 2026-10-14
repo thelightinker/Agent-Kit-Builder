@@ -157,3 +157,17 @@ Format bắt buộc:
 2. KHÔNG BAO GIỜ xử lý bằng "kiến thức chung" nếu Skill tương ứng tồn tại.
 3. Nếu Skill hướng dẫn nạp `references/*.md` → đọc tiếp.
 ```
+
+---
+
+## 9. AGENT ARTIFACT OUTPUT CONTRACT (DETERMINISTIC FRONTMATTER)
+
+Khi biên dịch Agent, compiler **BẮT BUỘC** xuất ra hai cấu phần:
+1. `kit_spec.json`: Khai báo mảng `agents` chứa toàn bộ metadata và `capabilities:` block dạng JSON có cấu trúc (theo mẫu `kit_spec_min.json`), kèm đường dẫn `"body_file": "bodies/<tên>.md"`.
+2. File thân Agent: Lưu tại `bodies/<tên>.md` chỉ chứa nội dung markdown từ tiêu đề `# <Role>` trở đi (DoD, Constraints, Skill Invocation Matrix, v.v.).
+
+🚫 **CẤM VIẾT TAY FRONTMATTER**: Tuyệt đối không tự viết khối `---` frontmatter dạng chuỗi thủ công để tránh rủi ro vỡ cú pháp YAML hoặc sót placeholder. Frontmatter bắt buộc được render tự động qua script:
+```bash
+python .agents/scripts/render_frontmatter.py <kit_spec.json> --bodies <bodies_dir> --out <target-dir>/agent
+```
+

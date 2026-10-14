@@ -1,0 +1,67 @@
+{
+  "agents": [
+    {
+      "name": "writer",
+      "description": "Chuyên gia viết lách và biên soạn tài liệu kỹ thuật chuẩn mực.",
+      "tools": ["Read", "Grep", "Glob", "Edit", "Write"],
+      "model": "inherit",
+      "version": "1.0.0",
+      "domain": "writing",
+      "skills": ["doc-skill"],
+      "capabilities": [
+        {
+          "id": "writing.draft.create",
+          "intent_patterns": ["viết bản thảo", "draft article"],
+          "preconditions": {
+            "structural": [{"key": "outline_approved", "value": true}]
+          },
+          "postconditions": [{"key": "draft_created", "value": true}],
+          "evidence_schema": {
+            "structural": [{"check": "file_exists", "path": "outputs/draft.md"}]
+          },
+          "failure_policy": {
+            "on_structural_failure": "retry(max=2) → escalate_human",
+            "on_semantic_rejection": "escalate_human"
+          },
+          "checkpoint_resume_policy": {
+            "checkpoint_supported": true,
+            "resume_condition": "checkpoint_valid"
+          },
+          "negative_scope": {
+            "cannot_modify": ["inputs/outline.md"]
+          }
+        },
+        {
+          "id": "writing.review.grammar",
+          "intent_patterns": ["soát lỗi ngữ pháp", "grammar check"],
+          "preconditions": {
+            "structural": [{"key": "draft_created", "value": true}]
+          },
+          "postconditions": [{"key": "grammar_checked", "value": true}],
+          "evidence_schema": {
+            "structural": [{"check": "file_exists", "path": "outputs/grammar.json"}]
+          },
+          "failure_policy": {
+            "on_structural_failure": "retry(max=2) → escalate_human",
+            "on_semantic_rejection": "escalate_human"
+          },
+          "negative_scope": {
+            "cannot_modify": ["inputs/outline.md"]
+          }
+        }
+      ],
+      "negative_scope": {
+        "cannot_modify": ["inputs/outline.md"]
+      },
+      "failure_policy": {
+        "on_structural_failure": "retry(max=2) → escalate_human",
+        "on_semantic_rejection": "escalate_human"
+      },
+      "checkpoint_resume_policy": {
+        "checkpoint_supported": true,
+        "resume_condition": "checkpoint_valid"
+      },
+      "body_file": "bodies/writer.md"
+    }
+  ]
+}
