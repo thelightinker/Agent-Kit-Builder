@@ -31,6 +31,8 @@ Nếu thiếu file hoặc template, hệ thống sẽ dừng và báo lỗi. N�
 
 Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đích (`<target-dir>`, mặc định `./output/<kit-name>/`):
 
+0. **Context Readset theo Mode (JIT Loading):** Xác định mode (`micro`, `standard`, `mini_suite`, `full_suite`) rồi chỉ nạp các file trong `.agents/readsets.json[mode]`; không nạp file ngoài danh sách trừ khi một bước sau yêu cầu rõ.
+
 1. **Brainstorming (Conditional):**
    - Nếu scope chưa rõ, requirements mâu thuẫn, hoặc có nhiều hướng kiến trúc hợp lý → invoke `superpowers:brainstorming` để khám phá trước khi commit (phương án dự phòng khi vắng mặt: hỏi trực tiếp sếp tối đa 3 câu về mục tiêu, tier, core verbs rồi chờ `APPROVED`).
    - Nếu requirements đã rõ ràng (user cung cấp đủ domain context, complexity tier, core verbs) → tiến thẳng vào Design Spec.

@@ -33,6 +33,17 @@ python .agents/scripts/validate_kit.py
 - **Workspace Isolation (BẤT BIẾN)**: Mọi kit đầu ra bắt buộc lưu tại `./output/<kit-name>/`.
 - **Decision vs Execution**: Role `@auditor` quyết định phạm vi kiểm thử; Python scripts thực thi kiểm định tất định.
 
+## Context Footprint (Read-set Footprint)
+
+Số đo byte thô của các read-set theo mode từ `readsets.json` (chưa phải token):
+
+| Mode | Context Footprint (Raw Bytes) | Ghi chú |
+|:---|:---:|:---|
+| `micro` | 128,876 B | Tối giản: 1 agent, không workflow phức tạp |
+| `standard` | 140,962 B | `micro` + `outcome-lenses` + `workflow-template` |
+| `mini_suite` | 156,439 B | `standard` + `orchestrator-template` + `prompt-compiling-suite` |
+| `full_suite` | 163,988 B | `mini_suite` + `multi-agent-orchestration` |
+
 ## Documentation
 
 - [Architecture and inventory](ARCHITECTURE.md)
