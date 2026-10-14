@@ -12,15 +12,12 @@ class TestTemplates(unittest.TestCase):
         
         self.agent_template = self.templates_dir / "agent-template.md"
         self.workflow_template = self.templates_dir / "workflow-template.md"
-        
-        self.routing_index_template = self.templates_dir / "routing-index-template.json"
-        self.state_schema_template = self.templates_dir / "state-schema-template.json"
-        self.evidence_schema_template = self.templates_dir / "evidence-schema-template.json"
-        self.invariant_rules_template = self.templates_dir / "invariant-rules-template.json"
-        
-        self.capability_guide = self.references_dir / "capability-declaration-guide.md"
-        self.runtime_routing_doc = self.references_dir / "runtime-routing-model.md"
-        self.state_verdict_doc = self.references_dir / "state-verdict-protocol.md"
+        self.antigravity_template = self.templates_dir / "antigravity-template.json"
+        self.manifest_template = self.templates_dir / "manifest-template.json"
+
+        self.role_profiles_doc = self.references_dir / "role-profiles.md"
+        self.component_contracts_doc = self.references_dir / "component-contracts.md"
+        self.verification_abstraction_doc = self.references_dir / "verification-abstraction.md"
 
     def test_agent_template_structure(self):
         self.assertTrue(self.agent_template.is_file(), "agent-template.md must exist")
@@ -59,10 +56,8 @@ class TestTemplates(unittest.TestCase):
 
     def test_json_templates_validity(self):
         for template_path in [
-            self.routing_index_template,
-            self.state_schema_template,
-            self.evidence_schema_template,
-            self.invariant_rules_template,
+            self.antigravity_template,
+            self.manifest_template,
         ]:
             self.assertTrue(template_path.is_file(), f"{template_path.name} must exist")
             content = template_path.read_text(encoding="utf-8")
@@ -71,9 +66,9 @@ class TestTemplates(unittest.TestCase):
 
     def test_reference_guides_presence(self):
         for doc_path in [
-            self.capability_guide,
-            self.runtime_routing_doc,
-            self.state_verdict_doc,
+            self.role_profiles_doc,
+            self.component_contracts_doc,
+            self.verification_abstraction_doc,
         ]:
             self.assertTrue(doc_path.is_file(), f"{doc_path.name} must exist")
             content = doc_path.read_text(encoding="utf-8")
