@@ -139,7 +139,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **[Output Artifacts]:** `audit_findings.json`, `validation_report.md`.
 - **[Execution]:** Kích hoạt trực tiếp `/validate-kit <target-dir>` để chạy kiểm tra 3 lớp (L1 Linter $\rightarrow$ L2 Kịch bản $\rightarrow$ L3 Adversarial) và xuất `audit_findings.json`.
 - **[DoD]:**
-  - [ ] `validate_kit.py <target-dir> --findings-json <target-dir>/audit_findings.json` trả về `0 error(s)`.
+  - [ ] `validate_kit.py <target-dir> --kit-output --findings-json <target-dir>/audit_findings.json` trả về `0 error(s)`.
   - [ ] **Executable Script Smoke Test:** 100% các script Python đi kèm kit (nếu có) phải vượt qua bài kiểm tra cú pháp AST và chạy thử `--help` trả về exit code `0` không có exception.
   - [ ] Điểm Rubric $\ge 4/5$ ⭐ $\rightarrow$ Cập nhật `lifecycle_state: "VALIDATED"`.
   - [ ] Nếu có lỗi $\rightarrow$ Tự động chuyển giao sang `/refactor-kit` (tối đa 3 vòng repair cycle).

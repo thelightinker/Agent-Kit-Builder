@@ -43,6 +43,14 @@ from compile_evidence_schemas import compile_evidence_schemas
 from compile_execution_policy import compile_execution_policy
 from dry_run_simulation import simulate_workflow_graph
 
+try:
+    from kit_lint import find_placeholders
+except ImportError:
+    scripts_dir = Path(__file__).resolve().parent
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    from kit_lint import find_placeholders
+
 
 @dataclass
 class Finding:
@@ -114,6 +122,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "routing.agent_missing_skill_matrix": ("llm_patch", True),
     "routing.orchestrator_missing_routing_table": ("llm_patch", True),
     "context.budget_exceeded": ("llm_patch", True),
+    "placeholder.unfilled": ("llm_patch", True),
     # escalate_human (ambiguous / high-risk)
     "json.invalid": ("escalate_human", False),
     "python.syntax": ("escalate_human", False),
@@ -690,6 +699,16 @@ def validate_template_compliance(root: Path, findings: list[Finding]) -> None:
 
 def validate_compiler_artifacts(root: Path, findings: list[Finding]) -> None:
     """Validate 9 compile-time checks conforming to CANON 10 and Compiler + Runtime Model."""
+    def _safe_load_fm(text: str) -> dict | None:
+        if yaml is None:
+            data = fallback_frontmatter(text)
+            return data if isinstance(data, dict) else None
+        try:
+            data = yaml.safe_load(text)
+            return data if isinstance(data, dict) else None
+        except yaml.YAMLError:
+            return None
+
     has_capabilities = False
     
     # 1. Validate capability namespace & evidence schema completeness
@@ -697,8 +716,8 @@ def validate_compiler_artifacts(root: Path, findings: list[Finding]) -> None:
         raw, _ = extract_frontmatter(agent_path)
         if not raw:
             continue
-        fm = fallback_frontmatter(raw) if yaml is None else yaml.safe_load(raw)
-        if not isinstance(fm, dict):
+        fm = _safe_load_fm(raw)
+        if not fm:
             continue
         caps = fm.get("capabilities", [])
         if isinstance(caps, list):
@@ -760,7 +779,7 @@ def validate_compiler_artifacts(root: Path, findings: list[Finding]) -> None:
         for ap in (root / "agent").glob("*.md"):
             rf, _ = extract_frontmatter(ap)
             if rf:
-                fd = fallback_frontmatter(rf) if yaml is None else yaml.safe_load(rf)
+                fd = _safe_load_fm(rf)
                 if isinstance(fd, dict) and str(fd.get("routing_exempt", "")).lower() not in ("true", "yes"):
                     non_exempt_count += 1
     if non_exempt_count > 0 and not has_capabilities:
@@ -775,8 +794,8 @@ def validate_compiler_artifacts(root: Path, findings: list[Finding]) -> None:
         raw_fm, _ = extract_frontmatter(agent_path)
         if not raw_fm:
             continue
-        fm_data = fallback_frontmatter(raw_fm) if yaml is None else yaml.safe_load(raw_fm)
-        if not isinstance(fm_data, dict):
+        fm_data = _safe_load_fm(raw_fm)
+        if not fm_data:
             continue
         # Skip routing_exempt agents (meta-agents that route via prose)
         if str(fm_data.get("routing_exempt", "")).lower() in ("true", "yes"):
@@ -1047,7 +1066,32 @@ def validate_quick(root: Path) -> list[Finding]:
     return findings
 
 
-def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
+def validate_placeholders(root: Path, findings: list[Finding]) -> None:
+    """Detect unfilled template placeholders in generated kit markdown files."""
+    for sub in ("agent", "skills", "workflows", "rules"):
+        sub_dir = root / sub
+        if not sub_dir.is_dir():
+            continue
+        for p in sub_dir.rglob("*.md"):
+            if not p.is_file():
+                continue
+            try:
+                content = p.read_text(encoding="utf-8")
+            except (UnicodeDecodeError, OSError):
+                continue
+            matches = find_placeholders(content)
+            for line_no, ph in matches:
+                add(
+                    findings,
+                    "error",
+                    "placeholder.unfilled",
+                    p.relative_to(root),
+                    f"Unfilled template placeholder '{ph}' detected in kit output",
+                    line=line_no,
+                )
+
+
+def validate(root: Path, auto_heal: bool = True, kit_output: bool = False) -> list[Finding]:
     findings: list[Finding] = []
     validate_json(root, findings)
     validate_kit_version(root, findings)
@@ -1065,6 +1109,8 @@ def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     validate_portability(root, findings)
     validate_dependencies(root, findings)
     validate_context_budget(root, findings)
+    if kit_output:
+        validate_placeholders(root, findings)
     return findings
 
 
@@ -1096,8 +1142,8 @@ def print_audit_report(root: Path, findings: list[Finding]) -> None:
     print("============================================================\n")
 
 
-def run_validation_and_update_lifecycle(root: Path, findings_output: Optional[Path] = None) -> dict:
-    findings = validate(root)
+def run_validation_and_update_lifecycle(root: Path, findings_output: Optional[Path] = None, kit_output: bool = False) -> dict:
+    findings = validate(root, kit_output=kit_output)
     errors = [item for item in findings if item.severity == "error"]
     warnings = [item for item in findings if item.severity == "warning"]
     
@@ -1142,6 +1188,7 @@ def main() -> int:
     parser.add_argument("--converge", action="store_true", help="Run bounded self-healing convergence loop (max 3 iterations)")
     parser.add_argument("--no-auto-heal", action="store_false", dest="auto_heal", default=True, help="Disable auto-healing stale lockfiles")
     parser.add_argument("--audit-feedback", action="store_true", help="Audit feedback health from Central Feedback Hub")
+    parser.add_argument("--kit-output", action="store_true", help="Enable placeholder detection for generated kit output")
     args = parser.parse_args()
     root = Path(args.path).resolve() if args.path else Path(__file__).resolve().parents[1]
     if not root.is_dir():
@@ -1177,12 +1224,12 @@ def main() -> int:
 
     if args.findings_json:
         findings_path = Path(args.findings_json)
-        result = run_validation_and_update_lifecycle(root, findings_output=findings_path)
+        result = run_validation_and_update_lifecycle(root, findings_output=findings_path, kit_output=args.kit_output)
         if not args.as_json and not args.audit:
             print(f"[+] Wrote audit findings to {findings_path} (Pass: {result['pass']}, Score: {result['score']}/5)")
         return 0 if result["pass"] else 1
 
-    findings = validate_quick(root) if args.quick else validate(root, auto_heal=args.auto_heal)
+    findings = validate_quick(root) if args.quick else validate(root, auto_heal=args.auto_heal, kit_output=args.kit_output)
     errors = [item for item in findings if item.severity == "error"]
     warnings = [item for item in findings if item.severity == "warning"]
     

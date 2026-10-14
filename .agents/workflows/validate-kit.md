@@ -37,7 +37,7 @@ Sử dụng để kiểm tra, đánh giá và đóng dấu trạng thái chính 
 - **[Input Artifacts]:** Toàn bộ component files của kit.
 - **[Output Artifacts]:** `audit_findings.json`, `validation_report.md`.
 - **[DoD]:**
-  - [ ] Lớp 1 (L1 Deterministic Linting & Compiler Gates): `validate_kit.py` chạy qua 100% structural anchors, frontmatter, và 9 compile-time checks (reachability, cycle, coverage, dead states, state keys, namespace, negative scope, evidence schema, artifact freshness).
+  - [ ] Lớp 1 (L1 Deterministic Linting & Compiler Gates): `validate_kit.py <target-dir> --kit-output` chạy qua 100% structural anchors, frontmatter, placeholder detection, và 9 compile-time checks (reachability, cycle, coverage, dead states, state keys, namespace, negative scope, evidence schema, artifact freshness).
   - [ ] Chạy `dry_run_simulation.py` đạt 100% PASS (0 deadlocks, 0 unreachable nodes).
   - [ ] Lớp 2 (L2 Adaptive Scenario Testing): Tóm tắt đời thường (3-5 dòng), DoD 100% nhị phân.
   - [ ] Lớp 3 (L3 Adversarial Stress Testing): Giả lập edge cases, kiểm tra độ bền vững DoD.
