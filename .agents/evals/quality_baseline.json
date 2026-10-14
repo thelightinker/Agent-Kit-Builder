@@ -1,0 +1,29 @@
+{
+  "briefs": [
+    {
+      "id": "b1-micro",
+      "mode": "micro",
+      "text": "Tạo Micro Kit Log Sanitizer CLI: 1 agent duy nhất chuyên kiểm tra và xóa bỏ token nhạy cảm, API keys, password, email khỏi log file trước khi upload. Có skill sanitize-logs kiểm tra pattern regex và thay thế bằng mask [REDACTED]."
+    },
+    {
+      "id": "b2-standard",
+      "mode": "standard",
+      "text": "Tạo Standard Kit Technical Blog Post Writer: gồm 1 Specialist Agent writer có workflow draft-post và 2 skills (outline-structuring, technical-explaining). Có DoD rõ ràng, ranh giới cấm viết buzzword và cấm sinh code không kiểm thử."
+    },
+    {
+      "id": "b3-suite",
+      "mode": "suite",
+      "text": "Tạo Full Suite API Spec Reviewer: Master Orchestrator api-architect điều phối 2 Specialist Agents (openapi-validator kiểm tra schema compliance và security-auditor kiểm tra OWASP API Top 10 rủi ro). Có workflow review-spec, Scoped Memory và Safety Hooks."
+    }
+  ],
+  "criteria": [
+    "Q1_no_placeholders",
+    "Q2_frontmatter_parses",
+    "Q3_skill_refs_resolve",
+    "Q4_dod_has_numbers",
+    "Q5_negative_boundaries",
+    "Q6_skill_trigger_present",
+    "M7_answers_brief",
+    "M8_no_toolkit_vocabulary"
+  ]
+}
