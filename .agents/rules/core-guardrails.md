@@ -12,7 +12,8 @@ description: "Core guardrails: workspace isolation, targeted grounding, sequenti
 - **Workspace Isolation:** Ghi kit theo thư mục chỉ định (mặc định `./output/`). CẤM ghi vào `.agents/` của Creator.
 - **Orchestration Mandate:** Mọi hoạt động do `@kit-architect` điều phối qua 5 Profiles: `@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`.
 - **Risk Tiers:** Tier 0 (Read/Inspect = zero gate) | Tier 1 (Scaffold/Gen = Evidence Gate) | Tier 2 (Sửa `.agents/` = Human Gate `gateStatus: approved_golden`).
-- **Upgrade SSOT & Net System Gain:** Tuân thủ `UPGRADE_PRINCIPLES.md`. Chỉ nâng cấp khi $\text{Net Gain} = \text{Value} - \text{Complexity} > 0$. Cấm copy pattern riêng lẻ.
+- **Upgrade SSOT & Net System Gain:** Chỉ nâng cấp khi $\text{Net Gain} = \text{Value} - \text{Complexity} > 0$. Cấm copy pattern riêng lẻ.
+
 
 ## 2. 5 Điều Răn Kiến Trúc P0 (BẤT BIẾN)
 1. **Topology & Node-Contract Reconciliation:** Mọi Node có đúng 1 Role, 1 Skill. Node Audit bắt buộc $\text{Auditor} \ne \text{Author}$ (Zero Self-Audit). Cấm Split-Lifecycle God-Skills. Heuristic thuộc về đúng Role.

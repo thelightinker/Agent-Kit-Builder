@@ -42,7 +42,6 @@ AUTHORITY_MATRIX: Dict[str, List[str]] = {
     "create-visual": ["DRAFT", "READY_FOR_VALIDATION"],
     "validate-kit": ["VALIDATED", "NEEDS_REFACTOR", "NEEDS_HUMAN_INTERVENTION"],
     "refactor-kit": ["READY_FOR_VALIDATION"],
-    "architecture-evolution": ["READY_FOR_VALIDATION"],
     "remember-kit": ["EXEMPLAR_ARCHIVED"],
     "manual_admin": [
         "DRAFT",

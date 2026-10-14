@@ -16,12 +16,11 @@ Phân loại yêu cầu thành mode + capability bundle. Mọi quy trình xây d
 | Tạo/sửa 1 component đơn lẻ (Skill/Workflow/Rule/Memory) | `TARGETED_TRACK` | `@kit-architect` (1:1 Targeted Grounding: `@compiler` hoặc `@architect` + `skill-creator` nếu là Skill) | — |
 | Multi-component, domain mới | `DEEP_TRACK` | `@kit-architect` (`@analyst` → `@compiler` → `@architect` kèm `skill-creator` → `kit-assembling` → `@auditor`) | `/create-kit` |
 | Sửa/nâng cấp kit có sẵn | `REFACTOR_TRACK` | `@kit-architect` (`@architect` / `@compiler` kèm `skill-creator` nếu sửa skill → `@auditor`) | `/refactor-kit` |
-| Nâng cấp kiến trúc dựa trên Living Map | `ARCHITECTURE_TRACK` | `@kit-architect` (`architecture-mapping` → `@architect` → `@auditor`) | `/architecture-evolution` |
 | Audit/chấm điểm kit | `AUDIT_TRACK` | `@kit-architect` (`@auditor` + `kit-verifying`) | `/validate-kit` |
 | Lưu bài học/pattern | `MEMORY_TRACK` | `@kit-architect` (`kit-evolving`) | `/remember-kit` |
 | Tạo visual kit, HTML preview, dashboard, landing page, slide, UI/UX | `VISUAL_TRACK` | `@kit-architect` (`@designer` qua `ui-ux-pro-max` → `@auditor`) | `/create-visual` |
-| Ghi nhận & truy vết lỗi / ma sát thực chiến từ Kit & Builder | `FEEDBACK_TRACK` | `@kit-architect` (`kit-evolving` / `feedback_hub.py`) | `/evolve-kit` |
 | Phiên dài 20+ turns, context bão hòa, log tool dài | `COMPRESSION_TRACK` | `context-compression` (Micro-compact, Phase summary, Session checkpoint) | — |
+
 
 ### Quy tắc Điều phối Bất biến
 1. **Kit Architect Orchestrator Mandate**: Tuyệt đối không để Specialist Agent hoạt động độc lập không có chỉ đạo từ `@kit-architect`. Mọi thao tác tạo/sửa đều phải thuộc về 1 trong 5 Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`).

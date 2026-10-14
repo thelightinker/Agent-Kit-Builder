@@ -49,15 +49,8 @@ Append-only event stream JSONL cho feedback thực chiến của Kit và Builder
 python .agents/scripts/feedback_hub.py --summary
 ```
 
-### `equip_evolution.py`
-Tự động trang bị trọn bộ Evolution Suite (scripts, workflows, hooks) cho Agent Kit.
-
-```bash
-python .agents/scripts/equip_evolution.py ./output/<kit-name>
-python .agents/scripts/equip_evolution.py --all
-```
-
 ## Exit-code contract
+
 - `0`: kiểm tra đạt (pass)
 - `1`: phát hiện lỗi (fail)
 

@@ -60,7 +60,8 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 
 ### Bước 1.5: Khớp Nối Kiến Trúc & Hợp Đồng Node (Topology & Node-Contract Reconciliation Gate)
 *(Chỉ thực hiện cho Professional / Suite Kits có > 1 Agent. Micro / Standard Kit bỏ qua bước này.)*
-- **Role Profile:** `@architect` | **Skill:** `architecture-mapping`
+- **Role Profile:** `@architect` | **Skill:** `skill-architecting`
+
 - **[Input Artifacts]:** `domain_profile.md` + Topology & Workflow sơ bộ.
 - **[Output Artifacts]:** Ma trận phân định hợp đồng Node-Role-Skill (ghi trong plan hoặc design spec).
 - **[DoD - Reconciliation Assertions]:**
@@ -116,10 +117,10 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 - **[Output Artifacts]:** Thư mục kit đích hoàn chỉnh (`<target-dir>`, mặc định `./output/<kit-name>/`) kèm `manifest.json`, `manifest.lock.json`, `routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`, `DEPENDENCY_GRAPH.md`, và `lifecycle.json`.
 - **[Compiler & Lifecycle Execution Pipeline]:**
   1. Chạy bộ 6 script Compiler: `compile_routing_index.py`, `compile_invariants.py`, `compile_state_schema.py`, `compile_task_classifier.py`, `compile_evidence_schemas.py`, `dry_run_simulation.py` trên `<target-dir>`.
-  2. `[EXPERIMENTAL]` (chỉ khi người dùng yêu cầu `--with-evolution`): `python .agents/scripts/equip_evolution.py <target-dir>`.
-  3. Khởi tạo `lifecycle.json` với `schema_version: "1.0.0"`, `kit_name: "<kit-name>"`, `lifecycle_state: "DRAFT"`.
-  4. Sau khi các artifacts compiled và `manifest.json` được tạo hoàn tất, chuyển trạng thái sang `lifecycle_state: "READY_FOR_VALIDATION"`.
-  5. Khởi tạo khối `handoff` chuyển giao quyền kiểm định sang `validate-kit`.
+  2. Khởi tạo `lifecycle.json` với `schema_version: "1.0.0"`, `kit_name: "<kit-name>"`, `lifecycle_state: "DRAFT"`.
+  3. Sau khi các artifacts compiled và `manifest.json` được tạo hoàn tất, chuyển trạng thái sang `lifecycle_state: "READY_FOR_VALIDATION"`.
+  4. Khởi tạo khối `handoff` chuyển giao quyền kiểm định sang `validate-kit`.
+
 - **[DoD]:**
   - [ ] Toàn bộ file nằm trong thư mục đích (`<target-dir>`). CẤM ghi đè `.agents/` của Creator Engine.
   - [ ] Bộ 5 compiled decision artifacts (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`) được tạo và validate sạch.

@@ -3,7 +3,8 @@ name: kit-architect
 description: "Điều phối toàn bộ Agent Kit Creator: phân tích domain, mô hình hóa rủi ro, biên dịch prompt, thiết kế skill, kiểm định chất lượng."
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: architecture-mapping, context-compression, domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying, kit-exporting, kit-evolving, ui-ux-pro-max
+skills: context-compression, domain-profiling, prompt-compiling, skill-architecting, kit-assembling, kit-verifying, kit-exporting, kit-evolving, ui-ux-pro-max
+
 version: 2.8.0
 routing_exempt: true
 ---

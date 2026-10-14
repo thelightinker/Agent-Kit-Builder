@@ -213,7 +213,8 @@ def component_files(root: Path) -> list[Path]:
     """Return all managed source files covered by the integrity lock."""
     root = root.resolve()
     files: list[Path] = []
-    for name in ("VERSION", "README.md", "ARCHITECTURE.md", "CHANGELOG.md", "mcp_config.json", "UPGRADE_PRINCIPLES.md"):
+    for name in ("VERSION", "README.md", "ARCHITECTURE.md", "CHANGELOG.md", "mcp_config.json"):
+
         path = root / name
         if path.is_file():
             files.append(path)

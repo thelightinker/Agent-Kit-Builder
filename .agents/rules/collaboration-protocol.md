@@ -65,7 +65,7 @@ description: "Giao thức cộng tác & điều phối hệ thống: Mandatory G
    - **Never Delegate Understanding**: `@kit-architect` chịu trách nhiệm thấu hiểu tổng thể. Mọi chỉ thị giao việc cho Dynamic Role Profiles phải chứa đủ 5 phần: Goal & Context, What was ruled out, Specific file scope, Negative boundaries, và Verification evidence.
    - **Ma Trận Phân Luồng Concurrency**: Parallel Reads (Đọc song song an toàn) vs. Sequential Writes (Ghi file tuần tự, cấm race condition giữa các role).
    - **Thứ Tự Ưu Tiên Giải Quyết Mâu Thuẫn**:
-     1. Yêu cầu tường minh từ Sếp & Hard Gates bảo mật (`UPGRADE_PRINCIPLES.md`).
+     1. Yêu cầu tường minh từ Sếp & Hard Gates bảo mật.
      2. Bằng chứng thực thi thực tế (Automated Tests & Executable Evidence).
      3. Kiến trúc SSOT & Ranh giới phân quyền file (`componentApi`, `manifest.json`).
      4. Đề xuất của Role Profile phụ trách trực tiếp domain.

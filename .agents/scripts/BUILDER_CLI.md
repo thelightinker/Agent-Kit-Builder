@@ -43,14 +43,12 @@ python .agents/scripts/eval_runner.py --regression
 python .agents/scripts/export_kit.py .agents ./dist --target all
 ```
 
-### 5. Evolution Suite & Feedback
+### 5. Feedback Hub
 ```bash
-# Trang bị trọn bộ Evolution Suite cho kit
-python .agents/scripts/equip_evolution.py ./output/<kit-name>
-
 # Xem tóm tắt feedback & regression knowledge
 python .agents/scripts/feedback_hub.py --summary
 ```
+
 
 ## 📋 Exit Code Contract
 - `0`: Success / Passed

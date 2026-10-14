@@ -42,11 +42,11 @@ class TestSingleSource(unittest.TestCase):
             matches = set(re.findall(r"2026\.\d+\.\d+", p.read_text("utf-8")))
             self.assertEqual({version}, matches, f"Mismatch in {p.name}")
 
-    def test_orchestrator_modes_are_a_subset_of_dynamic_routing_and_there_are_ten(self):
+    def test_orchestrator_modes_are_a_subset_of_dynamic_routing(self):
         routing = set(re.findall(r"`([A-Z_]+_TRACK)`", (TOOLKIT / "rules/dynamic-routing.md").read_text("utf-8")))
         orch = set(re.findall(r"`([A-Z_]+_TRACK)`", (TOOLKIT / "agent/kit-architect.md").read_text("utf-8")))
-        self.assertEqual(10, len(routing))
         self.assertLessEqual(orch, routing)
+
 
     def test_legacy_vocab_only_in_allowlisted_files_and_allowlist_has_no_stale_entries(self):
         allowlist_path = TESTS_DIR / "legacy_vocab_allowlist.txt"

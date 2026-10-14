@@ -94,16 +94,15 @@ graph TD
 |---|---|---|
 | `kit-architect` | Điều phối toàn bộ luồng tạo, refactor, kiểm định và tiến hóa kit | `@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor` |
 
-### 🔄 Workflows & Slash Commands (7)
+### 🔄 Workflows & Slash Commands (5)
 | Command | Description | Target Artifact |
 |---|---|---|
 | `/create-kit` | Kích hoạt luồng tạo mới Agent Kit từ ý tưởng | `./output/<kit-name>/` |
 | `/refactor-kit` | Nâng cấp và vá lỗi Delta Patch cho Agent Kit có sẵn | `./output/<kit-name>/` |
 | `/validate-kit` | Kiểm định chất lượng 3 lớp & xuất audit findings | Audit Report |
 | `/remember-kit` | Trích xuất bài học và mẫu chuẩn vào bộ nhớ dài hạn | `.agents/memory/` |
-| `/architecture-evolution` | Tiến hóa kiến trúc an toàn dựa trên Living Map | Living Map & Architecture |
 | `/create-visual` | Sản xuất UI/UX Visual Kit, Dashboard, Landing Page | Visual Kit |
-| `/evolve-kit` | Tiến hóa tự động 1 lệnh duy nhất (Ingest → Validate → Release) | Changelog & SemVer |
+
 
 ---
 

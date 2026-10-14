@@ -61,10 +61,9 @@ class TestGoldenKitE2E(unittest.TestCase):
         export_kit.export_kit(self.kit, out, target="all")
         self.assertTrue(any(out.rglob(".cursorrules")))
 
-    def test_create_kit_marks_equip_evolution_experimental(self):
-        for line in (TOOLKIT / "workflows/create-kit.md").read_text("utf-8").splitlines():
-            if "equip_evolution.py" in line:
-                self.assertIn("EXPERIMENTAL", line)
+
+
+
 
 
 if __name__ == "__main__":

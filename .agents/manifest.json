@@ -6,7 +6,6 @@
       "path": "agent/kit-architect.md",
       "requires": {
         "skills": {
-          "architecture-mapping": "^1.0.0",
           "context-compression": "^1.0.0",
           "domain-profiling": "^2.3.0",
           "kit-assembling": "^2.6.0",
@@ -61,16 +60,6 @@
   },
   "schemaVersion": "1.0.0",
   "skills": {
-    "architecture-mapping": {
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Glob"
-      ],
-      "path": "skills/architecture-mapping/SKILL.md",
-      "scripts": [],
-      "version": "1.0.0"
-    },
     "context-compression": {
       "allowedTools": [
         "Read",
@@ -226,26 +215,6 @@
     "type": "standard"
   },
   "workflows": {
-    "architecture-evolution": {
-      "artifactOutputs": [
-        "impact_assessment.md",
-        "change_proposal.md",
-        "validation_report.md",
-        "map.md"
-      ],
-      "path": "workflows/architecture-evolution.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "architecture-mapping",
-          "kit-evolving",
-          "kit-verifying"
-        ]
-      },
-      "version": "1.0.0"
-    },
     "create-kit": {
       "artifactOutputs": [
         "domain_profile",
@@ -285,24 +254,6 @@
         ]
       },
       "version": "1.0.0"
-    },
-    "evolve-kit": {
-      "artifactOutputs": [
-        "EVOLUTION_LEDGER.json",
-        "snapshot_manifest.json",
-        "EVOLUTION_HISTORY.json"
-      ],
-      "path": "workflows/evolve-kit.md",
-      "requires": {
-        "agents": [
-          "kit-architect"
-        ],
-        "skills": [
-          "kit-evolving",
-          "kit-verifying"
-        ]
-      },
-      "version": "2.0.0"
     },
     "refactor-kit": {
       "artifactOutputs": [

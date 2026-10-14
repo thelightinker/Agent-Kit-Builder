@@ -36,8 +36,9 @@ class TestScaleInvariants(unittest.TestCase):
             # Record baseline hash of core rules and agents
             core_guardrails_baseline = (tmp_root / "rules" / "core-guardrails.md").read_text("utf-8")
             kit_architect_baseline = (tmp_root / "agent" / "kit-architect.md").read_text("utf-8")
-            upgrade_principles_baseline = (tmp_root / "UPGRADE_PRINCIPLES.md").read_text("utf-8")
-            initial_skills_count = len([d for d in (tmp_root / "skills").iterdir() if d.is_dir()])
+            initial_skills_count = len([d for d in (tmp_root / "skills").iterdir() if d.is_dir() and (d / "SKILL.md").is_file()])
+
+
             initial_wf_count = len(list((tmp_root / "workflows").glob("*.md")))
             expected_skills = initial_skills_count + 20
             expected_wfs = initial_wf_count + 10
@@ -128,7 +129,7 @@ trigger: manual
             # Invariant: Core files were NEVER touched or modified
             self.assertEqual(core_guardrails_baseline, (tmp_root / "rules" / "core-guardrails.md").read_text("utf-8"))
             self.assertEqual(kit_architect_baseline, (tmp_root / "agent" / "kit-architect.md").read_text("utf-8"))
-            self.assertEqual(upgrade_principles_baseline, (tmp_root / "UPGRADE_PRINCIPLES.md").read_text("utf-8"))
+
 
 
 if __name__ == "__main__":
