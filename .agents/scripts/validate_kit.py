@@ -98,6 +98,7 @@ FIX_STRATEGY_MAP: dict[str, tuple[str, bool]] = {
     "memory.index_too_large": ("llm_patch", True),
     "workflow.no_outputs": ("llm_patch", True),
     "markdown.missing_link": ("llm_patch", True),
+    "path.absolute_user_path": ("llm_patch", True),
     "capability.invalid_namespace": ("llm_patch", True),
     "capability.uncovered_outcome": ("llm_patch", True),
     "graph.unreachable_node": ("llm_patch", True),
@@ -885,6 +886,42 @@ def sync_registry(root: Path) -> tuple[int, list[str]]:
     return len(synced), synced
 
 
+ABSOLUTE_USER_PATH = re.compile(
+    r"(?i)(?:[a-z]:[\\/]{1,2}(?:users|documents and settings)[\\/]|file:///[a-z]:/|(?<![\w.:/-])/(?:Users|home)/[^/\s]+/)"
+)
+
+
+def validate_portability(root: Path, findings: list[Finding]) -> None:
+    """Detect hardcoded user-specific absolute paths in Markdown, JSON, Python, and JavaScript/MJS files."""
+    extensions = {".md", ".json", ".py", ".mjs"}
+    for p in root.rglob("*"):
+        if not p.is_file():
+            continue
+        if p.suffix not in extensions:
+            continue
+        rel = p.relative_to(root).as_posix()
+        # skip scripts/tests/ and skills/ui-ux-pro-max/
+        if rel.startswith("scripts/tests/") or rel.startswith("skills/ui-ux-pro-max/"):
+            continue
+        try:
+            content = p.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+
+        for line_num, line in enumerate(content.splitlines(), start=1):
+            match = ABSOLUTE_USER_PATH.search(line)
+            if match:
+                add(
+                    findings,
+                    "error",
+                    "path.absolute_user_path",
+                    Path(rel),
+                    f"Hardcoded absolute user path detected: {match.group(0)}",
+                    line=line_num,
+                    evidence=line.strip()[:100],
+                )
+
+
 def validate_quick(root: Path) -> list[Finding]:
     """Fast frontmatter and JSON syntax validation for Tier 1 rapid checks."""
     findings: list[Finding] = []
@@ -893,6 +930,7 @@ def validate_quick(root: Path) -> list[Finding]:
     validate_frontmatter(root, findings)
     validate_structural_anchors(root, findings)
     validate_compiler_artifacts(root, findings)
+    validate_portability(root, findings)
     return findings
 
 
@@ -911,6 +949,7 @@ def validate(root: Path, auto_heal: bool = True) -> list[Finding]:
     validate_structural_anchors(root, findings)
     validate_template_compliance(root, findings)
     validate_compiler_artifacts(root, findings)
+    validate_portability(root, findings)
     return findings
 
 

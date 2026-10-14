@@ -16,7 +16,7 @@ Kỹ năng kiểm định chất lượng toàn diện cho Agent Kit, kết hợ
 
 Khi thực hiện kiểm thử và đánh giá chuyên sâu:
 - **Lý thuyết Verification Abstraction & 5 Archetypes**: Đọc [verification-abstraction.md](../../references/verification-abstraction.md).
-- **Chuẩn Anthropic Skill Creator**: Đọc [skill-creator/SKILL.md](file:///C:/Users/nhdcb/.gemini/config/plugins/anthropic-skills/skills/skill-creator/SKILL.md) (global plugin — nếu path không tồn tại, tìm trong `plugins/anthropic-skills/skills/skill-creator/` của user config).
+- **Chuẩn Anthropic Skill Creator**: Đọc [skill-creator/SKILL.md](../skill-creator/SKILL.md).
 - **Nguyên tắc Điều phối Suite & Boundary Matrix**: Đọc [multi-agent-orchestration.md](../../references/multi-agent-orchestration.md).
 - **Danh mục Lỗi AI để Stress-test L3**: Đọc [failure-modes.md](../../references/failure-modes.md).
 - **Error Resilience & Escalation Protocol**: Đọc [error-resilience.md](../../references/error-resilience.md) để kiểm thử cơ chế phục hồi lỗi và thoát vòng lặp.

@@ -53,7 +53,7 @@ Quy trình cải tiến, nâng cấp hoặc tối ưu hóa Agent Kit thông qua 
 - **Role Profile:** `@compiler` (nếu sửa prompt) hoặc `@architect` (nếu sửa skill/memory/workflow)
 - **[Mandatory Grounding Template & Prerequisites]:** 
   - Chỉ nạp đúng template của loại component đang được refactor (ví dụ: refactor workflow $\rightarrow$ đọc `templates/workflow-template.md`).
-  - **Đặc biệt với Skill**: Nếu tạo mới hoặc sửa đổi `skills/*/SKILL.md`, BẮT BUỘC phải nạp / kích hoạt `skill-creator` (`C:\Users\nhdcb\.gemini\config\plugins\anthropic-skills\skills\skill-creator\SKILL.md`) kết hợp với `templates/skill-template.md`.
+  - **Đặc biệt với Skill**: Nếu tạo mới hoặc sửa đổi `skills/*/SKILL.md`, BẮT BUỘC phải nạp / kích hoạt `skill-creator` (`.agents/skills/skill-creator/SKILL.md`) kết hợp với `templates/skill-template.md`.
 - **[Input Artifacts]:** `gap_analysis.md`
 - **[Output Artifacts]:** Các file được sửa đổi trong thư mục kit (`<kit-dir>`) và các decision artifacts được tái biên dịch (`routing_index.json`, `invariant_rules.json`, `state_schema.json`, `task_classifier_index.json`, `evidence_schemas.json`).
 - **[DoD]:**

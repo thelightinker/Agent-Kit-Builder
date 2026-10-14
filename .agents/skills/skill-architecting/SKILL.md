@@ -15,7 +15,7 @@ Kỹ năng thiết kế cấu trúc thư mục skill theo tiêu chuẩn **Anthro
 ## 🚨 MANDATORY HARD GATE: KÍCH HOẠT SKILL CREATOR TRƯỚC TIÊN (ZERO-TOLERANCE)
 
 Trước khi khởi tạo hoặc chỉnh sửa bất kỳ file `skills/<name>/SKILL.md` nào:
-- **BẮT BUỘC** kích hoạt và đọc [skill-creator/SKILL.md](file:///C:/Users/nhdcb/.gemini/config/plugins/anthropic-skills/skills/skill-creator/SKILL.md) (global plugin — nếu path không tồn tại, tìm trong `plugins/anthropic-skills/skills/skill-creator/` của user config).
+- **BẮT BUỘC** kích hoạt và đọc [skill-creator/SKILL.md](../skill-creator/SKILL.md).
 - **TUYỆT ĐỐI KHÔNG** sinh file `SKILL.md` từ trí nhớ mà chưa nạp `skill-creator`.
 - Tuân thủ quy trình chuẩn: Capture Intent $\rightarrow$ Pushy Description $\rightarrow$ 3-Tier Progressive Disclosure $\rightarrow$ Imperative / Why-driven style $\rightarrow$ Concrete Input/Output Examples $\rightarrow$ Evals.
 

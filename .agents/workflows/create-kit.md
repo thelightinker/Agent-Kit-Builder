@@ -82,7 +82,7 @@ Trước khi tạo bất kỳ thư mục hoặc file nào trong thư mục đíc
 ### Bước 3: Thiết kế Kỹ năng & Kiến trúc (Skill Architecting — DAG Parallel Safe)
 *(Chỉ thực hiện cho Standard / Professional / Suite Kits)*
 - **Role Profile:** `@architect` | **Skill:** `skill-architecting`
-- **[Mandatory Skill Creator Gate (Zero-Bypass)]:** Trước khi tạo bất kỳ file skill nào trong `skills/`, BẮT BUỘC phải nạp / kích hoạt skill `skill-creator` (`C:\Users\nhdcb\.gemini\config\plugins\anthropic-skills\skills\skill-creator\SKILL.md`). TUYỆT ĐỐI KHÔNG sinh `SKILL.md` từ trí nhớ khi chưa nạp `skill-creator`.
+- **[Mandatory Skill Creator Gate (Zero-Bypass)]:** Trước khi tạo bất kỳ file skill nào trong `skills/`, BẮT BUỘC phải nạp / kích hoạt skill `skill-creator` (`.agents/skills/skill-creator/SKILL.md`). TUYỆT ĐỐI KHÔNG sinh `SKILL.md` từ trí nhớ khi chưa nạp `skill-creator`.
 - **[DAG Parallel Execution Matrix]:**
   - **Phase 1 (Parallel-Safe)**: Sinh song song các Skills (`skills/<name>/SKILL.md`), Rules (`rules/<name>.md`), và Memory Topics (`memory/<topic>.md`) độc lập vì Read/Write sets không xung đột.
   - **Phase 2 (Sequential / Dependency-Grounded)**: Sinh Workflows (`workflows/*.md`) sau khi đã có danh sách Skills hoàn chỉnh.

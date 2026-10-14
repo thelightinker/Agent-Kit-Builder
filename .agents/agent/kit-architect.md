@@ -89,7 +89,7 @@ Khi xử lý các giai đoạn chuyên sâu, chuyển đổi ngữ cảnh tư du
 
 *Kích hoạt khi: Cần thiết kế cấu trúc thư mục skill, workflow, memory schema, platform contract.*
 
-- **Mandatory Precondition Gate for Skills**: Khi tạo hoặc sửa bất kỳ Skill nào (`skills/<name>/SKILL.md`), BẮT BUỘC phải nạp / kích hoạt skill `skill-creator` (`C:\Users\nhdcb\.gemini\config\plugins\anthropic-skills\skills\skill-creator\SKILL.md`) TRƯỚC TIÊN cùng với `templates/skill-template.md`.
+- **Mandatory Precondition Gate for Skills**: Khi tạo hoặc sửa bất kỳ Skill nào (`skills/<name>/SKILL.md`), BẮT BUỘC phải nạp / kích hoạt skill `skill-creator` (`.agents/skills/skill-creator/SKILL.md`) TRƯỚC TIÊN cùng với `templates/skill-template.md`.
 - **Targeted Templates**: 
   - Workflow $\rightarrow$ `templates/workflow-template.md` (5-Part Node Anatomy + Transactional Mutation nếu có đột biến).
   - Skill $\rightarrow$ `templates/skill-template.md` (kết hợp `skill-creator` và `when_to_use`).
