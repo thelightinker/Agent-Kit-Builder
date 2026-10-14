@@ -1,0 +1,4 @@
+ERROR: test_closed_loop_evolution (unittest.loader._FailedTest.test_closed_loop_evolution)
+ERROR: test_e2e_evolution_lifecycle (unittest.loader._FailedTest.test_e2e_evolution_lifecycle)
+ERROR: test_evolution_engine (unittest.loader._FailedTest.test_evolution_engine)
+FAIL: test_adding_30_components_requires_zero_core_modifications (test_scale_invariants.TestScaleInvariants.test_adding_30_components_requires_zero_core_modifications)
