@@ -9,7 +9,7 @@
 Agent Kit Creator là hệ thống chuyên gia tinh gọn gồm:
 
 - **1 Orchestrator Agent** (`kit-architect`) với 5 Dynamic Role Profiles (`@analyst`, `@compiler`, `@architect`, `@designer`, `@auditor`).
-- **10 Focused Skills** - Bộ kỹ năng chuyên sâu phục vụ phân tích domain, biên dịch prompt, cấu trúc skill, nén context phiên dài, lắp ráp, kiểm định, xuất bản và tiến hóa kit.
+- **11 Focused Skills** - Bộ kỹ năng chuyên sâu phục vụ phân tích domain, biên dịch prompt, cấu trúc skill, nén context phiên dài, lắp ráp, kiểm định, xuất bản và tiến hóa kit.
 - **7 Workflows** - Các quy trình slash command (`/create-kit`, `/refactor-kit`, `/validate-kit`, `/remember-kit`, `/architecture-evolution`, `/create-visual`, `/evolve-kit`).
 - **3 Core Rules** - Ràng buộc bất biến (`core-guardrails`), phân loại mode (`dynamic-routing`), và giao thức cộng tác & nạp quyền hạn (`collaboration-protocol`).
 
@@ -44,7 +44,7 @@ python .agents/scripts/validate_kit.py
 ├── DEPENDENCY_GRAPH.md      # Sơ đồ phụ thuộc Workflow → Agent → Skill
 ├── schemas/                 # JSON schema contracts
 ├── agent/                   # 1 Orchestrator Agent (kit-architect.md)
-├── skills/                  # 10 Focused Skills
+├── skills/                  # 11 Focused Skills
 ├── workflows/               # 7 Slash Command Workflows
 ├── rules/                   # 3 Core Rules
 ├── templates/               # Component, Contract & Workflow Templates
@@ -126,9 +126,9 @@ Bộ kỹ năng chuyên môn phân cấp theo Progressive Disclosure.
 | Metric | Value |
 | --- | --- |
 | **Total Agents** | 1 |
-| **Total Skills** | 10 |
+| **Total Skills** | 11 |
 | **Total Workflows** | 7 |
-| **Total Skill Scripts** | 5 |
+| **Total Skill Scripts** | 14 |
 | **Total Rules** | 3 |
 | **Top-level Utilities** | 14 user-facing + 2 internal engine modules |
 | **Coverage** | Domain analysis, prompt compilation, skill architecture, context compression, visual design intelligence, assembly, 3-layer verification, export, evolution, closed-loop convergence, unified lifecycle |

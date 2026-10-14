@@ -173,7 +173,12 @@
       "version": "2.6.0"
     },
     "skill-creator": {
-      "allowedTools": [],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash"
+      ],
       "path": "skills/skill-creator/SKILL.md",
       "scripts": [
         "skills/skill-creator/scripts/__init__.py",
@@ -186,7 +191,7 @@
         "skills/skill-creator/scripts/run_loop.py",
         "skills/skill-creator/scripts/utils.py"
       ],
-      "version": ""
+      "version": "1.0.0"
     },
     "ui-ux-pro-max": {
       "allowedTools": [

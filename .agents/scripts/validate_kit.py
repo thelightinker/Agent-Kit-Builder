@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import os
 import re
 import subprocess
 import sys
@@ -455,6 +456,16 @@ def validate_memory(root: Path, findings: list[Finding]) -> None:
             add(findings, "error", "memory.invalid_type", path.relative_to(root), f"Invalid memory type: {data.get('type')!r}")
 
 
+def _smoke_cwd(script: Path) -> Path:
+    """Return the nearest ancestor directory containing SKILL.md; otherwise script.parent."""
+    cur = script.parent
+    while cur != cur.parent:
+        if (cur / "SKILL.md").is_file():
+            return cur
+        cur = cur.parent
+    return script.parent
+
+
 def validate_python(root: Path, findings: list[Finding]) -> None:
     targets = set(root.rglob("*.py"))
     if root.name == ".agents" and (root.parent / "scripts").is_dir():
@@ -476,12 +487,17 @@ def validate_python(root: Path, findings: list[Finding]) -> None:
 
         # Executable Smoke Test: CLI scripts with argparse
         if "argparse" in text and 'if __name__ == "__main__":' in text:
+            smoke_cwd = _smoke_cwd(path)
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(smoke_cwd) + os.pathsep + env.get("PYTHONPATH", "")
             try:
                 res = subprocess.run(
                     [sys.executable, str(path), "--help"],
                     capture_output=True,
                     text=True,
                     timeout=5,
+                    cwd=smoke_cwd,
+                    env=env,
                 )
                 if res.returncode != 0:
                     add(findings, "error", "script.smoke_failed", rel, f"CLI smoke test (--help) returned non-zero code {res.returncode}")
