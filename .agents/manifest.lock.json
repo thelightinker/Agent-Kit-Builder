@@ -2,7 +2,7 @@
   "$schema": "schemas/manifest-lock.schema.json",
   "components": {
     "ARCHITECTURE.md": "fc593ec4083936c891a195c88f0a0e83f5f8af1a7eca792891496404fa4d1042",
-    "CHANGELOG.md": "9a76dfedc4ddd5f81141f3a36aa982611d570b53aad4d2253f259f1f1657411b",
+    "CHANGELOG.md": "2ef2fe33dd71a389e31d0dd39c9afa7499519651b87ad0f16c6495d0934f593c",
     "README.md": "c321bafce828ae9b44eeffd18ff1d4ea11723b4b70005df32d09e10941d2825c",
     "VERSION": "70e13ac9984c941353c07af76f36922e40eb0eb3dbd6d9cd5a4a489cc6df39a8",
     "agent/kit-architect.md": "3f840fb8c708244bb00acd8d7f07e48459f8ed574c2968ef9ee5fd37dac979b8",

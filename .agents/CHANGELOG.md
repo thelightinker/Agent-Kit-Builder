@@ -1,5 +1,9 @@
 # Agent Kit Creator Changelog
 
+## 2026.10.29 (V3 Upgrades & Engine Synchronization)
+- **Engine V3 Alignment**: Đồng bộ toàn bộ kiến trúc kit engine mới nhất, tối ưu hoá readsets, lockfile auto-healing và CI/CD verification pipelines.
+- **Repository Hygiene**: Chuẩn hoá .gitignore loại bỏ các file tạm, đảm bảo working tree sạch sẽ 100%.
+
 ## 2026.8.22 (Mandatory Skill Creator Gate & Trigger Hardening)
 - **Zero-Bypass Mandatory Skill Creator Gate**: Thiết lập quy chuẩn bắt buộc 100% các thao tác tạo mới hoặc sửa đổi `SKILL.md` phải nạp và kích hoạt `skill-creator` (`plugins/anthropic-skills/skills/skill-creator`).
 - **Orchestrator Profile Hardening**: Bổ sung Negative Constraint trong profile `@architect` của `kit-architect` cấm sinh `SKILL.md` khi chưa nạp `skill-creator`.
