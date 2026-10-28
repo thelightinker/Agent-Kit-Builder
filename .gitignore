@@ -5,7 +5,8 @@ dist/
 scratch/
 __pycache__/
 *.pyc
+*.zip
 .pytest_cache/
 .superpowers/
 docs/
-
+tests/
